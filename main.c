@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:15:16 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/04/19 20:55:04 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/04/20 10:11:25 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ int main(int argc, char *argv[], char **envp)
             printf("exit\n");
             break;
         }
+        if (input)
+            add_history(input);
     }
-    if (input)
-        add_history(input);
     free(input);
     return (0);
 }
