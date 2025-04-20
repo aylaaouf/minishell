@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:15:16 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/04/19 20:49:50 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/04/19 20:55:04 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,10 @@
 int main(int argc, char *argv[], char **envp)
 {
     char *input;
-
+    
+    (void)argc;
+    (void)argv;
+    (void)envp;
     while (1)
     {
         input = readline("marvel$ ");
@@ -28,4 +31,5 @@ int main(int argc, char *argv[], char **envp)
     if (input)
         add_history(input);
     free(input);
+    return (0);
 }
