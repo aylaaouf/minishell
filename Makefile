@@ -4,8 +4,7 @@ CC := cc
 
 CFLAGS := -Wall -Wextra -Werror
 
-SRC := main.c 
-
+SRC := main.c utils_1.c envp.c
 OBJS := $(SRC:.c=.o)
 
 all : $(NAME)

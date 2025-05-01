@@ -4,7 +4,6 @@
 Welcome to your **Minishell** journey! This README provides a full guide on what you need to learn and implement to successfully complete the **mandatory** part of the Minishell project.
 
 ---
-
 ## 📚 What You Will Learn
 
 By building Minishell, you’ll learn:
