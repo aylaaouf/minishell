@@ -31,7 +31,6 @@ int	main(int argc, char *argv[], char **env)
 	(void)argv;
 
 	t_env *my_env = env_init(env);
-    print_env(my_env);
 	while (1)
 	{
 		i = 0;
@@ -41,6 +40,8 @@ int	main(int argc, char *argv[], char **env)
 			printf("exit\n");
 			break ;
 		}
+		if (!strcmp(input, "env"))
+			print_env(my_env);
 		if (input)
 			add_history(input);
 	}
