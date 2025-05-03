@@ -35,6 +35,22 @@ static char	*ft_strcpy(char *dst, const char *src)
 	return (dst);
 }
 
+char	*ft_strchr(const char *s, int c)
+{
+	int		i;
+
+	i = 0;
+	while (s[i] != '\0')
+	{
+		if (s[i] == (char)c)
+			return ((char *)&s[i]);
+		i++;
+	}
+	if (s[i] == (char)c)
+		return ((char *)&s[i]);
+	return (NULL);
+}
+
 char	*ft_strdup(const char *s1)
 {
 	char	*dst_d;
@@ -45,4 +61,22 @@ char	*ft_strdup(const char *s1)
 	if (!dst_d)
 		return (NULL);
 	return (ft_strcpy(dst_d, s1));
+}
+
+char	*ft_strndup(char *s1, size_t n)
+{
+	char	*dup;
+	size_t	i;
+
+	dup = malloc(sizeof(char) * n + 1);
+	if (!dup)
+		return (NULL);
+	i = 0;
+    while (i < n && s1[i])
+    {
+        dup[i] = s1[i];
+        i++;
+    }
+    dup[i] = '\0';
+    return (dup);
 }
