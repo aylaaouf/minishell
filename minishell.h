@@ -58,7 +58,7 @@ t_token *tokenize(char *line);
 //envp.c
 char *get_env_value(t_env *env, const char *key);
 t_env *env_init(char **envp);
-
+void print_env(t_env *env);
 //utils_1.c
 size_t	ft_strlen(const char *s);
 char	*ft_strndup(char *s1, size_t n);

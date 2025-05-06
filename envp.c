@@ -12,6 +12,16 @@
 
 #include "minishell.h"
 
+void print_env(t_env *env)
+{
+    while (env)
+    {
+        if (env->value)
+            printf("%s=%s\n", env->key, env->value);
+        env = env->next;
+    }
+}
+
 t_env *new_env_node(char *key, char *value)
 {
     t_env	*node;
