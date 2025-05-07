@@ -6,7 +6,7 @@
 /*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 12:12:08 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/05/01 12:12:14 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/05/07 16:44:57 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ t_env *new_env_node(char *key, char *value)
     t_env	*node;
 
 	node = malloc(sizeof(t_env));
-    node->key = strdup(key);
-    node->value = strdup(value);
+    node->key = ft_strdup(key);
+    node->value = ft_strdup(value);
     node->next = NULL;
     return (node);
 }

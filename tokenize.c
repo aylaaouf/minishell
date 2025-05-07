@@ -6,7 +6,7 @@
 /*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 20:34:45 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/05/03 20:49:25 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/05/07 15:10:59 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ t_token *tokenize(char *line)
         {
             char *word = extract_word(line, &i);
             if (word)
-                add_token(&tokens, word, TOKEN_IDINTTFE);
+                add_token(&tokens, word, TOKEN_WORD);
         }
     }
     return (tokens);
