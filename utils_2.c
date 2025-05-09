@@ -78,20 +78,21 @@ void	*ft_memcpy(void *dst, const void *src, size_t n)
 	return (dst);
 }
 
-char *ft_realloc(char *ptr, size_t new_size)
+void *ft_realloc(void *ptr, size_t new_size)
 {
     if (new_size == 0)
     {
         free(ptr);
         return NULL;
     }
+
     if (!ptr)
-        return malloc(new_size);
-    char *new_ptr = malloc(new_size);
+        return (malloc(new_size));
+    void *new_ptr = malloc(new_size);
     if (!new_ptr)
-        return NULL;
-    strcpy(new_ptr, ptr);
+        return (NULL);
+    ft_memcpy(new_ptr, ptr, new_size);
     free(ptr);
-    return new_ptr;
+    return (new_ptr);
 }
 

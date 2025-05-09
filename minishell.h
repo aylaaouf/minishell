@@ -42,19 +42,39 @@ typedef struct s_env
 
 typedef struct s_token
 {
-	char            *value;         // token string
-	t_token_type    type;           // type of the token
-	struct s_token  *next;          // linked list
-}   t_token;
-//expander.c
+    t_token_type type;
+    char *value;
+    struct s_token *next;
+} t_token;
 
+typedef struct s_redirection
+{
+    char *type;
+    char *file;
+    struct s_redirection *next;
+} t_redirection;
+
+typedef struct s_command
+{
+    char **args;          // Command arguments (argv)
+    t_redirection *redir; // Linked list of redirections
+    struct s_command *next;
+} t_command;
+//parse_cmd.c
+t_command *new_command();
+void add_argument(t_command *cmd, char *arg);
+void add_redirection(t_command *cmd, char *type, char *file);
+t_command *parse_tokens(t_token *tokens);
+//expander.c
 void expander(t_token *tokens, t_env *env);
 char *get_env_value(t_env *env, const char *key);
 char *extract_var_name(char *str, size_t *i);
 char *expand_token_value(char *str, t_env *env);
+
 //quote_management.c
 char *remove_outer_quotes(char *str, char quote);
 void quote_management(t_token *tokens);
+
 //tokenize.c
 void skip_spaces(char *line, size_t *i);
 int is_operator_char(char c);
@@ -69,17 +89,20 @@ char *get_env_value(t_env *env, const char *key);
 t_env *env_init(char **envp);
 t_env *new_env_node(char *key, char *value);
 void print_env(t_env *env);
+
 //utils_1.c
 size_t	ft_strlen(const char *s);
 char	*ft_strndup(char *s1, size_t n);
 char	*ft_strchr(const char *s, int c);
 char	*ft_strdup(const char *s1);
+
 //utils_2.c
-char *ft_realloc(char *ptr, size_t new_size);
+void *ft_realloc(void *ptr, size_t new_size);
 void	*ft_memcpy(void *dst, const void *src, size_t n);
 void	*ft_calloc(size_t count, size_t size);
 void	ft_bzero(void *s, size_t n);
 void	*ft_memset(void *b, int c, size_t len);
+
 //utils_3.c
 int ft_strcmp(const char *s1, const char *s2);
 char *ft_strcat(char *dest, const char *src);
