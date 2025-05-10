@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/05/07 16:46:06 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/05/09 10:06:41 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,16 @@ typedef struct s_command
     t_redirection *redir; // Linked list of redirections
     struct s_command *next;
 } t_command;
+typedef struct s_echo
+{
+    int newline;
+    char **args;
+    int arg_count;
+} t_echo;
+//ft_echo.c
+
+char *get_env_value_echo(char *var, char **env);
+void ft_echo(char *input, char **env);
 //parse_cmd.c
 t_command *new_command();
 void add_argument(t_command *cmd, char *arg);
@@ -106,4 +116,5 @@ void	*ft_memset(void *b, int c, size_t len);
 //utils_3.c
 int ft_strcmp(const char *s1, const char *s2);
 char *ft_strcat(char *dest, const char *src);
+char	**ft_split(char const *s, char c);
 #endif
