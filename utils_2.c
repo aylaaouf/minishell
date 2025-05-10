@@ -6,7 +6,7 @@
 /*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 16:10:20 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/05/07 16:32:02 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/05/10 17:58:48 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,19 +41,20 @@ void	ft_bzero(void *s, size_t n)
 	}
 }
 
-void	*ft_calloc(size_t count, size_t size)
+void *ft_calloc(size_t count, size_t size)
 {
-	void	*arr;
-	size_t	max;
+    void *arr;
+    size_t max;
+	
+	max= -1;
+    if (size != 0 && (count > max / size))
+        return (NULL);
 
-	max = -1;
-	if (size != 0 && (count > max / size))
-		return (NULL);
-	arr = malloc(count * size);
-	if (!arr)
-		return (NULL);
-	ft_bzero(arr, count * size);
-	return (arr);
+    arr = gc_malloc(count * size);
+    if (!arr)
+        return (NULL);
+    ft_bzero(arr, count * size);
+    return (arr);
 }
 
 void	*ft_memcpy(void *dst, const void *src, size_t n)
@@ -80,19 +81,19 @@ void	*ft_memcpy(void *dst, const void *src, size_t n)
 
 void *ft_realloc(void *ptr, size_t new_size)
 {
+	void *new_ptr;
+
     if (new_size == 0)
     {
-        free(ptr);
+        gc_free(ptr);
         return NULL;
     }
-
     if (!ptr)
-        return (malloc(new_size));
-    void *new_ptr = malloc(new_size);
+        return (gc_malloc(new_size));
+    new_ptr = gc_malloc(new_size);
     if (!new_ptr)
         return (NULL);
     ft_memcpy(new_ptr, ptr, new_size);
-    free(ptr);
+    gc_free(ptr);
     return (new_ptr);
 }
-

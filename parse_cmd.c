@@ -2,7 +2,7 @@
 
 t_command *new_command()
 {
-    t_command *cmd = malloc(sizeof(t_command));
+    t_command *cmd = gc_malloc(sizeof(t_command));
     if (!cmd)
         return NULL;
     cmd->args = NULL;
@@ -23,7 +23,7 @@ void add_argument(t_command *cmd, char *arg)
 
 void add_redirection(t_command *cmd, char *type, char *file)
 {
-    t_redirection *redir = malloc(sizeof(t_redirection));
+    t_redirection *redir = gc_malloc(sizeof(t_redirection));
     if (!redir)
         return ;
     redir->type = ft_strdup(type);

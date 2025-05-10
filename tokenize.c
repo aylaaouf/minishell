@@ -6,7 +6,7 @@
 /*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 20:34:45 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/05/07 15:10:59 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/05/10 17:53:25 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,9 @@ int is_operator_char(char c)
 char *extract_word(char *line, size_t *i)
 {
     size_t start = *i;
-    while (line[*i] && !is_operator_char(line[*i]) && line[*i] != ' ' && line[*i] != '\t' && line[*i] != '\'' && line[*i] != '\"')
+    while (line[*i] && !is_operator_char(line[*i]) && 
+           line[*i] != ' ' && line[*i] != '\t' && 
+           line[*i] != '\'' && line[*i] != '\"')
         (*i)++;
     return (ft_strndup(&line[start], *i - start));
 }
@@ -40,22 +42,26 @@ char *extract_quoted(char *line, size_t *i, char quote_char)
         (*i)++;
     if (!line[*i])
         return NULL;
-    char *content = strndup(&line[start], *i - start);
+    
+    char *content = gc_malloc((*i - start) + 1);
+    strncpy(content, &line[start], *i - start);
+    content[*i - start] = '\0';
     (*i)++;
     return (content);
 }
 
 t_token *new_token(char *value, t_token_type type)
 {
-    t_token *token = malloc(sizeof(t_token));
+    t_token *token = gc_malloc(sizeof(t_token));
     if (!token)
         return NULL;
-    token->value = strdup(value);
+    token->value = value; // Already GC managed
     token->type = type;
-	token->next = NULL;
-	return token;
+    token->next = NULL;
+    return token;
 }
 
+// Add a token to the list
 t_token *add_token(t_token **head, char *value, t_token_type type)
 {
     t_token *new = new_token(value, type);
@@ -74,43 +80,28 @@ t_token *add_token(t_token **head, char *value, t_token_type type)
     return new;
 }
 
+// Tokenize the input line
 t_token *tokenize(char *line)
 {
-    size_t i;
-    t_token *tokens;
-	
-	tokens= NULL;
-	i = 0;
+    size_t i = 0;
+    t_token *tokens = NULL;
+
     while (line[i])
     {
         skip_spaces(line, &i);
         if (!line[i])
             break;
+
         if (line[i] == '|')
-        {
-            add_token(&tokens, ft_strdup("|"), TOKEN_PIPE);
-            i++;
-        }
+            add_token(&tokens, ft_strdup("|"), TOKEN_PIPE), i++;
         else if (line[i] == '>' && line[i + 1] == '>')
-        {
-            add_token(&tokens, ft_strdup(">>"), TOKEN_APPEND);
-            i += 2;
-        }
+            add_token(&tokens, ft_strdup(">>"), TOKEN_APPEND), i += 2;
         else if (line[i] == '>')
-        {
-            add_token(&tokens, ft_strdup(">"), TOKEN_OUTPUT);
-            i++;
-        }
+            add_token(&tokens, ft_strdup(">"), TOKEN_OUTPUT), i++;
         else if (line[i] == '<' && line[i + 1] == '<')
-        {
-            add_token(&tokens, ft_strdup("<<"), TOKEN_HEREDOC);
-            i += 2;
-        }
+            add_token(&tokens, ft_strdup("<<"), TOKEN_HEREDOC), i += 2;
         else if (line[i] == '<')
-        {
-            add_token(&tokens, ft_strdup("<"), TOKEN_INPUT);
-            i++;
-        }
+            add_token(&tokens, ft_strdup("<"), TOKEN_INPUT), i++;
         else if (line[i] == '"')
         {
             char *quoted = extract_quoted(line, &i, '"');
@@ -132,5 +123,5 @@ t_token *tokenize(char *line)
                 add_token(&tokens, word, TOKEN_WORD);
         }
     }
-    return (tokens);
+    return tokens;
 }

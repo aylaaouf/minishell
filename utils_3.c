@@ -6,7 +6,7 @@
 /*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 16:32:29 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/05/09 09:58:23 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/05/10 17:41:42 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,4 +134,16 @@ char	**ft_split(char const *s, char c)
 	if (!array_with_words(array, s, c))
 		return (NULL);
 	return (array);
+}
+
+char *ft_strncpy(char *dest, char *src, size_t n)
+{
+    size_t i;
+
+    for (i = 0; i < n && src[i] != '\0'; i++)
+        dest[i] = src[i];
+    for (; i < n; i++)
+        dest[i] = '\0';
+
+    return dest;
 }

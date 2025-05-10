@@ -6,7 +6,7 @@
 /*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 11:34:26 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/05/07 16:10:04 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/05/10 17:54:34 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "minishell.h"
@@ -21,7 +21,7 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-static char	*ft_strcpy(char *dst, const char *src)
+char	*ft_strcpy(char *dst, const char *src)
 {
 	int	i;
 
@@ -51,32 +51,27 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-char	*ft_strdup(const char *s1)
+char *gc_strdup(const char *s)
 {
-	char	*dst_d;
-	size_t	size;
+    if (!s)
+        return NULL;
 
-	size = ft_strlen(s1);
-	dst_d = malloc(sizeof(char) * size + 1);
-	if (!dst_d)
-		return (NULL);
-	return (ft_strcpy(dst_d, s1));
+    size_t len = strlen(s);
+    char *dup = gc_malloc(len + 1);
+    if (!dup)
+        return (NULL);
+    ft_strcpy(dup, s);
+    return (dup);
 }
 
-char	*ft_strndup(char *s1, size_t n)
+char *ft_strndup(char *s, size_t n)
 {
-	char	*dup;
-	size_t	i;
-
-	dup = malloc(sizeof(char) * n + 1);
-	if (!dup)
-		return (NULL);
-	i = 0;
-    while (i < n && s1[i])
-    {
-        dup[i] = s1[i];
-        i++;
-    }
-    dup[i] = '\0';
+    size_t len = strnlen(s, n);
+    char *dup = gc_malloc(len + 1);
+    if (!dup)
+        return NULL;
+    
+    strncpy(dup, s, len);
+    dup[len] = '\0';
     return (dup);
 }

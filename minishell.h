@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/05/09 10:06:41 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/05/10 17:46:28 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,6 @@ typedef enum e_token_type
 	TOKEN_ENV,          // $VAR
 	TOKEN_SQUOTE,       // 'string'
 	TOKEN_DQUOTE,       // "string"
-	TOKEN_WHITESPACE,   // space/tab
-	TOKEN_INVALID
 }   t_token_type;
 
 typedef struct s_env
@@ -60,12 +58,20 @@ typedef struct s_command
     t_redirection *redir; // Linked list of redirections
     struct s_command *next;
 } t_command;
+
 typedef struct s_echo
 {
     int newline;
     char **args;
     int arg_count;
 } t_echo;
+
+typedef struct s_gc
+{
+    void            *ptr;
+    struct s_gc     *next;
+} t_gc;
+extern t_gc *g_gc;
 //ft_echo.c
 
 char *get_env_value_echo(char *var, char **env);
@@ -102,6 +108,7 @@ void print_env(t_env *env);
 
 //utils_1.c
 size_t	ft_strlen(const char *s);
+char	*ft_strcpy(char *dst, const char *src);
 char	*ft_strndup(char *s1, size_t n);
 char	*ft_strchr(const char *s, int c);
 char	*ft_strdup(const char *s1);
@@ -117,4 +124,11 @@ void	*ft_memset(void *b, int c, size_t len);
 int ft_strcmp(const char *s1, const char *s2);
 char *ft_strcat(char *dest, const char *src);
 char	**ft_split(char const *s, char c);
+char *ft_strncpy(char *dest, char *src, size_t n);
+
+//gc.c
+void *gc_malloc(size_t size);
+void gc_add(void *ptr);
+void gc_free(void *ptr);
+void gc_clear(void);
 #endif
