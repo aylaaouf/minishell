@@ -6,7 +6,7 @@
 /*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 11:34:26 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/05/10 17:54:34 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/05/10 19:08:48 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "minishell.h"
@@ -51,7 +51,7 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-char *gc_strdup(const char *s)
+char *ft_strdup(const char *s)
 {
     if (!s)
         return NULL;

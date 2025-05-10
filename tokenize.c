@@ -6,7 +6,7 @@
 /*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 20:34:45 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/05/10 17:53:25 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/05/10 19:08:31 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,12 @@ t_token *new_token(char *value, t_token_type type)
     t_token *token = gc_malloc(sizeof(t_token));
     if (!token)
         return NULL;
-    token->value = value; // Already GC managed
+    token->value = value;
     token->type = type;
     token->next = NULL;
     return token;
 }
 
-// Add a token to the list
 t_token *add_token(t_token **head, char *value, t_token_type type)
 {
     t_token *new = new_token(value, type);
@@ -80,7 +79,6 @@ t_token *add_token(t_token **head, char *value, t_token_type type)
     return new;
 }
 
-// Tokenize the input line
 t_token *tokenize(char *line)
 {
     size_t i = 0;
