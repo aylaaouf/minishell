@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/05/10 17:46:28 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/05/11 11:02:45 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,8 @@ typedef struct s_gc
     struct s_gc     *next;
 } t_gc;
 extern t_gc *g_gc;
+//errors.c
+int check_syntax(t_token *tokens);
 //ft_echo.c
 
 char *get_env_value_echo(char *var, char **env);

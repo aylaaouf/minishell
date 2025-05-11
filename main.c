@@ -6,43 +6,68 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:15:16 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/05/10 17:35:50 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/05/11 11:07:59 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int main(int argc, char *argv[], char **env)
+void print_commands(t_command *cmd)
+{
+    int cmd_num = 1;
+    while (cmd)
+    {
+        printf("Command %d:\n", cmd_num++);
+        if (cmd->args)
+        {
+            for (int i = 0; cmd->args[i]; i++)
+                printf("  [CMD] %s\n", cmd->args[i]);
+        }
+
+        if (cmd->redir)
+        {
+            t_redirection *r = cmd->redir;
+            while (r)
+            {
+                printf("  [REDIR] %s %s\n", r->type, r->file);
+                r = r->next;
+            }
+        }
+
+        cmd = cmd->next;
+        if (cmd) printf("  [PIPE]\n");
+    }
+}
+
+int main(int ac, char *av[], char **env)
 {
     char *input;
-    int i;
-    (void)argc;
-    (void)argv;
     t_env *my_env = env_init(env);
 
-	while (1)
+	(void)ac;
+	(void)av;
+    while (1)
     {
-        i = 0;
         input = readline("marvel$ ");
         if (!input)
         {
             printf("exit\n");
             break;
         }
-        if (!strcmp(input, "env"))
+        add_history(input);
+        t_token *tokens = tokenize(input);
+        quote_management(tokens);
+        expander(tokens, my_env);
+		if (!check_syntax(tokens))
         {
-            print_env(my_env);
+            free(input);
+            continue;
         }
-        else if (!strncmp(input, "echo", 4))
-        {
-            ft_echo(input, env);
-        }
-        if (input && *input)
-        {
-            add_history(input);
-        }
-        gc_free(input);
+        t_command *commands = parse_tokens(tokens);
+		print_commands(commands);
+        free(input);
     }
-	gc_clear();
+    gc_clear();
+    return 0;
 }
 
