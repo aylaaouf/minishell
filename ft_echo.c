@@ -3,60 +3,68 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
+/*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 09:43:51 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/05/09 10:46:06 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/05/12 19:37:15 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char *get_env_value_echo(char *var, char **env)
+char    **fill_args(char *input)
 {
-    for (int i = 0; env[i]; i++)
-    {
-        if (strncmp(env[i], var, strlen(var)) == 0 && env[i][strlen(var)] == '=')
-            return &env[i][strlen(var) + 1];
-    }
-    return "";
+    char **args;
+
+    args = ft_split(input, ' ');
+    return (args);
 }
 
-char *expand_env(char *arg, char **env)
+int check_flag(char *input)
 {
-    if (arg[0] == '$')
+    int i;
+
+    if (!input || input[0] != '-')
+        return (0);
+    i = 1;
+    while (input[i])
     {
-        char *var = arg + 1; // Skip the '$'
-        char *value = get_env_value_echo(var, env);
-        return value ? value : "";
+        if (input[i] == '-' || input[i] != 'n')
+            return (0);
+        i++;
     }
-    return arg;
+    return (1);
 }
 
-void ft_echo(char *input, char **env)
+void    ft_echo(char *input)
 {
-    char *token;
-    int newline = 1;
-    int first_word = 1;
+    int i;
+    int j;
+    char **args;
 
-    token = strtok(input + 5, " ");
-    if (token && strcmp(token, "-n") == 0)
+    j = 0;
+    args = fill_args(input);
+    if (args[1] && !check_flag(args[1]))
     {
-        newline = 0; // Disable newline if -n flag is present
-        token = strtok(NULL, " ");
-    }
-
-    while (token)
-    {
-        if (first_word == 0)
-            printf(" ");
-        else
-            first_word = 0;
-
-        printf("%s", expand_env(token, env));
-        token = strtok(NULL, " ");
-    }
-
-    if (newline)
+        i = 1;
+        while (args[i])
+        {
+            printf("%s", args[i]);
+            if (args[i + 1])
+                printf(" ");
+            i++;
+        }
         printf("\n");
+    }
+    else
+    {
+        i = 2;
+        while (args[i])
+        {
+            printf("%s", args[i]);
+            if (args[i + 1])
+                printf(" ");
+            i++;
+        }
+    }
 }
