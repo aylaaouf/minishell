@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/05/13 17:15:47 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/05/13 19:25:48 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ int check_syntax(t_token *tokens);
 //builtins
 void    ft_echo(char *input, t_env *env);
 void    ft_cd(char *input, t_env *env);
+void    ft_pwd(char *input, t_env *env);
 
 //parse_cmd.c
 t_command *new_command();
