@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/05/13 17:09:32 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/05/13 17:15:47 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <stddef.h>
+# include <stdio.h>
+# include <unistd.h>
 # include <stdlib.h>
 
 typedef enum e_token_type
