@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/05/11 11:02:45 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/05/13 17:09:32 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,9 +75,10 @@ extern t_gc *g_gc;
 //errors.c
 int check_syntax(t_token *tokens);
 //ft_echo.c
+//builtins
+void    ft_echo(char *input, t_env *env);
+void    ft_cd(char *input, t_env *env);
 
-char *get_env_value_echo(char *var, char **env);
-void ft_echo(char *input, char **env);
 //parse_cmd.c
 t_command *new_command();
 void add_argument(t_command *cmd, char *arg);
@@ -127,6 +128,8 @@ int ft_strcmp(const char *s1, const char *s2);
 char *ft_strcat(char *dest, const char *src);
 char	**ft_split(char const *s, char c);
 char *ft_strncpy(char *dest, char *src, size_t n);
+char	*ft_strjoin(char const *s1, char const *s2);
+int	ft_isalnum(int c);
 
 //gc.c
 void *gc_malloc(size_t size);

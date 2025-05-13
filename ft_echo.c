@@ -12,12 +12,70 @@
 
 #include "minishell.h"
 
-char    **fill_args(char *input)
+char *get_env_value_echo(char *key, t_env *env)
 {
-    char **args;
+    while (env)
+    {
+        if (!strcmp(env->key, key))
+            return env->value;
+        env = env->next;
+    }
+    return ("");
+}
 
-    args = ft_split(input, ' ');
-    return (args);
+char *expand_env(char *input, t_env *env)
+{
+    char *expanded = ft_strdup("");
+    char *ptr = input;
+    while (*ptr)
+    {
+        if (*ptr == '$' && *(ptr + 1))
+        {
+            ptr++;
+            char *var_start = ptr;
+            while (*ptr && (ft_isalnum(*ptr) || *ptr == '_'))
+                ptr++;
+
+            char *var_name = ft_strndup(var_start, ptr - var_start);
+            char *value = get_env_value_echo(var_name, env);
+            expanded = ft_strjoin(expanded, value);
+            free(var_name);
+        }
+        else
+        {
+            char temp[2] = {*ptr, '\0'};
+            expanded = ft_strjoin(expanded, temp);
+            ptr++;
+        }
+    }
+    return expanded;
+}
+
+char *process_quotes(char *arg, t_env *env)
+{
+    if (arg[0] == '\'' && arg[ft_strlen(arg) - 1] == '\'')
+        return (ft_strndup(arg + 1, ft_strlen(arg) - 2));
+    else if (arg[0] == '"' && arg[ft_strlen(arg) - 1] == '"')
+    {
+        char *trimmed = ft_strndup(arg + 1, ft_strlen(arg) - 2);
+        return expand_env(trimmed, env);
+    }
+    return (expand_env(arg, env));
+}
+
+
+char **fill_args(char *input, t_env *env)
+{
+	int	i;
+
+    char **args = ft_split(input, ' ');
+	i = 0;
+    while (args[i])
+	{
+        args[i] = process_quotes(args[i], env);
+		i++;
+	}
+    return args;
 }
 
 int check_flag(char *input)
@@ -36,14 +94,14 @@ int check_flag(char *input)
     return (1);
 }
 
-void    ft_echo(char *input)
+void    ft_echo(char *input, t_env *env)
 {
     int i;
     int j;
     char **args;
 
     j = 0;
-    args = fill_args(input);
+    args = fill_args(input, env);
     if (args[1] && !check_flag(args[1]))
     {
         i = 1;

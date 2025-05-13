@@ -39,13 +39,10 @@
 //     }
 // }
 
-void    builtins(char *input)
+void    builtins(char *input,t_env *env)
 {
     if (!strncmp(input, "echo", 4))
-    {
-        // printf("helloooooo");
-        ft_echo(input);
-    }
+        ft_echo(input, env);
 }
 
 int main(int ac, char *av[], char **env)
@@ -67,7 +64,7 @@ int main(int ac, char *av[], char **env)
         t_token *tokens = tokenize(input);
         quote_management(tokens);
         expander(tokens, my_env);
-        builtins(input);
+        builtins(input, my_env);
 		if (!check_syntax(tokens))
         {
             free(input);
