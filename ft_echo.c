@@ -51,33 +51,51 @@ char *expand_env(char *input, t_env *env)
     return expanded;
 }
 
-char *process_quotes(char *arg, t_env *env)
+char *parse_echo_arguments(char *input, t_env *env)
 {
-    if (arg[0] == '\'' && arg[ft_strlen(arg) - 1] == '\'')
-        return (ft_strndup(arg + 1, ft_strlen(arg) - 2));
-    else if (arg[0] == '"' && arg[ft_strlen(arg) - 1] == '"')
+    char *result = ft_strdup("");
+    size_t i = 0;
+    size_t start;
+    char quote_char = '\0';
+
+    while (input[i])
     {
-        char *trimmed = ft_strndup(arg + 1, ft_strlen(arg) - 2);
-        return expand_env(trimmed, env);
+        if (input[i] == '\'' || input[i] == '"')
+        {
+            quote_char = input[i++];
+            start = i;
+            while (input[i] && input[i] != quote_char)
+                i++;
+            char *segment = ft_strndup(&input[start], i - start);
+            if (quote_char == '"')
+                segment = expand_env(segment, env);
+            result = ft_strjoin(result, segment);
+            free(segment);
+            if (input[i])
+                i++;
+        }
+        else
+        {
+            start = i;
+            while (input[i] && input[i] != '\'' && input[i] != '"')
+                i++;
+            char *segment = ft_strndup(&input[start], i - start);
+            result = ft_strjoin(result, segment);
+            free(segment);
+        }
     }
-    return (expand_env(arg, env));
+    return result;
 }
 
-
+// Split the input and process each argument
 char **fill_args(char *input, t_env *env)
 {
-	int	i;
-
-    char **args = ft_split(input, ' ');
-	i = 0;
-    while (args[i])
-	{
-        args[i] = process_quotes(args[i], env);
-		i++;
-	}
+    char **args;
+    char *parsed_input = parse_echo_arguments(input, env);
+    args = ft_split(parsed_input, ' ');
+    free(parsed_input);
     return args;
 }
-
 int check_flag(char *input)
 {
     int i;
