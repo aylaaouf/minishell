@@ -35,7 +35,6 @@ char *expand_env(char *input, t_env *env)
             char *var_start = ptr;
             while (*ptr && (ft_isalnum(*ptr) || *ptr == '_'))
                 ptr++;
-
             char *var_name = ft_strndup(var_start, ptr - var_start);
             char *value = get_env_value_echo(var_name, env);
             expanded = ft_strjoin(expanded, value);
@@ -48,7 +47,7 @@ char *expand_env(char *input, t_env *env)
             ptr++;
         }
     }
-    return expanded;
+    return (expanded);
 }
 
 char *parse_echo_arguments(char *input, t_env *env)
@@ -68,34 +67,44 @@ char *parse_echo_arguments(char *input, t_env *env)
                 i++;
             char *segment = ft_strndup(&input[start], i - start);
             if (quote_char == '"')
-                segment = expand_env(segment, env);
+                segment = expand_env(segment, env); // Expand only in double quotes
             result = ft_strjoin(result, segment);
             free(segment);
             if (input[i])
                 i++;
         }
+        else if (input[i] == '$' && (ft_isalnum(input[i + 1]) || input[i + 1] == '_'))
+        {
+            start = ++i;
+            while (input[i] && (ft_isalnum(input[i]) || input[i] == '_'))
+                i++;
+            char *var_name = ft_strndup(&input[start], i - start);
+            char *value = get_env_value_echo(var_name, env);
+            result = ft_strjoin(result, value);
+            free(var_name);
+        }
         else
         {
             start = i;
-            while (input[i] && input[i] != '\'' && input[i] != '"')
+            while (input[i] && input[i] != '\'' && input[i] != '"' && input[i] != '$')
                 i++;
             char *segment = ft_strndup(&input[start], i - start);
             result = ft_strjoin(result, segment);
             free(segment);
         }
     }
-    return result;
+    return (result);
 }
 
-// Split the input and process each argument
 char **fill_args(char *input, t_env *env)
 {
     char **args;
     char *parsed_input = parse_echo_arguments(input, env);
     args = ft_split(parsed_input, ' ');
     free(parsed_input);
-    return args;
+    return (args);
 }
+
 int check_flag(char *input)
 {
     int i;
