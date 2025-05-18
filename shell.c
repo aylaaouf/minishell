@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 17:07:09 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/05/18 19:23:28 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/05/18 21:26:17 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int    shell(t_command *cmnd, t_env *env)
     pid_t child_pid;
     int status;
     char **args;
-    char *merged_cmnd;
+    char *path;
 
     if (!cmnd || !cmnd->args || !cmnd->args[0])
         return (1);
@@ -86,10 +86,10 @@ int    shell(t_command *cmnd, t_env *env)
     else if (child_pid == 0)
     {
         if (strncmp(cmnd->args[0], "/bin/", 5))
-            merged_cmnd = ft_strjoin("/bin/", cmnd->args[0]);
+            path = ft_strjoin("/bin/", cmnd->args[0]);
         else
-            merged_cmnd = ft_strdup(cmnd->args[0]);   
-        if (execve(merged_cmnd, cmnd->args, args) == -1)
+            path = ft_strdup(cmnd->args[0]);   
+        if (execve(path, cmnd->args, args) == -1)
         {
             perror("Couldn't execute");
             exit(7);
