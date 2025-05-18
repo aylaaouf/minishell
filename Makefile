@@ -6,7 +6,7 @@ CFLAGS := -Wall -Wextra -Werror
 
 SRC := main.c utils_1.c utils_2.c utils_3.c envp.c \
 	   tokenize.c quote_management.c \
-	   expander.c parse_cmd.c ft_echo.c ft_cd.c ft_pwd.c shell.c gc.c errors.c
+	   expander.c parse_cmd.c ft_echo.c ft_cd.c ft_pwd.c ft_exit.c shell.c gc.c errors.c
 OBJS := $(SRC:.c=.o)
 
 all : $(NAME)
