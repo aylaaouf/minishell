@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:15:16 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/05/18 19:11:07 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/05/18 19:40:25 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ void    builtins(char *input,t_env *env)
         print_env(env);
     else if (!strncmp(input, "pwd", 3))
         ft_pwd(input, env);
+    else if (!strncmp(input, "exit", 4))
+        ft_exit(input);
 }
 
 int main(int ac, char *av[], char **env)
