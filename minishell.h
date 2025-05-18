@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/05/13 19:25:48 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/05/18 18:13:15 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 
 typedef enum e_token_type
 {
@@ -82,6 +84,8 @@ void    ft_echo(char *input, t_env *env);
 void    ft_cd(char *input, t_env *env);
 void    ft_pwd(char *input, t_env *env);
 
+//shell
+int    shell(t_command *cmnd, t_env *env);
 //parse_cmd.c
 t_command *new_command();
 void add_argument(t_command *cmd, char *arg);
