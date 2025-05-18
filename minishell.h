@@ -56,8 +56,8 @@ typedef struct s_redirection
 
 typedef struct s_command
 {
-    char **args;          // Command arguments (argv)
-    t_redirection *redir; // Linked list of redirections
+    char **args;
+    t_redirection *redir;
     struct s_command *next;
 } t_command;
 
