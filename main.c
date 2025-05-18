@@ -6,11 +6,22 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:15:16 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/05/18 18:15:41 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/05/18 19:11:07 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int     is_builtin(char *cmd)
+{
+    return (!strncmp(cmd, "echo", 4)
+        || !strncmp(cmd, "cd", 2)
+        || !strncmp(cmd, "pwd", 3)
+        || !strncmp(cmd, "export", 6)
+        || !strncmp(cmd, "unset", 5)
+        || !strncmp(cmd, "env", 3)
+        || !strncmp(cmd, "exit", 4));
+}
 
 void    builtins(char *input,t_env *env)
 {
@@ -43,14 +54,16 @@ int main(int ac, char *av[], char **env)
         t_token *tokens = tokenize(input);
         quote_management(tokens);
         expander(tokens, my_env);
-        builtins(input, my_env);
 		if (!check_syntax(tokens))
         {
             free(input);
             continue;
         }
         t_command *commands = parse_tokens(tokens);
-        shell(commands, my_env);
+        if (is_builtin(commands->args[0]))
+            builtins(input, my_env);
+        else
+            shell(commands, my_env);
         free(input);
     }
     gc_clear();
