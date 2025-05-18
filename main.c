@@ -6,38 +6,11 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:15:16 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/05/13 19:22:36 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/05/18 18:15:41 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// void print_commands(t_command *cmd)
-// {
-//     int cmd_num = 1;
-//     while (cmd)
-//     {
-//         printf("Command %d:\n", cmd_num++);
-//         if (cmd->args)
-//         {
-//             for (int i = 0; cmd->args[i]; i++)
-//                 printf("  [CMD] %s\n", cmd->args[i]);
-//         }
-
-//         if (cmd->redir)
-//         {
-//             t_redirection *r = cmd->redir;
-//             while (r)
-//             {
-//                 printf("  [REDIR] %s %s\n", r->type, r->file);
-//                 r = r->next;
-//             }
-//         }
-
-//         cmd = cmd->next;
-//         if (cmd) printf("  [PIPE]\n");
-//     }
-// }
 
 void    builtins(char *input,t_env *env)
 {
@@ -76,8 +49,8 @@ int main(int ac, char *av[], char **env)
             free(input);
             continue;
         }
-        // t_command *commands = parse_tokens(tokens);
-		// print_commands(commands);
+        t_command *commands = parse_tokens(tokens);
+        shell(commands, my_env);
         free(input);
     }
     gc_clear();
