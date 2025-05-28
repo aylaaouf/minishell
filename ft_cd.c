@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:42:28 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/05/13 17:16:52 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/05/28 18:56:39 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,5 @@ void    ft_cd(char *input, t_env *env)
     update_env_var(env, "OLDPWD", cwd);
     getcwd(cwd, sizeof(cwd));
     update_env_var(env, "PWD", cwd);
+    free_2d_array(args);
 }

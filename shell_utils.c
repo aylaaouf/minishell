@@ -1,0 +1,76 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   shell_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/28 18:48:40 by aylaaouf          #+#    #+#             */
+/*   Updated: 2025/05/28 18:54:54 by aylaaouf         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
+
+char    *ft_strjoin_env(char *s1, char *s2)
+{
+    size_t i;
+    size_t j;
+    char *array;
+
+    i = 0;
+    j = 0;
+    array = malloc(ft_strlen(s1) + ft_strlen(s2) + 2);
+    if (!array)
+        return (NULL);
+    while (i < ft_strlen(s1))
+    {
+        array[i] = s1[i];
+        i++;
+    }
+    array[i++] = '=';
+    while (j < ft_strlen(s2))
+    {
+        array[i] = s2[j];
+        i++;
+        j++;
+    }
+    array[i] = '\0';
+    return (array);
+}
+
+char	*ft_strjoin_free(char *s1, char *s2)
+{
+	char	*arr;
+	int		i;
+	int		j;
+
+	if (!s1 || !s2)
+		return (NULL);
+	arr = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	if (!arr)
+		return (NULL);
+	i = 0;
+	while (s1[i])
+	{
+		arr[i] = s1[i];
+		i++;
+	}
+	j = 0;
+	while (s2[j])
+		arr[i++] = s2[j++];
+	arr[i] = '\0';
+    free(s1);
+	return (arr);
+}
+
+void free_2d_array(char **args)
+{
+    int i = 0;
+    while (args[i])
+    {
+        free(args[i]);
+        i++;
+    }
+    free(args);
+}

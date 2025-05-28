@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/05/18 19:40:19 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/05/28 18:55:06 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,10 @@ int     ft_exit(char *input);
 
 //shell
 int    shell(t_command *cmnd, t_env *env);
+char    *ft_strjoin_env(char *s1, char *s2);
+char    *ft_strjoin_free(char *s1, char *s2);
+void    free_2d_array(char **args);
+
 //parse_cmd.c
 t_command *new_command();
 void add_argument(t_command *cmd, char *arg);

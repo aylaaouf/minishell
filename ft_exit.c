@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 19:25:50 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/05/18 20:01:04 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/05/28 18:56:10 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,5 +87,6 @@ int ft_exit(char *input)
         status = ft_atoi(args[1]);
     else
         status = 0;
+    free_2d_array(args);
     exit(status);
 }

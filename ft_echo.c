@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 09:43:51 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/05/18 11:53:30 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/05/28 18:56:27 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,4 +181,5 @@ void    ft_echo(char *input, t_env *env)
             i++;
         }
     }
+    free_2d_array(args);
 }

@@ -6,38 +6,11 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 17:07:09 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/05/18 21:26:17 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/05/28 18:59:29 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-char    *ft_strjoin_env(char *s1, char *s2)
-{
-    size_t i;
-    size_t j;
-    char *array;
-
-    i = 0;
-    j = 0;
-    array = malloc(ft_strlen(s1) + ft_strlen(s2) + 2);
-    if (!array)
-        return (NULL);
-    while (i < ft_strlen(s1))
-    {
-        array[i] = s1[i];
-        i++;
-    }
-    array[i++] = '=';
-    while (j < ft_strlen(s2))
-    {
-        array[i] = s2[j];
-        i++;
-        j++;
-    }
-    array[i] = '\0';
-    return (array);
-}
 
 char    **list_to_array(t_env *env)
 {
@@ -67,6 +40,30 @@ char    **list_to_array(t_env *env)
     return (args);
 }
 
+char    *find_cmnd_path(char *cmnd, t_env *env)
+{
+    char *path_env;
+    char **path;
+    char *full_path;
+    int i;
+
+    path_env = get_env_value(env, "PATH");
+    if (!path_env || !cmnd)
+        return (NULL);
+    path = ft_split(path_env, ':');
+    i = 0;
+    while (path[i])
+    {
+        full_path = ft_strjoin(path[i], "/");
+        full_path = ft_strjoin_free(full_path, cmnd);
+        if (!access(full_path, X_OK))
+            return (full_path);
+        i++;
+    }
+    free_2d_array(path);
+    return (NULL);
+}
+
 int    shell(t_command *cmnd, t_env *env)
 {
     pid_t child_pid;
@@ -76,6 +73,12 @@ int    shell(t_command *cmnd, t_env *env)
 
     if (!cmnd || !cmnd->args || !cmnd->args[0])
         return (1);
+    path = find_cmnd_path(cmnd->args[0], env);
+    if (!path)
+    {
+        printf("%s: command not found\n", cmnd->args[0]);
+        return (1);
+    }
     child_pid = fork();
     args = list_to_array(env);
     if (child_pid == -1)
@@ -84,11 +87,7 @@ int    shell(t_command *cmnd, t_env *env)
         exit(41);
     }
     else if (child_pid == 0)
-    {
-        if (strncmp(cmnd->args[0], "/bin/", 5))
-            path = ft_strjoin("/bin/", cmnd->args[0]);
-        else
-            path = ft_strdup(cmnd->args[0]);   
+    {   
         if (execve(path, cmnd->args, args) == -1)
         {
             perror("Couldn't execute");
@@ -98,6 +97,7 @@ int    shell(t_command *cmnd, t_env *env)
     else
     {
         wait(&status);
+        free_2d_array(args);
     }
     return (0);
 }
