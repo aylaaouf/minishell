@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 17:07:09 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/05/28 18:59:29 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/05/29 10:24:53 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,11 @@ char    *find_cmnd_path(char *cmnd, t_env *env)
         full_path = ft_strjoin(path[i], "/");
         full_path = ft_strjoin_free(full_path, cmnd);
         if (!access(full_path, X_OK))
+        {
+            free_2d_array(path);
             return (full_path);
+        }
+        free(full_path);
         i++;
     }
     free_2d_array(path);
