@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 17:07:09 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/05/29 10:24:53 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/01 18:47:11 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,12 @@ char    *find_cmnd_path(char *cmnd, t_env *env)
     char *full_path;
     int i;
 
+    if (cmnd[0] == '/')
+    {
+        if (!access(cmnd, X_OK))
+            return (ft_strdup(cmnd));
+        return (NULL);
+    }
     path_env = get_env_value(env, "PATH");
     if (!path_env || !cmnd)
         return (NULL);
