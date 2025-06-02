@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/05/29 15:49:32 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/02 17:43:50 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ int check_syntax(t_token *tokens);
 void    ft_echo(char *input, t_env *env);
 void    ft_cd(char *input, t_env *env);
 void    ft_pwd(char *input, t_env *env);
+void    ft_export(char *input, t_env *env);
 int     ft_exit(char *input);
 
 //shell
