@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:15:16 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/02 17:40:38 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/03 23:37:43 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int     is_builtin(char *cmd)
         || !strncmp(cmd, "exit", 4));
 }
 
-void    builtins(char *input,t_env *env)
+void    builtins(char *input, t_env *env)
 {
     if (!strncmp(input, "echo", 4))
         ft_echo(input, env);
@@ -33,6 +33,8 @@ void    builtins(char *input,t_env *env)
         print_env(env);
     else if (!strncmp(input, "pwd", 3))
         ft_pwd(input, env);
+    else if (!strncmp(input, "unset", 5))
+        ft_unset(input, env);
     else if (!strncmp(input, "export", 6))
         ft_export(input, env);
     else if (!strncmp(input, "exit", 4))
@@ -48,7 +50,7 @@ int main(int ac, char *av[], char **env)
 	(void)ac;
     while (1)
     {
-        input = readline("marvel$ ");
+        input = readline("marvel$");
         if (!input)
         {
             printf("exit\n");
