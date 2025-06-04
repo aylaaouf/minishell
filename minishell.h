@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/03 22:58:18 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/04 19:11:45 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,9 @@ void    ft_pwd(char *input, t_env *env);
 void    ft_export(char *input, t_env *env);
 void    ft_unset(char *input, t_env *env);
 int     ft_exit(char *input);
+
+//pipe
+int execute_pipe(t_command *cmnds, t_env *env);
 
 //shell
 int    shell(t_command *cmnd, t_env *env);

@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:15:16 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/03 23:37:43 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/04 19:12:20 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,9 @@ int main(int ac, char *av[], char **env)
             continue;
         }
         t_command *commands = parse_tokens(tokens);
-        if (is_builtin(commands->args[0]))
+        if (commands->next)
+            execute_pipe(commands, my_env);
+        else if (is_builtin(commands->args[0]))
             builtins(input, my_env);
         else
             shell(commands, my_env);
