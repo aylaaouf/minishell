@@ -98,6 +98,11 @@ int    shell(t_command *cmnd, t_env *env)
     }
     else if (child_pid == 0)
     {   
+        if (cmnd->heredoc_fd != -1)
+        {
+            dup2(cmnd->heredoc_fd, STDIN_FILENO);
+            close(cmnd->heredoc_fd);
+        }
         if (execve(path, cmnd->args, args) == -1)
         {
             perror("Couldn't execute");
@@ -108,6 +113,8 @@ int    shell(t_command *cmnd, t_env *env)
     {
         wait(&status);
         free_2d_array(args);
+        if (cmnd->heredoc_fd != -1)
+            close(cmnd->heredoc_fd);
     }
     return (0);
 }

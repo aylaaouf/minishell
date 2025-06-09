@@ -48,9 +48,9 @@ int main(int ac, char *av[], char **env)
 
     (void)av;
 	(void)ac;
-    while (1)
+       while (1)
     {
-        input = readline("marvel$");
+        input = readline("marvel$ ");
         if (!input)
         {
             printf("exit\n");
@@ -60,20 +60,24 @@ int main(int ac, char *av[], char **env)
         t_token *tokens = tokenize(input);
         quote_management(tokens);
         expander(tokens, my_env);
-		if (!check_syntax(tokens))
+
+        if (!check_syntax(tokens))
         {
             free(input);
             continue;
         }
         t_command *commands = parse_tokens(tokens);
+        process_heredocs(commands, my_env);
         if (commands->next)
             execute_pipe(commands, my_env);
-        else if (is_builtin(commands->args[0]))
+        else if (commands->args && is_builtin(commands->args[0]))
             builtins(input, my_env);
         else
             shell(commands, my_env);
+
         free(input);
     }
+
     gc_clear();
     return 0;
 }

@@ -17,6 +17,7 @@
 # include <readline/readline.h>
 # include <stddef.h>
 # include <stdio.h>
+#include <stdbool.h>
 # include <unistd.h>
 # include <stdlib.h>
 # include <sys/types.h>
@@ -58,6 +59,8 @@ typedef struct s_redirection
 
 typedef struct s_command
 {
+    bool has_heredoc;
+    int heredoc_fd;
     char **args;
     t_redirection *redir;
     struct s_command *next;
@@ -86,10 +89,12 @@ void    ft_pwd(char *input, t_env *env);
 void    ft_export(char *input, t_env *env);
 void    ft_unset(char *input, t_env *env);
 int     ft_exit(char *input);
-
+//ft_echo.c
+char *expand_env(char *input, t_env *env);
 //pipe
 int execute_pipe(t_command *cmnds, t_env *env);
-
+//heredoc.c
+void process_heredocs(t_command *commands, t_env *env);
 //shell
 int    shell(t_command *cmnd, t_env *env);
 char    *ft_strjoin_env(char *s1, char *s2);

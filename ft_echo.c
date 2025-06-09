@@ -153,10 +153,8 @@ int check_flag(char *input)
 void    ft_echo(char *input, t_env *env)
 {
     int i;
-    int j;
     char **args;
 
-    j = 0;
     args = fill_args(input, env);
     if (args[1] && !check_flag(args[1]))
     {
