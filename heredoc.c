@@ -22,7 +22,6 @@ static int heredoc_pipe(const char *delimiter, t_env *env)
             free(line);
             break;
         }
-        // توسعة المتغيرات قبل الكتابة في pipe
         expanded_line = expand_env(line, env);
         free(line);
 
