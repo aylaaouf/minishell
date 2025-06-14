@@ -1,14 +1,51 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/14 18:16:25 by ayelasef          #+#    #+#             */
+/*   Updated: 2025/06/14 18:16:27 by ayelasef         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-static int heredoc_pipe(const char *delimiter, t_env *env)
+static int has_quotes(const char *str)
+{
+    size_t len = strlen(str);
+
+    if (len >= 2 && ((str[0] == '\'' && str[len - 1] == '\'') ||
+                     (str[0] == '\"' && str[len - 1] == '\"')))
+        return (1);
+    return (0);
+}
+
+static char *strip_quotes(char *str)
+{
+    size_t len = strlen(str);
+
+    if (has_quotes(str))
+        return ft_strndup(str + 1, len - 2);
+    return ft_strdup(str);
+}
+
+static int heredoc_pipe(char *delimiter_raw, t_env *env)
 {
     int pipefd[2];
     char *line;
     char *expanded_line;
+    int expand;
+    char *delimiter;
+
+    expand = !has_quotes(delimiter_raw); // Expand only if no quotes
+    delimiter = strip_quotes(delimiter_raw);
 
     if (pipe(pipefd) == -1)
     {
         perror("pipe");
+        free(delimiter);
         return (-1);
     }
 
@@ -17,19 +54,27 @@ static int heredoc_pipe(const char *delimiter, t_env *env)
         line = readline("> ");
         if (!line)
             break;
+
         if (strcmp(line, delimiter) == 0)
         {
             free(line);
             break;
         }
-        expanded_line = expand_env(line, env);
-        free(line);
+
+        if (expand)
+            expanded_line = expand_env(line, env);
+        else
+            expanded_line = ft_strdup(line);
 
         write(pipefd[1], expanded_line, strlen(expanded_line));
         write(pipefd[1], "\n", 1);
+
+        free(line);
         free(expanded_line);
     }
+
     close(pipefd[1]);
+    free(delimiter);
     return (pipefd[0]);
 }
 
