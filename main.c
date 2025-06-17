@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:15:16 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/04 19:12:20 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/17 23:28:20 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,6 @@ int main(int ac, char *av[], char **env)
         add_history(input);
         t_token *tokens = tokenize(input);
         quote_management(tokens);
-        expander(tokens, my_env);
-
         if (!check_syntax(tokens))
         {
             free(input);
@@ -68,6 +66,7 @@ int main(int ac, char *av[], char **env)
         }
         t_command *commands = parse_tokens(tokens);
         process_heredocs(commands, my_env);
+        expander(tokens, my_env);
         if (commands->next)
             execute_pipe(commands, my_env);
         else if (commands->args && is_builtin(commands->args[0]))

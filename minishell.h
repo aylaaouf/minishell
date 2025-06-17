@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/04 19:11:45 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/17 23:19:18 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,10 @@ char *ft_strncpy(char *dest, char *src, size_t n);
 char	*ft_strjoin(char const *s1, char const *s2);
 int	ft_isalnum(int c);
 
+//utils_4.c
+
+int	ft_isalpha(int c);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
 //gc.c
 void *gc_malloc(size_t size);
 void gc_add(void *ptr);
