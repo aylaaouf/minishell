@@ -45,6 +45,7 @@ int main(int ac, char *av[], char **env)
 {
     char *input;
     t_env *my_env = env_init(env);
+	int g_exit_status = 0;
 
     (void)av;
 	(void)ac;

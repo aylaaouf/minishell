@@ -36,6 +36,13 @@ typedef enum e_token_type
 	TOKEN_DQUOTE,       // "string"
 }   t_token_type;
 
+#ifndef GLOBALS_H
+#define GLOBALS_H
+
+extern int g_exit_status;
+
+#endif
+
 typedef struct s_env
 {
     char            *key;
@@ -159,6 +166,7 @@ int	ft_isalnum(int c);
 
 int	ft_isalpha(int c);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
+char	*ft_itoa(int n);
 //gc.c
 void *gc_malloc(size_t size);
 void gc_add(void *ptr);
