@@ -35,14 +35,7 @@ typedef enum e_token_type
 	TOKEN_SQUOTE,       // 'string'
 	TOKEN_DQUOTE,       // "string"
 }   t_token_type;
-
-#ifndef GLOBALS_H
-#define GLOBALS_H
-
-extern int g_exit_status;
-
-#endif
-
+extern int g_last_exit_status;
 typedef struct s_env
 {
     char            *key;
@@ -90,18 +83,18 @@ extern t_gc *g_gc;
 int check_syntax(t_token *tokens);
 
 //builtins
-void    ft_echo(char *input, t_env *env);
+void ft_echo(char *input, t_env *env, int last_exit_status);
 void    ft_cd(char *input, t_env *env);
 void    ft_pwd(char *input, t_env *env);
 void    ft_export(char *input, t_env *env);
 void    ft_unset(char *input, t_env *env);
 int     ft_exit(char *input);
 //ft_echo.c
-char *expand_env(char *input, t_env *env);
+char *expand_env(char *input, t_env *env, int last_exit_status);
 //pipe
 int execute_pipe(t_command *cmnds, t_env *env);
 //heredoc.c
-void process_heredocs(t_command *commands, t_env *env);
+void process_heredocs(t_command *commands, t_env *env, int last_exit_status);
 //shell
 int    shell(t_command *cmnd, t_env *env);
 char    *ft_strjoin_env(char *s1, char *s2);
@@ -166,7 +159,6 @@ int	ft_isalnum(int c);
 
 int	ft_isalpha(int c);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
-char	*ft_itoa(int n);
 //gc.c
 void *gc_malloc(size_t size);
 void gc_add(void *ptr);

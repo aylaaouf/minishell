@@ -41,44 +41,34 @@ char *expand_token_value(char *str, t_env *env)
 
     while (str[i])
     {
-        if (str[i] == '$')
+        if (str[i] == '$' && str[i + 1] && (str[i + 1] != ' ' && str[i + 1] != '$'))
         {
-            if (str[i + 1] == '?')
-            {
-                char *exit_status = ft_itoa(g_exit_status);
-                result = ft_realloc(result, ft_strlen(result) + ft_strlen(exit_status) + 1);
-                ft_strcat(result, exit_status);
-                free(exit_status);
-                i += 2;
-                continue;
-            }
-            else if (str[i + 1] && str[i + 1] != ' ' && str[i + 1] != '$')
-            {
-                i++;
-                char *var_name = extract_var_name(str, &i);
-                char *var_value = get_env_value(env, var_name);
-                if (var_value)
-                {
-                    result = ft_realloc(result, ft_strlen(result) + ft_strlen(var_value) + 1);
-                    ft_strcat(result, var_value);
-                }
-                free(var_name);
-                continue;
-            }
-        }
+            i++;
+            char *var_name = extract_var_name(str, &i);
+            char *var_value = get_env_value(env, var_name);
 
-        size_t len = ft_strlen(result);
-        result = ft_realloc(result, len + 2);
-        result[len] = str[i];
-        result[len + 1] = '\0';
-        i++;
+            if (var_value)
+            {
+                result = ft_realloc(result, ft_strlen(result) + ft_strlen(var_value) + 1);
+                ft_strcat(result, var_value);
+            }
+            free(var_name);
+        }
+        else
+        {
+            size_t len = ft_strlen(result);
+            result = ft_realloc(result, len + 2);
+            result[len] = str[i];
+            result[len + 1] = '\0';
+            i++;
+        }
     }
     return (result);
 }
 
 void expander(t_token *tokens, t_env *env)
 {
-    char *expanded;
+	char *expanded;
 
     while (tokens)
     {

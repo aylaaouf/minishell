@@ -23,10 +23,10 @@ int     is_builtin(char *cmd)
         || !strncmp(cmd, "exit", 4));
 }
 
-void    builtins(char *input, t_env *env)
+void builtins(char *input, t_env *env, int last_exit_status)
 {
     if (!strncmp(input, "echo", 4))
-        ft_echo(input, env);
+        ft_echo(input, env, last_exit_status);
     else if (!strncmp(input, "cd", 2))
         ft_cd(input, env);
     else if (!strncmp(input, "env", 3))
@@ -44,9 +44,8 @@ void    builtins(char *input, t_env *env)
 int main(int ac, char *av[], char **env)
 {
     char *input;
-    t_env *my_env = env_init(env);
-	int g_exit_status = 0;
-
+	t_env *my_env = env_init(env);
+	int last_exit_status = 0;
     (void)av;
 	(void)ac;
        while (1)
@@ -66,12 +65,12 @@ int main(int ac, char *av[], char **env)
             continue;
         }
         t_command *commands = parse_tokens(tokens);
-        process_heredocs(commands, my_env);
-        expander(tokens, my_env);
+        process_heredocs(commands, my_env, last_exit_status);
+        /*expander(tokens, my_env);*/
         if (commands->next)
             execute_pipe(commands, my_env);
         else if (commands->args && is_builtin(commands->args[0]))
-            builtins(input, my_env);
+            builtins(input, my_env, last_exit_status);
         else
             shell(commands, my_env);
 

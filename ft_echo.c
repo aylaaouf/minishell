@@ -23,34 +23,42 @@ char *get_env_value_echo(char *key, t_env *env)
     return ("");
 }
 
-char *expand_env(char *input, t_env *env)
+char *expand_env(char *input, t_env *env, int last_exit_status)
 {
     char *expanded = ft_strdup("");
     char *ptr = input;
+
     while (*ptr)
     {
         if (*ptr == '$' && *(ptr + 1))
         {
             ptr++;
+            if (*ptr == '?') {
+                char status_str[12];
+                snprintf(status_str, sizeof(status_str), "%d", last_exit_status);
+                expanded = ft_strjoin_free(expanded, status_str);
+                ptr++;
+                continue;
+            }
             char *var_start = ptr;
             while (*ptr && (ft_isalnum(*ptr) || *ptr == '_'))
                 ptr++;
             char *var_name = ft_strndup(var_start, ptr - var_start);
             char *value = get_env_value_echo(var_name, env);
-            expanded = ft_strjoin(expanded, value);
+            expanded = ft_strjoin_free(expanded, value);
             free(var_name);
         }
         else
         {
             char temp[2] = {*ptr, '\0'};
-            expanded = ft_strjoin(expanded, temp);
+            expanded = ft_strjoin_free(expanded, temp);
             ptr++;
         }
     }
     return (expanded);
 }
 
-char *parse_echo_arguments(char *input, t_env *env)
+char *parse_echo_arguments(char *input, t_env *env, int last_exit_status)
 {
     char *result = ft_strdup("");
     size_t i = 0;
@@ -68,12 +76,11 @@ char *parse_echo_arguments(char *input, t_env *env)
             char *segment = ft_strndup(&input[start], i - start);
             if (quote_char == '"')
             {
-                char *expanded = expand_env(segment, env);
+                char *expanded = expand_env(segment, env, last_exit_status);
                 free(segment);
                 segment = expanded;
             }
-            char *tmp = ft_strjoin(result, segment);
-            free(result);
+            char *tmp = ft_strjoin_free(result, segment);
             free(segment);
             result = tmp;
             if (input[i])
@@ -93,8 +100,7 @@ char *parse_echo_arguments(char *input, t_env *env)
             if (digit_len > 0)
             {
                 char *digits = ft_strndup(&input[start], digit_len);
-                char *tmp = ft_strjoin(result, digits);
-                free(result);
+                char *tmp = ft_strjoin_free(result, digits);
                 free(digits);
                 result = tmp;
             }
@@ -104,8 +110,7 @@ char *parse_echo_arguments(char *input, t_env *env)
                     i++;
                 char *var_name = ft_strndup(&input[start], i - start);
                 char *value = get_env_value_echo(var_name, env);
-                char *tmp = ft_strjoin(result, value);
-                free(result);
+                char *tmp = ft_strjoin_free(result, value);
                 free(var_name);
                 result = tmp;
             }
@@ -116,8 +121,7 @@ char *parse_echo_arguments(char *input, t_env *env)
             while (input[i] && input[i] != '\'' && input[i] != '"' && input[i] != '$')
                 i++;
             char *segment = ft_strndup(&input[start], i - start);
-            char *tmp = ft_strjoin(result, segment);
-            free(result);
+            char *tmp = ft_strjoin_free(result, segment);
             free(segment);
             result = tmp;
         }
@@ -125,10 +129,10 @@ char *parse_echo_arguments(char *input, t_env *env)
     return (result);
 }
 
-char **fill_args(char *input, t_env *env)
+char **fill_args(char *input, t_env *env, int last_exit_status)
 {
     char **args;
-    char *parsed_input = parse_echo_arguments(input, env);
+    char *parsed_input = parse_echo_arguments(input, env, last_exit_status);
     args = ft_split(parsed_input, ' ');
     free(parsed_input);
     return (args);
@@ -139,23 +143,23 @@ int check_flag(char *input)
     int i;
 
     if (!input || input[0] != '-')
-        return (0);
+        return 0;
     i = 1;
     while (input[i])
     {
-        if (input[i] == '-' || input[i] != 'n')
-            return (0);
+        if (input[i] != 'n')
+            return 0;
         i++;
     }
-    return (1);
+    return 1;
 }
 
-void    ft_echo(char *input, t_env *env)
+void ft_echo(char *input, t_env *env, int last_exit_status)
 {
     int i;
     char **args;
 
-    args = fill_args(input, env);
+    args = fill_args(input, env, last_exit_status);
     if (args[1] && !check_flag(args[1]))
     {
         i = 1;
@@ -181,3 +185,4 @@ void    ft_echo(char *input, t_env *env)
     }
     free_2d_array(args);
 }
+

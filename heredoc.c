@@ -14,8 +14,10 @@
 
 int is_quoted(const char *s)
 {
+    if (!s)
+        return 0;
     size_t len = ft_strlen(s);
-    if (!s || len < 2)
+    if (len < 2)
         return 0;
     return ((s[0] == '\'' && s[len - 1] == '\'') ||
             (s[0] == '"' && s[len - 1] == '"'));
@@ -29,17 +31,16 @@ char *strip_quotes(const char *s)
     return ft_strdup(s);
 }
 
-char *expand_if_needed(char *line, t_env *env, int do_expand)
+char *expand_if_needed(char *line, t_env *env, int do_expand, int last_exit_status)
 {
     if (!do_expand)
         return line;
-
-    char *expanded = expand_env(line, env);
+    char *expanded = expand_env(line, env, last_exit_status);
     free(line);
     return expanded;
 }
 
-static int heredoc_pipe(const char *raw_delim, t_env *env)
+static int heredoc_pipe(const char *raw_delim, t_env *env, int last_exit_status)
 {
     int pipefd[2];
     char *line;
@@ -50,6 +51,7 @@ static int heredoc_pipe(const char *raw_delim, t_env *env)
     if (pipe(pipefd) == -1)
     {
         perror("pipe");
+        free(delimiter);
         return -1;
     }
 
@@ -64,7 +66,8 @@ static int heredoc_pipe(const char *raw_delim, t_env *env)
             free(line);
             break;
         }
-        line = expand_if_needed(line, env, do_expand);
+
+        line = expand_if_needed(line, env, do_expand, last_exit_status);
         write(pipefd[1], line, strlen(line));
         write(pipefd[1], "\n", 1);
         free(line);
@@ -75,7 +78,7 @@ static int heredoc_pipe(const char *raw_delim, t_env *env)
     return pipefd[0];
 }
 
-void process_heredocs(t_command *commands, t_env *env)
+void process_heredocs(t_command *commands, t_env *env, int last_exit_status)
 {
     t_command *cmd = commands;
     t_redirection *redir;
@@ -92,7 +95,7 @@ void process_heredocs(t_command *commands, t_env *env)
                 if (cmd->heredoc_fd != -1)
                     close(cmd->heredoc_fd);
 
-                cmd->heredoc_fd = heredoc_pipe(redir->file, env);
+                cmd->heredoc_fd = heredoc_pipe(redir->file, env, last_exit_status);
                 if (cmd->heredoc_fd == -1)
                 {
                     fprintf(stderr, "Error creating heredoc\n");
