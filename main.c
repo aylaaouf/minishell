@@ -58,14 +58,14 @@ int main(int ac, char *av[], char **env)
         }
         add_history(input);
         t_token *tokens = tokenize(input);
+        t_command *commands = parse_tokens(tokens);
+        process_heredocs(commands, my_env, last_exit_status);
         quote_management(tokens);
         if (!check_syntax(tokens))
         {
             free(input);
             continue;
         }
-        t_command *commands = parse_tokens(tokens);
-        process_heredocs(commands, my_env, last_exit_status);
         /*expander(tokens, my_env);*/
         if (commands->next)
             execute_pipe(commands, my_env);

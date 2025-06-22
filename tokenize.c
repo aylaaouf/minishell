@@ -23,33 +23,6 @@ int is_operator_char(char c)
     return (c == '|' || c == '<' || c == '>');
 }
 
-char *extract_word(char *line, size_t *i)
-{
-    size_t start = *i;
-    while (line[*i] && !is_operator_char(line[*i]) && 
-           line[*i] != ' ' && line[*i] != '\t' && 
-           line[*i] != '\'' && line[*i] != '\"')
-        (*i)++;
-    return (ft_strndup(&line[start], *i - start));
-}
-
-char *extract_quoted(char *line, size_t *i, char quote_char)
-{
-    size_t start;
-    (*i)++;
-    start = *i;
-    while (line[*i] && line[*i] != quote_char)
-        (*i)++;
-    if (!line[*i])
-        return NULL;
-    
-    char *content = gc_malloc((*i - start) + 1);
-    strncpy(content, &line[start], *i - start);
-    content[*i - start] = '\0';
-    (*i)++;
-    return (content);
-}
-
 t_token *new_token(char *value, t_token_type type)
 {
     t_token *token = gc_malloc(sizeof(t_token));
@@ -79,6 +52,30 @@ t_token *add_token(t_token **head, char *value, t_token_type type)
     return new;
 }
 
+char *extract_argument(char *line, size_t *i)
+{
+    size_t start = *i;
+    char quote;
+
+    while (line[*i] && !is_operator_char(line[*i]) && 
+           line[*i] != ' ' && line[*i] != '\t')
+    {
+        if (line[*i] == '\'' || line[*i] == '"')
+        {
+            quote = line[(*i)++];
+            while (line[*i] && line[*i] != quote)
+                (*i)++;
+            if (line[*i] == quote)
+                (*i)++;
+        }
+        else
+        {
+            (*i)++;
+        }
+    }
+    return ft_strndup(&line[start], *i - start);
+}
+
 t_token *tokenize(char *line)
 {
     size_t i = 0;
@@ -91,35 +88,37 @@ t_token *tokenize(char *line)
             break;
 
         if (line[i] == '|')
-            add_token(&tokens, ft_strdup("|"), TOKEN_PIPE), i++;
-        else if (line[i] == '>' && line[i + 1] == '>')
-            add_token(&tokens, ft_strdup(">>"), TOKEN_APPEND), i += 2;
-        else if (line[i] == '>')
-            add_token(&tokens, ft_strdup(">"), TOKEN_OUTPUT), i++;
-        else if (line[i] == '<' && line[i + 1] == '<')
-            add_token(&tokens, ft_strdup("<<"), TOKEN_HEREDOC), i += 2;
-        else if (line[i] == '<')
-            add_token(&tokens, ft_strdup("<"), TOKEN_INPUT), i++;
-        else if (line[i] == '"')
         {
-            char *quoted = extract_quoted(line, &i, '"');
-            if (!quoted)
-                return NULL;
-            add_token(&tokens, quoted, TOKEN_DQUOTE);
+            add_token(&tokens, ft_strdup("|"), TOKEN_PIPE);
+            i++;
         }
-        else if (line[i] == '\'')
+        else if (line[i] == '>' && line[i + 1] == '>')
         {
-            char *quoted = extract_quoted(line, &i, '\'');
-            if (!quoted)
-                return NULL;
-            add_token(&tokens, quoted, TOKEN_SQUOTE);
+            add_token(&tokens, ft_strdup(">>"), TOKEN_APPEND);
+            i += 2;
+        }
+        else if (line[i] == '>')
+        {
+            add_token(&tokens, ft_strdup(">"), TOKEN_OUTPUT);
+            i++;
+        }
+        else if (line[i] == '<' && line[i + 1] == '<')
+        {
+            add_token(&tokens, ft_strdup("<<"), TOKEN_HEREDOC);
+            i += 2;
+        }
+        else if (line[i] == '<')
+        {
+            add_token(&tokens, ft_strdup("<"), TOKEN_INPUT);
+            i++;
         }
         else
         {
-            char *word = extract_word(line, &i);
-            if (word)
-                add_token(&tokens, word, TOKEN_WORD);
+            char *arg = extract_argument(line, &i);
+            if (arg)
+                add_token(&tokens, arg, TOKEN_WORD);
         }
     }
+
     return tokens;
 }
