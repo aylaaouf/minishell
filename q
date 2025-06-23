@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:15:16 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/23 14:17:58 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/06/23 13:56:51 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,13 +59,13 @@ int main(int ac, char *av[], char **env)
         add_history(input);
         t_token *tokens = tokenize(input);
         quote_management(tokens);
+        t_command *commands = parse_tokens(tokens);
+        process_heredocs(commands, my_env, last_exit_status);
         if (!check_syntax(tokens))
         {
             free(input);
             continue;
 		}
-        t_command *commands = parse_tokens(tokens);
-        process_heredocs(commands, my_env, last_exit_status);
 		expander(tokens, my_env, last_exit_status);
         if (commands->next)
             execute_pipe(commands, my_env);

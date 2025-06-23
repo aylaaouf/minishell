@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/17 23:19:18 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/06/23 14:00:40 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,10 +109,10 @@ void add_argument(t_command *cmd, char *arg);
 void add_redirection(t_command *cmd, char *type, char *file);
 t_command *parse_tokens(t_token *tokens);
 //expander.c
-void expander(t_token *tokens, t_env *env);
+char *expand_token_value(char *str, t_env *env, int last_exit_status);
+void expander(t_token *tokens, t_env *env, int last_exit_status);
 char *get_env_value(t_env *env, const char *key);
 char *extract_var_name(char *str, size_t *i);
-char *expand_token_value(char *str, t_env *env);
 
 //quote_management.c
 char *remove_outer_quotes(char *str, char quote);
@@ -151,6 +151,7 @@ void	*ft_memset(void *b, int c, size_t len);
 int ft_strcmp(const char *s1, const char *s2);
 char *ft_strcat(char *dest, const char *src);
 char	**ft_split(char const *s, char c);
+size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
 char *ft_strncpy(char *dest, char *src, size_t n);
 char	*ft_strjoin(char const *s1, char const *s2);
 int	ft_isalnum(int c);
@@ -159,6 +160,10 @@ int	ft_isalnum(int c);
 
 int	ft_isalpha(int c);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
+char	*ft_itoa(int n);
+//utils_5.c
+char *ft_strjoin_char(char *s, char c);
+char *ft_strjoin_free_a(char *s1, const char *s2);
 //gc.c
 void *gc_malloc(size_t size);
 void gc_add(void *ptr);
