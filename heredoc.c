@@ -6,7 +6,7 @@
 /*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 18:16:25 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/06/17 23:30:08 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/06/24 22:42:13 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ static int heredoc_pipe(const char *raw_delim, t_env *env, int last_exit_status)
     return pipefd[0];
 }
 
-void process_heredocs(t_command *commands, t_env *env, int last_exit_status)
+void	process_heredocs(t_command *commands, t_env *env, int last_exit_status)
 {
     t_command *cmd = commands;
     t_redirection *redir;
