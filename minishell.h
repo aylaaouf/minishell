@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/23 14:00:40 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/06/24 22:50:55 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,8 @@ typedef struct s_gc
 extern t_gc *g_gc;
 //errors.c
 int check_syntax(t_token *tokens);
+
+void sigint_handler(int sig);
 
 //builtins
 void ft_echo(char *input, t_env *env, int last_exit_status);

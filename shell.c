@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 17:07:09 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/03 22:41:39 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/24 22:53:29 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,8 @@ int    shell(t_command *cmnd, t_env *env)
         exit(41);
     }
     else if (child_pid == 0)
-    {   
+    {
+        signal(SIGINT, SIG_IGN);
         if (cmnd->heredoc_fd != -1)
         {
             dup2(cmnd->heredoc_fd, STDIN_FILENO);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:15:16 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/23 14:17:58 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/06/24 22:52:50 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,13 +48,16 @@ int main(int ac, char *av[], char **env)
 	int last_exit_status = 0;
     (void)av;
 	(void)ac;
-       while (1)
+    signal(SIGINT, sigint_handler);
+    signal(SIGQUIT, SIG_IGN);
+    while (1)
     {
         input = readline("marvel$ ");
         if (!input)
         {
             printf("exit\n");
-            break;
+            last_exit_status = 0;
+            exit(0);
         }
         add_history(input);
         t_token *tokens = tokenize(input);
