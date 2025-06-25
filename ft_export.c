@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 21:23:27 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/03 22:52:45 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/25 23:08:30 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,11 @@ void    ft_export(char *input, t_env *env)
             }
         }
         else
+        {
+            if (value)
+                expanded = expand_value(value, env);
             add_env_node(&env, key, expanded);
+        }
         i++;
     }
     free_2d_array(args);
