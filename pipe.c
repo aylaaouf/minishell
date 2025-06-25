@@ -14,16 +14,12 @@
 
 int execute_pipe(t_command *cmnds, t_env *env)
 {
-    int prev_fd;
+    int prev_fd = -1;
     int fd[2];
     pid_t pid;
-    char **args_env;
-    t_command *cmd;
-    char *path;
+    t_command *cmd = cmnds;
+    char **args_env = list_to_array(env);
 
-    cmd = cmnds;
-    args_env = list_to_array(env);
-    prev_fd = -1;
     while (cmd)
     {
         if (cmd->next && pipe(fd) == -1)
@@ -31,10 +27,16 @@ int execute_pipe(t_command *cmnds, t_env *env)
             perror("pipe");
             return (1);
         }
+
         pid = fork();
         if (pid == 0)
         {
-            if (prev_fd != -1)
+            if (cmd->heredoc_fd != -1)
+            {
+                dup2(cmd->heredoc_fd, STDIN_FILENO);
+                close(cmd->heredoc_fd);
+            }
+            else if (prev_fd != -1)
             {
                 dup2(prev_fd, STDIN_FILENO);
                 close(prev_fd);
@@ -45,13 +47,15 @@ int execute_pipe(t_command *cmnds, t_env *env)
                 dup2(fd[1], STDOUT_FILENO);
                 close(fd[1]);
             }
-            path = find_cmnd_path(cmd->args[0], env);
+            char *path = find_cmnd_path(cmd->args[0], env);
             if (!path)
             {
-                perror("command nor found");
+                fprintf(stderr, "minishell: %s: command not found\n", cmd->args[0]);
                 exit(127);
             }
+
             execve(path, cmd->args, args_env);
+            perror("execve failed");
             exit(1);
         }
         if (prev_fd != -1)
@@ -61,9 +65,14 @@ int execute_pipe(t_command *cmnds, t_env *env)
             close(fd[1]);
             prev_fd = fd[0];
         }
+
+        if (cmd->heredoc_fd != -1)
+            close(cmd->heredoc_fd);
+
         cmd = cmd->next;
     }
-    while (wait(NULL) > 0);
+    while (wait(NULL) > 0)
+        ;
     free_2d_array(args_env);
-    return (0);
+    return 0;
 }
