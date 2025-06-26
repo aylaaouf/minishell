@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:15:16 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/24 22:52:50 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/26 02:43:33 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,12 @@ int main(int ac, char *av[], char **env)
             continue;
 		}
         t_command *commands = parse_tokens(tokens);
-        process_heredocs(commands, my_env, last_exit_status);
+        if (process_heredocs(commands, my_env, last_exit_status) == -1)
+        {
+            last_exit_status = 130;
+            free(input);
+            continue ;
+        }
 		expander(tokens, my_env, last_exit_status);
         if (commands->next)
             execute_pipe(commands, my_env);

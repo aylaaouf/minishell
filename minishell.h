@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/24 22:50:55 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/26 02:30:32 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ char *expand_env(char *input, t_env *env, int last_exit_status);
 //pipe
 int execute_pipe(t_command *cmnds, t_env *env);
 //heredoc.c
-void process_heredocs(t_command *commands, t_env *env, int last_exit_status);
+int process_heredocs(t_command *commands, t_env *env, int last_exit_status);
 //shell
 int    shell(t_command *cmnd, t_env *env);
 char    *ft_strjoin_env(char *s1, char *s2);
