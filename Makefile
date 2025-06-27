@@ -4,10 +4,10 @@ CC := cc
 
 CFLAGS := -Wall -Wextra -Werror
 
-SRC := main.c utils_1.c utils_2.c utils_3.c envp.c \
+SRC := main.c utils_1.c utils_2.c utils_3.c builtins/ft_env.c \
 	   tokenize.c quote_management.c \
-	   expander.c parse_cmd.c ft_echo.c ft_cd.c \
-	   ft_pwd.c ft_exit.c ft_export.c pipe.c shell.c ft_unset.c \
+	   expander.c parse_cmd.c builtins/ft_echo.c builtins/ft_cd.c \
+	   builtins/ft_pwd.c builtins/ft_exit.c builtins/ft_export.c pipe.c shell.c builtins/ft_unset.c \
 	    gc.c errors.c shell_utils.c heredoc.c utils_4.c \
 		utils_5.c signals.c
 OBJS := $(SRC:.c=.o)

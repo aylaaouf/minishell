@@ -6,11 +6,11 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 21:23:27 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/27 23:46:59 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/27 23:57:03 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 char    **fill_args_export(char *input)
 {

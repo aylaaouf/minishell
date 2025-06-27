@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 09:43:51 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/05/28 18:56:27 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/27 23:56:42 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 char *get_env_value_echo(char *key, t_env *env)
 {
