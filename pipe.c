@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 15:47:11 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/04 19:13:33 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/27 23:52:58 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int execute_pipe(t_command *cmnds, t_env *env)
+int execute_pipe(t_gc *gc, t_command *cmnds, t_env *env)
 {
     int prev_fd = -1;
     int fd[2];
@@ -47,7 +47,7 @@ int execute_pipe(t_command *cmnds, t_env *env)
                 dup2(fd[1], STDOUT_FILENO);
                 close(fd[1]);
             }
-            char *path = find_cmnd_path(cmd->args[0], env);
+            char *path = find_cmnd_path(gc, cmd->args[0], env);
             if (!path)
             {
                 fprintf(stderr, "minishell: %s: command not found\n", cmd->args[0]);

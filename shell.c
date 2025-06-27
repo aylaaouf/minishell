@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 17:07:09 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/24 22:53:29 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/27 23:50:48 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ char    **list_to_array(t_env *env)
     return (args);
 }
 
-char    *find_cmnd_path(char *cmnd, t_env *env)
+char    *find_cmnd_path(t_gc *gc, char *cmnd, t_env *env)
 {
     char *path_env;
     char **path;
@@ -50,7 +50,7 @@ char    *find_cmnd_path(char *cmnd, t_env *env)
     if (cmnd[0] == '/' || cmnd[0] == '.')
     {
         if (!access(cmnd, X_OK))
-            return (ft_strdup(cmnd));
+            return (gc_strdup(gc, cmnd));
         return (NULL);
     }
     path_env = get_env_value(env, "PATH");
@@ -74,7 +74,7 @@ char    *find_cmnd_path(char *cmnd, t_env *env)
     return (NULL);
 }
 
-int    shell(t_command *cmnd, t_env *env)
+int    shell(t_gc *gc, t_command *cmnd, t_env *env)
 {
     pid_t child_pid;
     int status;
@@ -83,7 +83,7 @@ int    shell(t_command *cmnd, t_env *env)
 
     if (!cmnd || !cmnd->args || !cmnd->args[0])
         return (1);
-    path = find_cmnd_path(cmnd->args[0], env);
+    path = find_cmnd_path(gc, cmnd->args[0], env);
     if (!path)
     {
         printf("%s: command not found\n", cmnd->args[0]);

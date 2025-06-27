@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/26 02:30:32 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/27 23:53:13 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,24 +96,24 @@ void sigint_handler(int sig);
 
 //builtins
 void ft_echo(t_gc *gc, char *input, t_env *env, int last_exit_status);
-void    ft_cd(char *input, t_env *env);
+void    ft_cd(t_gc *gc, char *input, t_env *env);
 void    ft_pwd(char *input, t_env *env);
-void    ft_export(char *input, t_env *env);
+void    ft_export(t_gc *gc, char *input, t_env *env);
 void    ft_unset(char *input, t_env *env);
 int     ft_exit(char *input);
 //ft_echo.c
 char *expand_env(t_gc *gc, char *input, t_env *env, int last_exit_status);
 //pipe
-int execute_pipe(t_command *cmnds, t_env *env);
+int execute_pipe(t_gc *gc, t_command *cmnds, t_env *env);
 //heredoc.c
 int process_heredocs(t_gc *gc, t_command *commands, t_env *env, int last_exit_status);
 //shell
-int    shell(t_command *cmnd, t_env *env);
+int    shell(t_gc *gc, t_command *cmnd, t_env *env);
 char    *ft_strjoin_env(char *s1, char *s2);
 char    *ft_strjoin_free(char *s1, char *s2);
 void    free_2d_array(char **args);
 char    **list_to_array(t_env *env);
-char    *find_cmnd_path(char *cmnd, t_env *env);
+char    *find_cmnd_path(t_gc *gc, char *cmnd, t_env *env);
 
 //parse_cmd.c
 t_command *new_command(t_gc *gc);

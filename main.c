@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:15:16 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/26 02:43:33 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/27 23:52:47 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void builtins(t_gc *gc, char *input, t_env *env, int last_exit_status)
     if (!strncmp(input, "echo", 4))
         ft_echo(gc, input, env, last_exit_status);
     else if (!strncmp(input, "cd", 2))
-        ft_cd(input, env);
+        ft_cd(gc, input, env);
     else if (!strncmp(input, "env", 3))
         print_env(env);
     else if (!strncmp(input, "pwd", 3))
@@ -36,7 +36,7 @@ void builtins(t_gc *gc, char *input, t_env *env, int last_exit_status)
     else if (!strncmp(input, "unset", 5))
         ft_unset(input, env);
     else if (!strncmp(input, "export", 6))
-        ft_export(input, env);
+        ft_export(gc, input, env);
     else if (!strncmp(input, "exit", 4))
         ft_exit(input);
 }
@@ -79,11 +79,11 @@ int main(int ac, char *av[], char **env)
         }
         expander(&gc, tokens, my_env, last_exit_status);
         if (commands->next)
-            execute_pipe(commands, my_env);
+            execute_pipe(&gc, commands, my_env);
         else if (commands->args && is_builtin(commands->args[0]))
             builtins(&gc, input, my_env, last_exit_status);
         else
-            shell(commands, my_env);
+            shell(&gc, commands, my_env);
         free(input);
     }
     gc_clear(&gc);

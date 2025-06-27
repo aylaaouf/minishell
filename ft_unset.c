@@ -35,4 +35,5 @@ void    ft_unset(char *input, t_env *env)
         }
         env = env->next;
     }
+    free_2d_array(args);
 }

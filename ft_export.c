@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 21:23:27 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/25 23:08:30 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/27 23:46:59 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ t_env *find_env_node(t_env *env, char *key)
     return (NULL);
 }
 
-void    add_env_node(t_env **env, char *key, char *value)
+void    add_env_node(t_gc *gc, t_env **env, char *key, char *value)
 {
     t_env *new_node;
     t_env *tmp;
@@ -71,9 +71,9 @@ void    add_env_node(t_env **env, char *key, char *value)
     new_node = malloc(sizeof(t_env));
     if (!new_node)
         return ;
-    new_node->key = ft_strdup(key);
+    new_node->key = gc_strdup(gc, key);
     if (value)
-        new_node->value = ft_strdup(value);
+        new_node->value = gc_strdup(gc, value);
     else
         new_node->value = NULL;
     new_node->next = NULL;
@@ -88,21 +88,21 @@ void    add_env_node(t_env **env, char *key, char *value)
     tmp->next = new_node;
 }
 
-char *expand_value(char *value, t_env *env)
+char *expand_value(t_gc *gc, char *value, t_env *env)
 {
     if (!value || value[0] != '$')
-        return (ft_strdup(value));
+        return (gc_strdup(gc, value));
     char *var;
     t_env *node;
 
     var = value + 1;
     node = find_env_node(env, var);
     if (node && node->value)
-        return (ft_strdup(node->value));
-    return (ft_strdup(""));
+        return (gc_strdup(gc, node->value));
+    return (gc_strdup(gc, ""));
 }
 
-void    ft_export(char *input, t_env *env)
+void    ft_export(t_gc *gc, char *input, t_env *env)
 {
     char **args;
     char **args_kv;
@@ -132,15 +132,15 @@ void    ft_export(char *input, t_env *env)
             if (value)
             {
                 free(node->value);
-                expanded = expand_value(value, env);
+                expanded = expand_value(gc, value, env);
                 node->value = expanded;
             }
         }
         else
         {
             if (value)
-                expanded = expand_value(value, env);
-            add_env_node(&env, key, expanded);
+                expanded = expand_value(gc, value, env);
+            add_env_node(gc, &env, key, expanded);
         }
         i++;
     }

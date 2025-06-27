@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:42:28 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/05/28 18:56:39 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/27 23:44:30 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ char *get_env_value_cd(t_env *env, char *key)
     return (NULL);
 }
 
-void    update_env_var(t_env *env, char *key, char *new_value)
+void    update_env_var(t_gc *gc, t_env *env, char *key, char *new_value)
 {
     t_env   *temp = env;
 
@@ -40,14 +40,14 @@ void    update_env_var(t_env *env, char *key, char *new_value)
         if (ft_strcmp(temp->key, key) == 0)
         {
             free(temp->value);
-            temp->value = ft_strdup(new_value);
+            temp->value = gc_strdup(gc, new_value);
             return ;
         }
         temp = temp->next;
     }
 }
 
-void    ft_cd(char *input, t_env *env)
+void    ft_cd(t_gc *gc, char *input, t_env *env)
 {
     char    **args;
     char    cwd[4096];
@@ -66,8 +66,8 @@ void    ft_cd(char *input, t_env *env)
         perror("cd");
         return ;
     }
-    update_env_var(env, "OLDPWD", cwd);
+    update_env_var(gc, env, "OLDPWD", cwd);
     getcwd(cwd, sizeof(cwd));
-    update_env_var(env, "PWD", cwd);
+    update_env_var(gc, env, "PWD", cwd);
     free_2d_array(args);
 }
