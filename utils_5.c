@@ -12,29 +12,22 @@
 
 #include "minishell.h"
 
-char *ft_strjoin_free_a(char *s1, const char *s2)
+char *gc_strjoin_free_a(t_gc *gc, char *s1, char *s2)
 {
-    char *joined;
-    size_t len1 = s1 ? ft_strlen(s1) : 0;
-    size_t len2 = s2 ? ft_strlen(s2) : 0;
-
-    joined = malloc(len1 + len2 + 1);
+    size_t len1 = strlen(s1);
+    size_t len2 = strlen(s2);
+    char *joined = gc_malloc(gc, len1 + len2 + 1);
     if (!joined)
         return NULL;
-
-    if (s1)
-        ft_strlcpy(joined, s1, len1 + 1);
-    if (s2)
-        ft_strlcpy(joined + len1, s2, len2 + 1);
-
-    free(s1);
+    ft_strcpy(joined, s1);
+    ft_strcat(joined, s2);
     return joined;
 }
 
-char *ft_strjoin_char(char *s, char c)
+char *ft_strjoin_char_gc(t_gc *gc, char *s, char c)
 {
     size_t len = s ? ft_strlen(s) : 0;
-    char *new_str = malloc(len + 2);
+    char *new_str = gc_malloc(gc, len + 2);
 
     if (!new_str)
         return NULL;
@@ -44,6 +37,6 @@ char *ft_strjoin_char(char *s, char c)
     new_str[len] = c;
     new_str[len + 1] = '\0';
 
-    free(s);
     return new_str;
 }
+

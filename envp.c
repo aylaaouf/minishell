@@ -22,50 +22,43 @@ void print_env(t_env *env)
     }
 }
 
-t_env *new_env_node(char *key, char *value)
+t_env *new_env_node(t_gc *gc, char *key, char *value)
 {
-    t_env *node = gc_malloc(sizeof(t_env));
-    node->key = gc_malloc(ft_strlen(key) + 1);
+    t_env *node = gc_malloc(gc, sizeof(t_env));
+    node->key = gc_malloc(gc, ft_strlen(key) + 1);
     ft_strcpy(node->key, key);
-    node->value = gc_malloc(ft_strlen(value) + 1);
+    node->value = gc_malloc(gc, ft_strlen(value) + 1);
     ft_strcpy(node->value, value);
     node->next = NULL;
-    return (node);
+    return node;
 }
 
-t_env *env_init(char **envp)
+t_env *env_init(char **envp, t_gc *gc)
 {
-    t_env *head; 
-    t_env *tail;
+    t_env *head = NULL;
+    t_env *tail = NULL;
     t_env *node;
     char *key;
     char *value;
     char *sep;
-    int i;
+    int i = 0;
     size_t key_len;
 
-    tail = NULL;
-    head = NULL;
-    i = 0;
     while (envp[i])
     {
         sep = ft_strchr(envp[i], '=');
-        if (!sep) 
+        if (!sep)
         {
             i++;
             continue;
         }
         key_len = sep - envp[i];
-        key = gc_malloc(key_len + 1);
+        key = gc_malloc(gc, key_len + 1);
         ft_strncpy(key, envp[i], key_len);
         key[key_len] = '\0';
-        value = gc_malloc(strlen(sep + 1) + 1);
+        value = gc_malloc(gc, ft_strlen(sep + 1) + 1);
         ft_strcpy(value, sep + 1);
-        node = gc_malloc(sizeof(t_env));
-        node->key = key;
-        node->value = value;
-        node->next = NULL;
-
+        node = new_env_node(gc, key, value);
         if (!head)
             head = node;
         else
@@ -73,5 +66,5 @@ t_env *env_init(char **envp)
         tail = node;
         i++;
     }
-    return (head);
+    return head;
 }

@@ -19,28 +19,34 @@ int	ft_isalpha(int c)
 	return (0);
 }
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+char *gc_substr(t_gc *gc, const char *s, unsigned int start, size_t len)
 {
-	char	*str;
-	size_t	i;
+    char    *str;
+    size_t  i;
+    size_t  s_len;
 
-	if (!s)
-		return (NULL);
-	if (start > ft_strlen(s))
-		return (ft_strdup(""));
-	if (len > ft_strlen(s + start))
-		len = ft_strlen(s + start);
-	str = malloc(sizeof(char) * len + 1);
-	if (!str)
-		return (NULL);
-	i = 0;
-	while (i < len)
-	{
-		str[i] = s[i + start];
-		i++;
-	}
-	str[i] = '\0';
-	return (str);
+    if (!s)
+        return NULL;
+
+    s_len = ft_strlen(s);
+    if (start > s_len)
+        return gc_strdup(gc, "");
+
+    if (len > s_len - start)
+        len = s_len - start;
+
+    str = gc_malloc(gc, sizeof(char) * (len + 1));
+    if (!str)
+        return NULL;
+
+    i = 0;
+    while (i < len)
+    {
+        str[i] = s[start + i];
+        i++;
+    }
+    str[i] = '\0';
+    return str;
 }
 
 static int	ft_count_nb(long n)

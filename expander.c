@@ -23,23 +23,23 @@ char *get_env_value(t_env *env, const char *key)
     return NULL;
 }
 
-char *extract_var_name(char *str, size_t *i)
+char *extract_var_name(t_gc *gc, char *str, size_t *i)
 {
     size_t start = *i;
-    while (str[*i] && (str[*i] == '_' || 
+    while (str[*i] && (str[*i] == '_' ||
                       (str[*i] >= 'A' && str[*i] <= 'Z') ||
                       (str[*i] >= 'a' && str[*i] <= 'z') ||
                       (str[*i] >= '0' && str[*i] <= '9')))
     {
         (*i)++;
     }
-    return ft_strndup(&str[start], *i - start);
+    return gc_strndup(gc, &str[start], *i - start);
 }
 
-char *expand_token_value(char *str, t_env *env, int last_exit_status)
+char *expand_token_value(t_gc *gc, char *str, t_env *env, int last_exit_status)
 {
     size_t i = 0;
-    char *result = ft_calloc(1, 1);
+    char *result = gc_strdup(gc, "");
 
     while (str[i])
     {
@@ -48,46 +48,40 @@ char *expand_token_value(char *str, t_env *env, int last_exit_status)
             i++;
             if (str[i] == '?')
             {
-                char *status_str = ft_itoa(last_exit_status);
-                result = ft_strjoin_free(result, status_str);
-                free(status_str);
+                char status_str[12];
+                snprintf(status_str, sizeof(status_str), "%d", last_exit_status);
+                result = gc_strjoin_free_a(gc, result, status_str);
                 i++;
             }
             else if (str[i] && (ft_isalpha(str[i]) || str[i] == '_'))
             {
-                char *var_name = extract_var_name(str, &i);
+                char *var_name = extract_var_name(gc, str, &i);
                 char *var_value = get_env_value(env, var_name);
-                result = ft_strjoin_free(result, var_value ? var_value : "");
-                free(var_name);
+                result = gc_strjoin_free_a(gc, result, var_value ? var_value : "");
             }
             else
             {
-                result = ft_strjoin_char(result, '$');
+                result = ft_strjoin_char_gc(gc, result, '$');
             }
         }
         else
         {
-            result = ft_strjoin_char(result, str[i]);
+            result = ft_strjoin_char_gc(gc, result, str[i]);
             i++;
         }
     }
     return result;
 }
 
-void expander(t_token *tokens, t_env *env, int last_exit_status)
+void expander(t_gc *gc, t_token *tokens, t_env *env, int last_exit_status)
 {
-    char *expanded;
-
     while (tokens)
     {
         if ((tokens->type == TOKEN_WORD || tokens->type == TOKEN_DQUOTE) &&
             strchr(tokens->value, '$'))
         {
-            expanded = expand_token_value(tokens->value, env, last_exit_status);
-            free(tokens->value);
-            tokens->value = expanded;
+            tokens->value = expand_token_value(gc, tokens->value, env, last_exit_status);
         }
         tokens = tokens->next;
     }
 }
-

@@ -20,12 +20,12 @@ char *get_env_value_echo(char *key, t_env *env)
             return env->value;
         env = env->next;
     }
-    return ("");
+    return "";
 }
 
-char *expand_env(char *input, t_env *env, int last_exit_status)
+char *expand_env(t_gc *gc, char *input, t_env *env, int last_exit_status)
 {
-    char *expanded = ft_strdup("");
+    char *expanded = gc_strdup(gc, "");
     char *ptr = input;
 
     while (*ptr)
@@ -36,31 +36,30 @@ char *expand_env(char *input, t_env *env, int last_exit_status)
             if (*ptr == '?') {
                 char status_str[12];
                 snprintf(status_str, sizeof(status_str), "%d", last_exit_status);
-                expanded = ft_strjoin_free(expanded, status_str);
+                expanded = gc_strjoin_free_a(gc, expanded, status_str);
                 ptr++;
                 continue;
             }
             char *var_start = ptr;
             while (*ptr && (ft_isalnum(*ptr) || *ptr == '_'))
                 ptr++;
-            char *var_name = ft_strndup(var_start, ptr - var_start);
+            char *var_name = gc_strndup(gc, var_start, ptr - var_start);
             char *value = get_env_value_echo(var_name, env);
-            expanded = ft_strjoin_free(expanded, value);
-            free(var_name);
+            expanded = gc_strjoin_free_a(gc, expanded, value);
         }
         else
         {
             char temp[2] = {*ptr, '\0'};
-            expanded = ft_strjoin_free(expanded, temp);
+            expanded = gc_strjoin_free_a(gc, expanded, temp);
             ptr++;
         }
     }
-    return (expanded);
+    return expanded;
 }
 
-char *parse_echo_arguments(char *input, t_env *env, int last_exit_status)
+char *parse_echo_arguments(t_gc *gc, char *input, t_env *env, int last_exit_status)
 {
-    char *result = ft_strdup("");
+    char *result = gc_strdup(gc, "");
     size_t i = 0;
     size_t start;
     char quote_char = '\0';
@@ -73,16 +72,10 @@ char *parse_echo_arguments(char *input, t_env *env, int last_exit_status)
             start = i;
             while (input[i] && input[i] != quote_char)
                 i++;
-            char *segment = ft_strndup(&input[start], i - start);
+            char *segment = gc_strndup(gc, &input[start], i - start);
             if (quote_char == '"')
-            {
-                char *expanded = expand_env(segment, env, last_exit_status);
-                free(segment);
-                segment = expanded;
-            }
-            char *tmp = ft_strjoin_free(result, segment);
-            free(segment);
-            result = tmp;
+                segment = expand_env(gc, segment, env, last_exit_status);
+            result = gc_strjoin_free_a(gc, result, segment);
             if (input[i])
                 i++;
         }
@@ -99,20 +92,16 @@ char *parse_echo_arguments(char *input, t_env *env, int last_exit_status)
 
             if (digit_len > 0)
             {
-                char *digits = ft_strndup(&input[start], digit_len);
-                char *tmp = ft_strjoin_free(result, digits);
-                free(digits);
-                result = tmp;
+                char *digits = gc_strndup(gc, &input[start], digit_len);
+                result = gc_strjoin_free_a(gc, result, digits);
             }
             else
             {
                 while (input[i] && (ft_isalnum(input[i]) || input[i] == '_'))
                     i++;
-                char *var_name = ft_strndup(&input[start], i - start);
+                char *var_name = gc_strndup(gc, &input[start], i - start);
                 char *value = get_env_value_echo(var_name, env);
-                char *tmp = ft_strjoin_free(result, value);
-                free(var_name);
-                result = tmp;
+                result = gc_strjoin_free_a(gc, result, value);
             }
         }
         else
@@ -120,22 +109,17 @@ char *parse_echo_arguments(char *input, t_env *env, int last_exit_status)
             start = i;
             while (input[i] && input[i] != '\'' && input[i] != '"' && input[i] != '$')
                 i++;
-            char *segment = ft_strndup(&input[start], i - start);
-            char *tmp = ft_strjoin_free(result, segment);
-            free(segment);
-            result = tmp;
+            char *segment = gc_strndup(gc, &input[start], i - start);
+            result = gc_strjoin_free_a(gc, result, segment);
         }
     }
-    return (result);
+    return result;
 }
 
-char **fill_args(char *input, t_env *env, int last_exit_status)
+char **fill_args(t_gc *gc, char *input, t_env *env, int last_exit_status)
 {
-    char **args;
-    char *parsed_input = parse_echo_arguments(input, env, last_exit_status);
-    args = ft_split(parsed_input, ' ');
-    free(parsed_input);
-    return (args);
+    char *parsed_input = parse_echo_arguments(gc, input, env, last_exit_status);
+    return ft_split(parsed_input, ' ');
 }
 
 int check_flag(char *input)
@@ -154,12 +138,12 @@ int check_flag(char *input)
     return 1;
 }
 
-void ft_echo(char *input, t_env *env, int last_exit_status)
+void ft_echo(t_gc *gc, char *input, t_env *env, int last_exit_status)
 {
     int i;
     char **args;
 
-    args = fill_args(input, env, last_exit_status);
+    args = fill_args(gc, input, env, last_exit_status);
     if (args[1] && !check_flag(args[1]))
     {
         i = 1;

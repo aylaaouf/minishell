@@ -41,22 +41,6 @@ void	ft_bzero(void *s, size_t n)
 	}
 }
 
-void *ft_calloc(size_t count, size_t size)
-{
-    void *arr;
-    size_t max;
-	
-	max= -1;
-    if (size != 0 && (count > max / size))
-        return (NULL);
-
-    arr = gc_malloc(count * size);
-    if (!arr)
-        return (NULL);
-    ft_bzero(arr, count * size);
-    return (arr);
-}
-
 void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
 	unsigned char	*rsrc;
@@ -77,23 +61,4 @@ void	*ft_memcpy(void *dst, const void *src, size_t n)
 		}
 	}
 	return (dst);
-}
-
-void *ft_realloc(void *ptr, size_t new_size)
-{
-	void *new_ptr;
-
-    if (new_size == 0)
-    {
-        gc_free(ptr);
-        return NULL;
-    }
-    if (!ptr)
-        return (gc_malloc(new_size));
-    new_ptr = gc_malloc(new_size);
-    if (!new_ptr)
-        return (NULL);
-    ft_memcpy(new_ptr, ptr, new_size);
-    gc_free(ptr);
-    return (new_ptr);
 }

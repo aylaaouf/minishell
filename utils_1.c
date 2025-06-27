@@ -51,27 +51,14 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-char *ft_strdup(const char *s)
-{
-    if (!s)
-        return NULL;
-
-    size_t len = strlen(s);
-    char *dup = gc_malloc(len + 1);
-    if (!dup)
-        return (NULL);
-    ft_strcpy(dup, s);
-    return (dup);
-}
-
-char *ft_strndup(char *s, size_t n)
+char *gc_strndup(t_gc *gc, const char *s, size_t n)
 {
     size_t len = strnlen(s, n);
-    char *dup = gc_malloc(len + 1);
+    char *dup = gc_malloc(gc, len + 1);
     if (!dup)
         return NULL;
-    
+
     strncpy(dup, s, len);
     dup[len] = '\0';
-    return (dup);
+    return dup;
 }

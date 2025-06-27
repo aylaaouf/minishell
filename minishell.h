@@ -35,7 +35,9 @@ typedef enum e_token_type
 	TOKEN_SQUOTE,       // 'string'
 	TOKEN_DQUOTE,       // "string"
 }   t_token_type;
+
 extern int g_last_exit_status;
+
 typedef struct s_env
 {
     char            *key;
@@ -73,30 +75,38 @@ typedef struct s_echo
     int arg_count;
 } t_echo;
 
-typedef struct s_gc
-{
-    void            *ptr;
-    struct s_gc     *next;
+typedef struct s_gc_node {
+    void                *ptr;
+    struct s_gc_node    *next;
+}   t_gc_node;
+
+typedef struct s_gc {
+    t_gc_node *list;
 } t_gc;
-extern t_gc *g_gc;
+//gc.c
+void    *gc_malloc(t_gc *gc, size_t size);
+char    *gc_strdup(t_gc *gc, const char *s);
+void    *gc_realloc(t_gc *gc, void *ptr, size_t size);
+void    gc_add(t_gc *gc, void *ptr);
+void    gc_clear(t_gc *gc);
 //errors.c
 int check_syntax(t_token *tokens);
 
 void sigint_handler(int sig);
 
 //builtins
-void ft_echo(char *input, t_env *env, int last_exit_status);
+void ft_echo(t_gc *gc, char *input, t_env *env, int last_exit_status);
 void    ft_cd(char *input, t_env *env);
 void    ft_pwd(char *input, t_env *env);
 void    ft_export(char *input, t_env *env);
 void    ft_unset(char *input, t_env *env);
 int     ft_exit(char *input);
 //ft_echo.c
-char *expand_env(char *input, t_env *env, int last_exit_status);
+char *expand_env(t_gc *gc, char *input, t_env *env, int last_exit_status);
 //pipe
 int execute_pipe(t_command *cmnds, t_env *env);
 //heredoc.c
-int process_heredocs(t_command *commands, t_env *env, int last_exit_status);
+int process_heredocs(t_gc *gc, t_command *commands, t_env *env, int last_exit_status);
 //shell
 int    shell(t_command *cmnd, t_env *env);
 char    *ft_strjoin_env(char *s1, char *s2);
@@ -106,41 +116,38 @@ char    **list_to_array(t_env *env);
 char    *find_cmnd_path(char *cmnd, t_env *env);
 
 //parse_cmd.c
-t_command *new_command();
-void add_argument(t_command *cmd, char *arg);
-void add_redirection(t_command *cmd, char *type, char *file);
-t_command *parse_tokens(t_token *tokens);
+t_command *new_command(t_gc *gc);
+char *strip_quotes_cmd(t_gc *gc, char *s);
+t_command *parse_tokens(t_gc *gc, t_token *tokens);
+void add_redirection(t_gc *gc, t_command *cmd, char *type, char *file);
+void add_argument(t_gc *gc, t_command *cmd, char *arg);
 //expander.c
-char *expand_token_value(char *str, t_env *env, int last_exit_status);
-void expander(t_token *tokens, t_env *env, int last_exit_status);
+char *expand_token_value(t_gc *gc, char *str, t_env *env, int last_exit_status);
+void expander(t_gc *gc, t_token *tokens, t_env *env, int last_exit_status);
 char *get_env_value(t_env *env, const char *key);
-char *extract_var_name(char *str, size_t *i);
+char *extract_var_name(t_gc *gc, char *str, size_t *i);
 
 //quote_management.c
-char *remove_outer_quotes(char *str, char quote);
-void quote_management(t_token *tokens);
-
+char *remove_outer_quotes(t_gc *gc, char *str, char quote);
+void quote_management(t_gc *gc, t_token *tokens);
 //tokenize.c
+
 void skip_spaces(char *line, size_t *i);
 int is_operator_char(char c);
-char *extract_word(char *line, size_t *i);
-char *extract_quoted(char *line, size_t *i, char quote_char);
-t_token *new_token(char *value, t_token_type type);
-t_token *add_token(t_token **head, char *value, t_token_type type);
-t_token *tokenize(char *line);
-
+t_token *add_token(t_gc *gc, t_token **head, char *value, t_token_type type);
+char *extract_argument(t_gc *gc, char *line, size_t *i);
+t_token *tokenize(char *line, t_gc *gc);
 //envp.c
-char *get_env_value(t_env *env, const char *key);
-t_env *env_init(char **envp);
-t_env *new_env_node(char *key, char *value);
-void print_env(t_env *env);
 
+void print_env(t_env *env);
+t_env *new_env_node(t_gc *gc, char *key, char *value);
+t_env *env_init(char **envp, t_gc *gc);
 //utils_1.c
 size_t	ft_strlen(const char *s);
 char	*ft_strcpy(char *dst, const char *src);
 char	*ft_strndup(char *s1, size_t n);
 char	*ft_strchr(const char *s, int c);
-char	*ft_strdup(const char *s1);
+char *gc_strndup(t_gc *gc, const char *s, size_t n);
 
 //utils_2.c
 void *ft_realloc(void *ptr, size_t new_size);
@@ -161,14 +168,9 @@ int	ft_isalnum(int c);
 //utils_4.c
 
 int	ft_isalpha(int c);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
+char *gc_substr(t_gc *gc, const char *s, unsigned int start, size_t len);
 char	*ft_itoa(int n);
 //utils_5.c
-char *ft_strjoin_char(char *s, char c);
-char *ft_strjoin_free_a(char *s1, const char *s2);
-//gc.c
-void *gc_malloc(size_t size);
-void gc_add(void *ptr);
-void gc_free(void *ptr);
-void gc_clear(void);
+char *gc_strjoin_free_a(t_gc *gc, char *s1, char *s2);
+char *ft_strjoin_char_gc(t_gc *gc, char *s, char c);
 #endif

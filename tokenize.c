@@ -23,9 +23,9 @@ int is_operator_char(char c)
     return (c == '|' || c == '<' || c == '>');
 }
 
-t_token *new_token(char *value, t_token_type type)
+t_token *new_token(t_gc *gc, char *value, t_token_type type)
 {
-    t_token *token = gc_malloc(sizeof(t_token));
+    t_token *token = gc_malloc(gc, sizeof(t_token));
     if (!token)
         return NULL;
     token->value = value;
@@ -34,9 +34,9 @@ t_token *new_token(char *value, t_token_type type)
     return token;
 }
 
-t_token *add_token(t_token **head, char *value, t_token_type type)
+t_token *add_token(t_gc *gc, t_token **head, char *value, t_token_type type)
 {
-    t_token *new = new_token(value, type);
+    t_token *new = new_token(gc, value, type);
     if (!new)
         return NULL;
 
@@ -52,7 +52,7 @@ t_token *add_token(t_token **head, char *value, t_token_type type)
     return new;
 }
 
-char *extract_argument(char *line, size_t *i)
+char *extract_argument(t_gc *gc, char *line, size_t *i)
 {
     size_t start = *i;
     char quote;
@@ -69,14 +69,12 @@ char *extract_argument(char *line, size_t *i)
                 (*i)++;
         }
         else
-        {
             (*i)++;
-        }
     }
-    return ft_strndup(&line[start], *i - start);
+    return gc_strndup(gc, &line[start], *i - start);
 }
 
-t_token *tokenize(char *line)
+t_token *tokenize(char *line, t_gc *gc)
 {
     size_t i = 0;
     t_token *tokens = NULL;
@@ -89,36 +87,35 @@ t_token *tokenize(char *line)
 
         if (line[i] == '|')
         {
-            add_token(&tokens, ft_strdup("|"), TOKEN_PIPE);
+            add_token(gc, &tokens, gc_strdup(gc, "|"), TOKEN_PIPE);
             i++;
         }
         else if (line[i] == '>' && line[i + 1] == '>')
         {
-            add_token(&tokens, ft_strdup(">>"), TOKEN_APPEND);
+            add_token(gc, &tokens, gc_strdup(gc, ">>"), TOKEN_APPEND);
             i += 2;
         }
         else if (line[i] == '>')
         {
-            add_token(&tokens, ft_strdup(">"), TOKEN_OUTPUT);
+            add_token(gc, &tokens, gc_strdup(gc, ">"), TOKEN_OUTPUT);
             i++;
         }
         else if (line[i] == '<' && line[i + 1] == '<')
         {
-            add_token(&tokens, ft_strdup("<<"), TOKEN_HEREDOC);
+            add_token(gc, &tokens, gc_strdup(gc, "<<"), TOKEN_HEREDOC);
             i += 2;
         }
         else if (line[i] == '<')
         {
-            add_token(&tokens, ft_strdup("<"), TOKEN_INPUT);
+            add_token(gc, &tokens, gc_strdup(gc, "<"), TOKEN_INPUT);
             i++;
         }
         else
         {
-            char *arg = extract_argument(line, &i);
+            char *arg = extract_argument(gc, line, &i);
             if (arg)
-                add_token(&tokens, arg, TOKEN_WORD);
+                add_token(gc, &tokens, arg, TOKEN_WORD);
         }
     }
-
     return tokens;
 }

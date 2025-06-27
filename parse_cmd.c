@@ -9,11 +9,12 @@
 /*   Updated: 2025/06/25 18:52:22 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "minishell.h"
 
-t_command *new_command()
+t_command *new_command(t_gc *gc)
 {
-    t_command *cmd = gc_malloc(sizeof(t_command));
+    t_command *cmd = gc_malloc(gc, sizeof(t_command));
     if (!cmd)
         return NULL;
     cmd->args = NULL;
@@ -24,40 +25,53 @@ t_command *new_command()
     return cmd;
 }
 
-char *strip_quotes_cmd(char *s)
+char *strip_quotes_cmd(t_gc *gc, char *s)
 {
-    size_t len = ft_strlen(s);
-    if (!s || len < 2)
-        return ft_strdup(s);
+    size_t len;
+
+    if (!s)
+        return NULL;
+
+    len = ft_strlen(s);
+    if (len < 2)
+        return gc_strdup(gc, s);
+
     if ((s[0] == '"' && s[len - 1] == '"') || (s[0] == '\'' && s[len - 1] == '\''))
-        return ft_substr(s, 1, len - 2);
-    return ft_strdup(s);
+        return gc_substr(gc, s, 1, len - 2);
+
+    return gc_strdup(gc, s);
 }
 
-void add_argument(t_command *cmd, char *arg)
+void add_argument(t_gc *gc, t_command *cmd, char *arg)
 {
     size_t count = 0;
+    char *clean_arg;
+
+    if (!cmd || !arg)
+        return;
+
     while (cmd->args && cmd->args[count])
         count++;
 
-    char *clean_arg = strip_quotes_cmd(arg);
+    clean_arg = strip_quotes_cmd(gc, arg);
 
-    cmd->args = ft_realloc(cmd->args, sizeof(char *) * (count + 2));
+    cmd->args = gc_realloc(gc, cmd->args, sizeof(char *) * (count + 2));
     cmd->args[count] = clean_arg;
     cmd->args[count + 1] = NULL;
 }
 
-void add_redirection(t_command *cmd, char *type, char *file)
+void add_redirection(t_gc *gc, t_command *cmd, char *type, char *file)
 {
-    t_redirection *redir = gc_malloc(sizeof(t_redirection));
+    t_redirection *redir = gc_malloc(gc, sizeof(t_redirection));
     if (!redir)
         return;
-    redir->type = ft_strdup(type);
+
+    redir->type = gc_strdup(gc, type);
 
     if (strcmp(type, "<<") == 0)
-        redir->file = ft_strdup(file);
+        redir->file = gc_strdup(gc, file);
     else
-        redir->file = strip_quotes_cmd(file);
+        redir->file = strip_quotes_cmd(gc, file);
 
     redir->next = NULL;
 
@@ -72,9 +86,9 @@ void add_redirection(t_command *cmd, char *type, char *file)
     }
 }
 
-t_command *parse_tokens(t_token *tokens)
+t_command *parse_tokens(t_gc *gc, t_token *tokens)
 {
-    t_command *head = new_command();
+    t_command *head = new_command(gc);
     t_command *current = head;
 
     while (tokens)
@@ -82,31 +96,31 @@ t_command *parse_tokens(t_token *tokens)
         if (tokens->type == TOKEN_WORD || tokens->type == TOKEN_ENV ||
             tokens->type == TOKEN_SQUOTE || tokens->type == TOKEN_DQUOTE)
         {
-            add_argument(current, tokens->value);
+            add_argument(gc, current, tokens->value);
         }
         else if (tokens->type == TOKEN_INPUT && tokens->next)
         {
             tokens = tokens->next;
-            add_redirection(current, "<", tokens->value);
+            add_redirection(gc, current, "<", tokens->value);
         }
         else if (tokens->type == TOKEN_OUTPUT && tokens->next)
         {
             tokens = tokens->next;
-            add_redirection(current, ">", tokens->value);
+            add_redirection(gc, current, ">", tokens->value);
         }
         else if (tokens->type == TOKEN_APPEND && tokens->next)
         {
             tokens = tokens->next;
-            add_redirection(current, ">>", tokens->value);
+            add_redirection(gc, current, ">>", tokens->value);
         }
         else if (tokens->type == TOKEN_HEREDOC && tokens->next)
         {
             tokens = tokens->next;
-            add_redirection(current, "<<", tokens->value);
+            add_redirection(gc, current, "<<", tokens->value);
         }
         else if (tokens->type == TOKEN_PIPE)
         {
-            current->next = new_command();
+            current->next = new_command(gc);
             current = current->next;
         }
         tokens = tokens->next;

@@ -12,62 +12,65 @@
 
 #include "minishell.h"
 
-t_gc *g_gc = NULL;
-
-void *gc_malloc(size_t size)
+void *gc_malloc(t_gc *gc, size_t size)
 {
     void *ptr = malloc(size);
     if (!ptr)
         return NULL;
-    gc_add(ptr);
+    gc_add(gc, ptr);
     return ptr;
 }
 
-void gc_add(void *ptr)
+char *gc_strdup(t_gc *gc, const char *s)
 {
-    if (!ptr)
-        return;
-
-    t_gc *new_node = malloc(sizeof(t_gc));
-    if (!new_node)
-        return;
-
-    new_node->ptr = ptr;
-    new_node->next = g_gc;
-    g_gc = new_node;
+    if (!s)
+        return NULL;
+    size_t len = strlen(s);
+    char *copy = (char *)gc_malloc(gc, len + 1);
+    if (!copy)
+        return NULL;
+    strcpy(copy, s);
+    return copy;
 }
 
-void gc_free(void *ptr)
+void *gc_realloc(t_gc *gc, void *ptr, size_t size)
 {
-    t_gc *prev = NULL;
-    t_gc *current = g_gc;
-
-    while (current)
-    {
-        if (current->ptr == ptr)
-        {
-            free(ptr);
-            if (prev)
-                prev->next = current->next;
-            else
-                g_gc = current->next;
-            free(current);
-            return;
-        }
-        prev = current;
-        current = current->next;
-    }
+    void *new_ptr = gc_malloc(gc, size);
+    if (!new_ptr)
+        return NULL;
+    if (ptr)
+        memcpy(new_ptr, ptr, size);
+    return new_ptr;
 }
 
-void gc_clear(void)
+void gc_add(t_gc *gc, void *ptr)
 {
-    t_gc *current = g_gc;
+    if (!ptr || !gc)
+        return;
+
+    t_gc_node *node = malloc(sizeof(t_gc_node));
+    if (!node)
+        return;
+
+    node->ptr = ptr;
+    node->next = gc->list;
+    gc->list = node;
+}
+
+void gc_clear(t_gc *gc)
+{
+    if (!gc)
+        return;
+
+    t_gc_node *current = gc->list;
+    t_gc_node *tmp;
+
     while (current)
     {
         free(current->ptr);
-        t_gc *temp = current;
+        tmp = current;
         current = current->next;
-        free(temp);
+        free(tmp);
     }
-    g_gc = NULL;
+    gc->list = NULL;
 }
