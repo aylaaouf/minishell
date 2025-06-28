@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:42:28 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/27 23:56:38 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/28 03:41:26 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,13 @@ void    ft_cd(t_gc *gc, char *input, t_env *env)
     if (chdir(target) != 0)
     {
         perror("cd");
+        g_last_exit_status = 1;
+        free_2d_array(args);
         return ;
     }
     update_env_var(gc, env, "OLDPWD", cwd);
     getcwd(cwd, sizeof(cwd));
     update_env_var(gc, env, "PWD", cwd);
     free_2d_array(args);
+    g_last_exit_status = 0;
 }

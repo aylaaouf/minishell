@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 19:15:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/27 23:57:06 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/28 02:38:24 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,10 @@ void    ft_pwd(char *input, t_env *env)
     char **args;
     args = ft_split(input, ' ');
     if (args[1])
+    {
+        g_last_exit_status = 1;
         perror("pwd");
+    }
     while (env)
     {
         if (ft_strcmp(env->key, "PWD") == 0)
@@ -33,4 +36,5 @@ void    ft_pwd(char *input, t_env *env)
         env = env->next;
     }
     free_2d_array(args);
+    g_last_exit_status = 0;
 }

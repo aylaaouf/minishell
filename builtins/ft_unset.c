@@ -23,17 +23,32 @@ char    **fill_args_unset(char *input)
 void    ft_unset(char *input, t_env *env)
 {
     char **args;
+    t_env *curr;
+    int     i;
+    t_env *deleted;
 
     args = fill_args_unset(input);
-    while (env)
+    i = 1;
+    g_last_exit_status = 1;
+    while (args[i])
     {
-        if (ft_strcmp(args[1], env->key) == 0)
+        curr = env;
+        while (curr && curr->next)
         {
-            free(env->key);
-            if (env->value)
-                free(env->value);
+            if (ft_strcmp(args[i], curr->next->key) == 0)
+            {
+                deleted = curr->next;
+                curr->next = curr->next->next;
+                free(deleted->key);
+                if (deleted->value)
+                    free(deleted->value);
+                free(deleted);
+                g_last_exit_status = 0;
+                break ;
+            }
+            curr = curr->next;
         }
-        env = env->next;
+        i++;
     }
     free_2d_array(args);
 }

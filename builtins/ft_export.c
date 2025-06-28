@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 21:23:27 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/27 23:57:03 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/28 02:38:44 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,7 @@ void    ft_export(t_gc *gc, char *input, t_env *env)
     {
         print_sorted_env(env);
         free_2d_array(args);
+        g_last_exit_status = 1;
         return ;
     }
     i = 1;
@@ -146,4 +147,5 @@ void    ft_export(t_gc *gc, char *input, t_env *env)
     }
     free_2d_array(args);
     free_2d_array(args_kv);
+    g_last_exit_status = 0;
 }

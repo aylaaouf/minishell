@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 09:43:51 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/06/27 23:56:42 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/28 03:39:10 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,7 @@ void ft_echo(t_gc *gc, char *input, t_env *env, int last_exit_status)
     int i;
     char **args;
 
+    g_last_exit_status = 1;
     args = fill_args(gc, input, env, last_exit_status);
     if (args[1] && !check_flag(args[1]))
     {
@@ -168,5 +169,6 @@ void ft_echo(t_gc *gc, char *input, t_env *env, int last_exit_status)
         }
     }
     free_2d_array(args);
+    g_last_exit_status = 0;
 }
 
