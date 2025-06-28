@@ -107,7 +107,7 @@ int process_heredocs(t_gc *gc, t_command *commands, t_env *env, int last_exit_st
         redir = cmd->redir;
         while (redir)
         {
-            if (strcmp(redir->type, "<<") == 0)
+            if (ft_strcmp(redir->type, "<<") == 0)
             {
                 if (cmd->heredoc_fd != -1)
                     close(cmd->heredoc_fd);

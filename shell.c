@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 17:07:09 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/28 02:29:35 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/28 05:38:08 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,7 @@ int    shell(t_gc *gc, t_command *cmnd, t_env *env)
             dup2(cmnd->heredoc_fd, STDIN_FILENO);
             close(cmnd->heredoc_fd);
         }
+        handle_redirection(cmnd, -1);
         if (execve(path, cmnd->args, args) == -1)
         {
             perror("Couldn't execute");

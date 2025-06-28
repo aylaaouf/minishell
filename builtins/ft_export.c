@@ -6,19 +6,11 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 21:23:27 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/28 02:38:44 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/28 07:23:07 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-char    **fill_args_export(char *input)
-{
-    char **args;
-
-    args = ft_split(input, ' ');
-    return (args);
-}
 
 void    print_sorted_env(t_env *env)
 {
@@ -102,9 +94,8 @@ char *expand_value(t_gc *gc, char *value, t_env *env)
     return (gc_strdup(gc, ""));
 }
 
-void    ft_export(t_gc *gc, char *input, t_env *env)
+void    ft_export(t_gc *gc, char **args, t_env *env)
 {
-    char **args;
     char **args_kv;
     t_env *node;
     int i;
@@ -112,11 +103,9 @@ void    ft_export(t_gc *gc, char *input, t_env *env)
     char *value;
     char *expanded;
 
-    args = fill_args_export(input);
     if (!args[1])
     {
         print_sorted_env(env);
-        free_2d_array(args);
         g_last_exit_status = 1;
         return ;
     }
@@ -143,9 +132,8 @@ void    ft_export(t_gc *gc, char *input, t_env *env)
                 expanded = expand_value(gc, value, env);
             add_env_node(gc, &env, key, expanded);
         }
+        free_2d_array(args_kv);
         i++;
     }
-    free_2d_array(args);
-    free_2d_array(args_kv);
     g_last_exit_status = 0;
 }

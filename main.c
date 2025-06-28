@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:15:16 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/27 23:52:47 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/28 07:38:11 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,22 +23,22 @@ int     is_builtin(char *cmd)
         || !strncmp(cmd, "exit", 4));
 }
 
-void builtins(t_gc *gc, char *input, t_env *env, int last_exit_status)
+void builtins(t_gc *gc, char **args, t_env *env, int last_exit_status)
 {
-    if (!strncmp(input, "echo", 4))
-        ft_echo(gc, input, env, last_exit_status);
-    else if (!strncmp(input, "cd", 2))
-        ft_cd(gc, input, env);
-    else if (!strncmp(input, "env", 3))
+    if (!ft_strcmp(args[0], "echo"))
+        ft_echo(gc, args, env, last_exit_status);
+    else if (!ft_strcmp(args[0], "cd"))
+        ft_cd(gc, args, env);
+    else if (!ft_strcmp(args[0], "env"))
         print_env(env);
-    else if (!strncmp(input, "pwd", 3))
-        ft_pwd(input, env);
-    else if (!strncmp(input, "unset", 5))
-        ft_unset(input, env);
-    else if (!strncmp(input, "export", 6))
-        ft_export(gc, input, env);
-    else if (!strncmp(input, "exit", 4))
-        ft_exit(input);
+    else if (!ft_strcmp(args[0], "pwd"))
+        ft_pwd(args, env);
+    else if (!ft_strcmp(args[0], "unset"))
+        ft_unset(args, env);
+    else if (!ft_strcmp(args[0], "export"))
+        ft_export(gc, args, env);
+    else if (!ft_strcmp(args[0], "exit"))
+        ft_exit(args);
 }
 
 int main(int ac, char *av[], char **env)
@@ -81,7 +81,14 @@ int main(int ac, char *av[], char **env)
         if (commands->next)
             execute_pipe(&gc, commands, my_env);
         else if (commands->args && is_builtin(commands->args[0]))
-            builtins(&gc, input, my_env, last_exit_status);
+        {
+            handle_redirection(commands, -1);
+            builtins(&gc, commands->args, my_env, last_exit_status);
+            dup2(commands->saved_stdin, STDIN_FILENO);
+            dup2(commands->saved_stdout, STDOUT_FILENO);
+            close(commands->saved_stdin);
+            close(commands->saved_stdout);
+        }
         else
             shell(&gc, commands, my_env);
         free(input);

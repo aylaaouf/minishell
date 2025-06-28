@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 15:47:11 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/27 23:52:58 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/28 05:36:46 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ int execute_pipe(t_gc *gc, t_command *cmnds, t_env *env)
             perror("pipe");
             return (1);
         }
-
         pid = fork();
         if (pid == 0)
         {
@@ -47,13 +46,13 @@ int execute_pipe(t_gc *gc, t_command *cmnds, t_env *env)
                 dup2(fd[1], STDOUT_FILENO);
                 close(fd[1]);
             }
+            handle_redirection(cmd, prev_fd);
             char *path = find_cmnd_path(gc, cmd->args[0], env);
             if (!path)
             {
                 fprintf(stderr, "minishell: %s: command not found\n", cmd->args[0]);
                 exit(127);
             }
-
             execve(path, cmd->args, args_env);
             perror("execve failed");
             exit(1);
@@ -65,10 +64,8 @@ int execute_pipe(t_gc *gc, t_command *cmnds, t_env *env)
             close(fd[1]);
             prev_fd = fd[0];
         }
-
         if (cmd->heredoc_fd != -1)
             close(cmd->heredoc_fd);
-
         cmd = cmd->next;
     }
     while (wait(NULL) > 0)

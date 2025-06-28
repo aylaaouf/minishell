@@ -12,22 +12,12 @@
 
 #include "../minishell.h"
 
-char    **fill_args_unset(char *input)
+void    ft_unset(char **args, t_env *env)
 {
-    char **args;
-
-    args = ft_split(input, ' ');
-    return (args);
-}
-
-void    ft_unset(char *input, t_env *env)
-{
-    char **args;
     t_env *curr;
     int     i;
     t_env *deleted;
 
-    args = fill_args_unset(input);
     i = 1;
     g_last_exit_status = 1;
     while (args[i])
@@ -50,5 +40,4 @@ void    ft_unset(char *input, t_env *env)
         }
         i++;
     }
-    free_2d_array(args);
 }

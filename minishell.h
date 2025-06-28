@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/27 23:53:13 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/28 07:25:11 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <stdlib.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <fcntl.h>
 
 typedef enum e_token_type
 {
@@ -63,6 +64,8 @@ typedef struct s_command
 {
     bool has_heredoc;
     int heredoc_fd;
+    int saved_stdin;
+    int saved_stdout;
     char **args;
     t_redirection *redir;
     struct s_command *next;
@@ -93,14 +96,14 @@ void    gc_clear(t_gc *gc);
 int check_syntax(t_token *tokens);
 
 void sigint_handler(int sig);
-
+void handle_redirection(t_command *cmd, int prev_fd);
 //builtins
-void ft_echo(t_gc *gc, char *input, t_env *env, int last_exit_status);
-void    ft_cd(t_gc *gc, char *input, t_env *env);
-void    ft_pwd(char *input, t_env *env);
-void    ft_export(t_gc *gc, char *input, t_env *env);
-void    ft_unset(char *input, t_env *env);
-int     ft_exit(char *input);
+void ft_echo(t_gc *gc, char **input, t_env *env, int last_exit_status);
+void    ft_cd(t_gc *gc, char **input, t_env *env);
+void    ft_pwd(char **input, t_env *env);
+void    ft_export(t_gc *gc, char **input, t_env *env);
+void    ft_unset(char **input, t_env *env);
+int     ft_exit(char **input);
 //ft_echo.c
 char *expand_env(t_gc *gc, char *input, t_env *env, int last_exit_status);
 //pipe
