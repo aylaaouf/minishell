@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 17:07:09 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/27 23:50:48 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/06/28 02:29:35 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,8 @@ int    shell(t_gc *gc, t_command *cmnd, t_env *env)
     }
     else if (child_pid == 0)
     {
-        signal(SIGINT, SIG_IGN);
+        signal(SIGINT, SIG_DFL);
+        signal(SIGQUIT, SIG_IGN);
         if (cmnd->heredoc_fd != -1)
         {
             dup2(cmnd->heredoc_fd, STDIN_FILENO);
