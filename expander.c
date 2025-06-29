@@ -36,7 +36,7 @@ char *extract_var_name(t_gc *gc, char *str, size_t *i)
     return gc_strndup(gc, &str[start], *i - start);
 }
 
-char *expand_token_value(t_gc *gc, char *str, t_env *env, int last_exit_status)
+char *expand_token_value(t_gc *gc, char *str, t_env *env)
 {
     size_t i = 0;
     char *result = gc_strdup(gc, "");
@@ -48,8 +48,7 @@ char *expand_token_value(t_gc *gc, char *str, t_env *env, int last_exit_status)
             i++;
             if (str[i] == '?')
             {
-                char status_str[12];
-                snprintf(status_str, sizeof(status_str), "%d", last_exit_status);
+                char *status_str = ft_itoa_gc(gc, g_last_exit_status);
                 result = gc_strjoin_free_a(gc, result, status_str);
                 i++;
             }
@@ -60,9 +59,7 @@ char *expand_token_value(t_gc *gc, char *str, t_env *env, int last_exit_status)
                 result = gc_strjoin_free_a(gc, result, var_value ? var_value : "");
             }
             else
-            {
                 result = ft_strjoin_char_gc(gc, result, '$');
-            }
         }
         else
         {
@@ -73,14 +70,14 @@ char *expand_token_value(t_gc *gc, char *str, t_env *env, int last_exit_status)
     return result;
 }
 
-void expander(t_gc *gc, t_token *tokens, t_env *env, int last_exit_status)
+void expander(t_gc *gc, t_token *tokens, t_env *env)
 {
     while (tokens)
     {
         if ((tokens->type == TOKEN_WORD || tokens->type == TOKEN_DQUOTE) &&
             strchr(tokens->value, '$'))
         {
-            tokens->value = expand_token_value(gc, tokens->value, env, last_exit_status);
+            tokens->value = expand_token_value(gc, tokens->value, env);
         }
         tokens = tokens->next;
     }

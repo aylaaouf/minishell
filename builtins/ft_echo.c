@@ -23,7 +23,7 @@ char *get_env_value_echo(char *key, t_env *env)
     return "";
 }
 
-char *expand_env(t_gc *gc, char *input, t_env *env, int last_exit_status)
+char *expand_env(t_gc *gc, char *input, t_env *env)
 {
     char *expanded = gc_strdup(gc, "");
     char *ptr = input;
@@ -35,8 +35,7 @@ char *expand_env(t_gc *gc, char *input, t_env *env, int last_exit_status)
             ptr++;
             if (*ptr == '?')
             {
-                char status_str[12];
-                snprintf(status_str, sizeof(status_str), "%d", last_exit_status);
+                char *status_str = ft_itoa_gc(gc, g_last_exit_status);
                 expanded = gc_strjoin_free_a(gc, expanded, status_str);
                 ptr++;
                 continue;
@@ -74,7 +73,7 @@ int check_flag(char *input)
     return 1;
 }
 
-void ft_echo(t_gc *gc, char **args, t_env *env, int last_exit_status)
+void ft_echo(t_gc *gc, char **args, t_env *env)
 {
     int i = 1;
     int newline = 1;
@@ -86,7 +85,7 @@ void ft_echo(t_gc *gc, char **args, t_env *env, int last_exit_status)
     }
     while (args[i])
     {
-        char *expanded = expand_env(gc, args[i], env, last_exit_status);
+        char *expanded = expand_env(gc, args[i], env);
         printf("%s", expanded);
         if (args[i + 1])
             printf(" ");
@@ -96,4 +95,3 @@ void ft_echo(t_gc *gc, char **args, t_env *env, int last_exit_status)
         printf("\n");
     g_last_exit_status = 0;
 }
-

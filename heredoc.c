@@ -31,11 +31,11 @@ char *strip_quotes(t_gc *gc, const char *s)
     return gc_strdup(gc, s);
 }
 
-char *expand_if_needed(t_gc *gc, char *line, t_env *env, int do_expand, int last_exit_status)
+char *expand_if_needed(t_gc *gc, char *line, t_env *env, int do_expand)
 {
     if (!do_expand)
         return line;
-    char *expanded = expand_env(gc, line, env, last_exit_status);
+    char *expanded = expand_env(gc, line, env);
     return expanded;
 }
 
@@ -45,8 +45,7 @@ static void heredoc_child_handler(int sig)
     exit(130);
 }
 
-static int heredoc_pipe(t_gc *gc, const char *raw_delim, t_env *env, int last_exit_status)
-{
+static int heredoc_pipe(t_gc *gc, const char *raw_delim, t_env *env){
     int pipefd[2];
     char *line;
     int status;
@@ -78,7 +77,7 @@ static int heredoc_pipe(t_gc *gc, const char *raw_delim, t_env *env, int last_ex
                 break;
             }
             char *tmp = line;
-            line = expand_if_needed(gc, line, env, do_expand, last_exit_status);
+            line = expand_if_needed(gc, line, env, do_expand);
             free(tmp);
             write(pipefd[1], line, strlen(line));
             write(pipefd[1], "\n", 1);
@@ -96,7 +95,7 @@ static int heredoc_pipe(t_gc *gc, const char *raw_delim, t_env *env, int last_ex
     return pipefd[0];
 }
 
-int process_heredocs(t_gc *gc, t_command *commands, t_env *env, int last_exit_status)
+int process_heredocs(t_gc *gc, t_command *commands, t_env *env)
 {
     t_command *cmd = commands;
     t_redirection *redir;
@@ -111,7 +110,7 @@ int process_heredocs(t_gc *gc, t_command *commands, t_env *env, int last_exit_st
             {
                 if (cmd->heredoc_fd != -1)
                     close(cmd->heredoc_fd);
-                cmd->heredoc_fd = heredoc_pipe(gc, redir->file, env, last_exit_status);
+                cmd->heredoc_fd = heredoc_pipe(gc, redir->file, env);
                 if (cmd->heredoc_fd == -1)
                     return -1;
                 cmd->has_heredoc = 1;

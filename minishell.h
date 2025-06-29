@@ -98,18 +98,18 @@ int check_syntax(t_token *tokens);
 void sigint_handler(int sig);
 void handle_redirection(t_command *cmd, int prev_fd);
 //builtins
-void ft_echo(t_gc *gc, char **input, t_env *env, int last_exit_status);
+void ft_echo(t_gc *gc, char **args, t_env *env);
 void    ft_cd(t_gc *gc, char **input, t_env *env);
 void    ft_pwd(char **input, t_env *env);
 void    ft_export(t_gc *gc, char **input, t_env *env);
 void    ft_unset(char **input, t_env *env);
 int     ft_exit(char **input);
 //ft_echo.c
-char *expand_env(t_gc *gc, char *input, t_env *env, int last_exit_status);
+char *expand_env(t_gc *gc, char *input, t_env *env);
 //pipe
 int execute_pipe(t_gc *gc, t_command *cmnds, t_env *env);
 //heredoc.c
-int process_heredocs(t_gc *gc, t_command *commands, t_env *env, int last_exit_status);
+int process_heredocs(t_gc *gc, t_command *commands, t_env *env);
 //shell
 int    shell(t_gc *gc, t_command *cmnd, t_env *env);
 char    *ft_strjoin_env(char *s1, char *s2);
@@ -125,8 +125,8 @@ t_command *parse_tokens(t_gc *gc, t_token *tokens);
 void add_redirection(t_gc *gc, t_command *cmd, char *type, char *file);
 void add_argument(t_gc *gc, t_command *cmd, char *arg);
 //expander.c
-char *expand_token_value(t_gc *gc, char *str, t_env *env, int last_exit_status);
-void expander(t_gc *gc, t_token *tokens, t_env *env, int last_exit_status);
+char *expand_token_value(t_gc *gc, char *str, t_env *env);
+void expander(t_gc *gc, t_token *tokens, t_env *env);
 char *get_env_value(t_env *env, const char *key);
 char *extract_var_name(t_gc *gc, char *str, size_t *i);
 
@@ -176,4 +176,5 @@ char	*ft_itoa(int n);
 //utils_5.c
 char *gc_strjoin_free_a(t_gc *gc, char *s1, char *s2);
 char *ft_strjoin_char_gc(t_gc *gc, char *s, char c);
+char	*ft_itoa_gc(t_gc *gc, int n);
 #endif

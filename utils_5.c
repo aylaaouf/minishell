@@ -40,3 +40,69 @@ char *ft_strjoin_char_gc(t_gc *gc, char *s, char c)
     return new_str;
 }
 
+#include "minishell.h"
+
+static int	ft_count_digits(long n)
+{
+	int	count = 0;
+
+	if (n == 0)
+		return (1);
+	if (n < 0)
+	{
+		count++; // for '-'
+		n = -n;
+	}
+	while (n)
+	{
+		count++;
+		n /= 10;
+	}
+	return (count);
+}
+
+static void	ft_reverse_str(char *str, int len)
+{
+	int		start = 0;
+	int		end = len - 1;
+	char	tmp;
+
+	if (str[0] == '-')
+		start = 1;
+	while (start < end)
+	{
+		tmp = str[start];
+		str[start] = str[end];
+		str[end] = tmp;
+		start++;
+		end--;
+	}
+}
+
+char	*ft_itoa_gc(t_gc *gc, int n)
+{
+	char	*str;
+	int		i = 0;
+	long	nb = n;
+
+	str = gc_malloc(gc, sizeof(char) * (ft_count_digits(nb) + 1));
+	if (!str)
+		return (NULL);
+
+	if (nb == 0)
+		str[i++] = '0';
+	if (nb < 0)
+	{
+		str[i++] = '-';
+		nb = -nb;
+	}
+	while (nb > 0)
+	{
+		str[i++] = (nb % 10) + '0';
+		nb /= 10;
+	}
+	str[i] = '\0';
+	ft_reverse_str(str, i);
+	return (str);
+}
+

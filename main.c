@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+
+int g_last_exit_status = 0;
 int     is_builtin(char *cmd)
 {
     return (!strncmp(cmd, "echo", 4)
@@ -23,10 +25,10 @@ int     is_builtin(char *cmd)
         || !strncmp(cmd, "exit", 4));
 }
 
-void builtins(t_gc *gc, char **args, t_env *env, int last_exit_status)
+void builtins(t_gc *gc, char **args, t_env *env)
 {
     if (!ft_strcmp(args[0], "echo"))
-        ft_echo(gc, args, env, last_exit_status);
+        ft_echo(gc, args, env);
     else if (!ft_strcmp(args[0], "cd"))
         ft_cd(gc, args, env);
     else if (!ft_strcmp(args[0], "env"))
@@ -46,7 +48,6 @@ int main(int ac, char *av[], char **env)
     t_gc gc = {0};
     char *input;
     t_env *my_env = env_init(env, &gc);
-    int last_exit_status = 0;
 
     (void)av;
     (void)ac;
@@ -59,7 +60,7 @@ int main(int ac, char *av[], char **env)
         if (!input)
         {
             printf("exit\n");
-            last_exit_status = 0;
+            g_last_exit_status = 0;
             exit(0);
         }
         add_history(input);
@@ -71,19 +72,19 @@ int main(int ac, char *av[], char **env)
             continue;
         }
         t_command *commands = parse_tokens(&gc, tokens);
-        if (process_heredocs(&gc, commands, my_env, last_exit_status) == -1)
+        if (process_heredocs(&gc, commands, my_env) == -1)
         {
-            last_exit_status = 130;
+            g_last_exit_status = 130;
             free(input);
             continue;
         }
-        expander(&gc, tokens, my_env, last_exit_status);
+        expander(&gc, tokens, my_env);
         if (commands->next)
             execute_pipe(&gc, commands, my_env);
         else if (commands->args && is_builtin(commands->args[0]))
         {
             handle_redirection(commands, -1);
-            builtins(&gc, commands->args, my_env, last_exit_status);
+            builtins(&gc, commands->args, my_env);
             dup2(commands->saved_stdin, STDIN_FILENO);
             dup2(commands->saved_stdout, STDOUT_FILENO);
             close(commands->saved_stdin);

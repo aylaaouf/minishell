@@ -12,8 +12,6 @@
 
 #include "../minishell.h"
 
-int g_last_exit_status = 0;
-
 char *get_env_value_cd(t_env *env, char *key)
 {
     while (env)
