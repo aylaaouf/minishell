@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   utils_1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
+/*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 11:34:26 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/05/10 19:08:48 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/06/29 23:22:32 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "minishell.h"
+
+#include "../minishell.h"
 
 size_t	ft_strlen(const char *s)
 {

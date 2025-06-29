@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   utils_5.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
+/*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 13:50:43 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/06/23 14:00:56 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/06/29 23:22:44 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 char *gc_strjoin_free_a(t_gc *gc, char *s1, char *s2)
 {
@@ -39,8 +39,6 @@ char *ft_strjoin_char_gc(t_gc *gc, char *s, char c)
 
     return new_str;
 }
-
-#include "minishell.h"
 
 static int	ft_count_digits(long n)
 {
