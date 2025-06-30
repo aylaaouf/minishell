@@ -9,7 +9,6 @@
 /*   Updated: 2025/05/10 19:08:31 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "minishell.h"
 
 void skip_spaces(char *line, size_t *i)

@@ -123,7 +123,6 @@ t_command *new_command(t_gc *gc);
 char *strip_quotes_cmd(t_gc *gc, char *s);
 t_command *parse_tokens(t_gc *gc, t_token *tokens);
 void add_redirection(t_gc *gc, t_command *cmd, char *type, char *file);
-void add_argument(t_gc *gc, t_command *cmd, char *arg);
 //expander.c
 char *expand_token_value(t_gc *gc, char *str, t_env *env);
 void expander(t_gc *gc, t_token *tokens, t_env *env);

@@ -12,9 +12,9 @@
 
 #include "minishell.h"
 
-
 int g_last_exit_status = 0;
-int     is_builtin(char *cmd)
+
+int is_builtin(char *cmd)
 {
     return (!strncmp(cmd, "echo", 4)
         || !strncmp(cmd, "cd", 2)

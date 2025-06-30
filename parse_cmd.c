@@ -36,13 +36,13 @@ char *strip_quotes_cmd(t_gc *gc, char *s)
     if (len < 2)
         return gc_strdup(gc, s);
 
-    if ((s[0] == '"' && s[len - 1] == '"') || (s[0] == '\'' && s[len - 1] == '\''))
+    if ((s[0] == '"' && s[len - 1] == '"'))
         return gc_substr(gc, s, 1, len - 2);
 
     return gc_strdup(gc, s);
 }
 
-void add_argument(t_gc *gc, t_command *cmd, char *arg)
+void add_argument(t_gc *gc, t_command *cmd, char *arg, t_token_type type)
 {
     size_t count = 0;
     char *clean_arg;
@@ -53,7 +53,11 @@ void add_argument(t_gc *gc, t_command *cmd, char *arg)
     while (cmd->args && cmd->args[count])
         count++;
 
-    clean_arg = strip_quotes_cmd(gc, arg);
+    // Don't strip single quotes
+    if (type == TOKEN_SQUOTE)
+        clean_arg = gc_strdup(gc, arg);
+    else
+        clean_arg = strip_quotes_cmd(gc, arg);
 
     cmd->args = gc_realloc(gc, cmd->args, sizeof(char *) * (count + 2));
     cmd->args[count] = clean_arg;
@@ -96,7 +100,7 @@ t_command *parse_tokens(t_gc *gc, t_token *tokens)
         if (tokens->type == TOKEN_WORD || tokens->type == TOKEN_ENV ||
             tokens->type == TOKEN_SQUOTE || tokens->type == TOKEN_DQUOTE)
         {
-            add_argument(gc, current, tokens->value);
+            add_argument(gc, current, tokens->value, tokens->type);
         }
         else if (tokens->type == TOKEN_INPUT && tokens->next)
         {
@@ -127,3 +131,4 @@ t_command *parse_tokens(t_gc *gc, t_token *tokens)
     }
     return head;
 }
+

@@ -83,10 +83,29 @@ void ft_echo(t_gc *gc, char **args, t_env *env)
         newline = 0;
         i++;
     }
+
     while (args[i])
     {
-        char *expanded = expand_env(gc, args[i], env);
-        printf("%s", expanded);
+        char *arg = args[i];
+        size_t len = ft_strlen(arg);
+
+        if (arg[0] == '\'' && arg[len - 1] == '\'')
+        {
+            char *no_quotes = gc_strndup(gc, arg + 1, len - 2);
+            printf("%s", no_quotes);
+        }
+        else if (arg[0] == '"' && arg[len - 1] == '"')
+        {
+            char *without_quotes = gc_strndup(gc, arg + 1, len - 2);
+            char *expanded = expand_env(gc, without_quotes, env);
+            printf("%s", expanded);
+        }
+        else
+        {
+            char *expanded = expand_env(gc, arg, env);
+            printf("%s", expanded);
+        }
+
         if (args[i + 1])
             printf(" ");
         i++;
