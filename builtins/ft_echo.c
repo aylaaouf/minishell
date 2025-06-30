@@ -78,39 +78,50 @@ void ft_echo(t_gc *gc, char **args, t_env *env)
     int i = 1;
     int newline = 1;
 
-    if (args[1] && check_flag(args[1]))
+    if (args[i] && check_flag(args[i]))
     {
         newline = 0;
         i++;
     }
 
+    char *result = gc_strdup(gc, "");
+
     while (args[i])
     {
         char *arg = args[i];
-        size_t len = ft_strlen(arg);
+        char *clean = gc_strdup(gc, "");
 
-        if (arg[0] == '\'' && arg[len - 1] == '\'')
+        for (int j = 0; arg[j]; j++)
         {
-            char *no_quotes = gc_strndup(gc, arg + 1, len - 2);
-            printf("%s", no_quotes);
+            if (arg[j] == '\'')
+                continue;
+            else if (arg[j] == '"')
+                continue;
+            else
+                clean = ft_strjoin_char_gc(gc, clean, arg[j]);
         }
-        else if (arg[0] == '"' && arg[len - 1] == '"')
+
+        if (ft_strchr(arg, '"'))
         {
-            char *without_quotes = gc_strndup(gc, arg + 1, len - 2);
-            char *expanded = expand_env(gc, without_quotes, env);
-            printf("%s", expanded);
+            char *expanded = expand_env(gc, clean, env);
+            result = gc_strjoin_free_a(gc, result, expanded);
+        }
+        else if (ft_strchr(arg, '\''))
+        {
+            result = gc_strjoin_free_a(gc, result, clean);
         }
         else
         {
-            char *expanded = expand_env(gc, arg, env);
-            printf("%s", expanded);
+            char *expanded = expand_env(gc, clean, env);
+            result = gc_strjoin_free_a(gc, result, expanded);
         }
 
-        if (args[i + 1])
-            printf(" ");
         i++;
     }
+    printf("%s", result);
     if (newline)
         printf("\n");
+
     g_last_exit_status = 0;
 }
+

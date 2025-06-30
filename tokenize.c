@@ -53,12 +53,13 @@ t_token *add_token(t_gc *gc, t_token **head, char *value, t_token_type type)
 
 char *extract_argument(t_gc *gc, char *line, size_t *i)
 {
-    size_t start = *i;
+    char *result = gc_strdup(gc, "");
     char quote;
 
-    while (line[*i] && !is_operator_char(line[*i]) && 
+    while (line[*i] && !is_operator_char(line[*i]) &&
            line[*i] != ' ' && line[*i] != '\t')
     {
+        size_t start = *i;
         if (line[*i] == '\'' || line[*i] == '"')
         {
             quote = line[(*i)++];
@@ -68,9 +69,19 @@ char *extract_argument(t_gc *gc, char *line, size_t *i)
                 (*i)++;
         }
         else
-            (*i)++;
+        {
+            while (line[*i] &&
+                line[*i] != '\'' &&
+                line[*i] != '"' &&
+                !is_operator_char(line[*i]) &&
+                line[*i] != ' ' && line[*i] != '\t')
+                (*i)++;
+        }
+        char *part = gc_strndup(gc, &line[start], *i - start);
+        char *tmp = result;
+        result = gc_strjoin_free_a(gc, tmp, part);
     }
-    return gc_strndup(gc, &line[start], *i - start);
+    return result;
 }
 
 t_token *tokenize(char *line, t_gc *gc)
