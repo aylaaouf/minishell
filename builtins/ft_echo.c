@@ -59,11 +59,10 @@ char *expand_env(t_gc *gc, char *input, t_env *env)
 
 int check_flag(char *input)
 {
-    int i;
+    int i = 1;
 
     if (!input || input[0] != '-')
         return 0;
-    i = 1;
     while (input[i])
     {
         if (input[i] != 'n')
@@ -78,50 +77,77 @@ void ft_echo(t_gc *gc, char **args, t_env *env)
     int i = 1;
     int newline = 1;
 
-    if (args[i] && check_flag(args[i]))
+    if (args[1] && check_flag(args[1]))
     {
         newline = 0;
         i++;
     }
 
-    char *result = gc_strdup(gc, "");
-
     while (args[i])
     {
+        int j = 0;
+        char quote = 0;
         char *arg = args[i];
-        char *clean = gc_strdup(gc, "");
+        char *result = gc_strdup(gc, "");
 
-        for (int j = 0; arg[j]; j++)
+        while (arg[j])
         {
-            if (arg[j] == '\'')
+            if (quote == 0 && (arg[j] == '\'' || arg[j] == '"'))
+            {
+                quote = arg[j];
+                j++;
                 continue;
-            else if (arg[j] == '"')
+            }
+            if (quote && arg[j] == quote)
+            {
+                quote = 0;
+                j++;
                 continue;
+            }
+            if (quote == '\'')
+            {
+                result = ft_strjoin_char_gc(gc, result, arg[j]);
+                j++;
+            }
             else
-                clean = ft_strjoin_char_gc(gc, clean, arg[j]);
+            {
+                if (arg[j] == '$')
+                {
+                    j++;
+                    if (arg[j] == '?')
+                    {
+                        char *status_str = ft_itoa_gc(gc, g_last_exit_status);
+                        result = gc_strjoin_free_a(gc, result, status_str);
+                        j++;
+                    }
+                    else if (ft_isalpha(arg[j]) || arg[j] == '_')
+                    {
+                        size_t var_start = j;
+                        while (ft_isalnum(arg[j]) || arg[j] == '_')
+                            j++;
+                        char *var_name = gc_strndup(gc, &arg[var_start], j - var_start);
+                        char *val = get_env_value_echo(var_name, env);
+                        result = gc_strjoin_free_a(gc, result, val);
+                    }
+                    else
+                    {
+                        result = ft_strjoin_char_gc(gc, result, '$');
+                    }
+                }
+                else
+                {
+                    result = ft_strjoin_char_gc(gc, result, arg[j]);
+                    j++;
+                }
+            }
         }
-
-        if (ft_strchr(arg, '"'))
-        {
-            char *expanded = expand_env(gc, clean, env);
-            result = gc_strjoin_free_a(gc, result, expanded);
-        }
-        else if (ft_strchr(arg, '\''))
-        {
-            result = gc_strjoin_free_a(gc, result, clean);
-        }
-        else
-        {
-            char *expanded = expand_env(gc, clean, env);
-            result = gc_strjoin_free_a(gc, result, expanded);
-        }
-
+        printf("%s", result);
+        if (args[i + 1])
+            printf(" ");
         i++;
     }
-    printf("%s", result);
     if (newline)
         printf("\n");
-
     g_last_exit_status = 0;
 }
 
