@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:42:28 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/28 07:20:52 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/01 10:16:06 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void    ft_cd(t_gc *gc, char **args, t_env *env)
         target = args[1];
     if (chdir(target) != 0)
     {
-        perror("cd");
+        write(2, "minishell: cd: too many arguments\n", 36);
         g_last_exit_status = 1;
         return ;
     }

@@ -12,11 +12,12 @@
 
 #include "../minishell.h"
 
+
 char *get_env_value_echo(char *key, t_env *env)
 {
     while (env)
     {
-        if (!strcmp(env->key, key))
+        if (!ft_strcmp(env->key, key))
             return env->value;
         env = env->next;
     }
@@ -38,37 +39,88 @@ char *expand_env(t_gc *gc, char *input, t_env *env)
                 char *status_str = ft_itoa_gc(gc, g_last_exit_status);
                 expanded = gc_strjoin_free_a(gc, expanded, status_str);
                 ptr++;
-                continue;
             }
-            char *var_start = ptr;
-            while (*ptr && (ft_isalnum(*ptr) || *ptr == '_'))
-                ptr++;
-            char *var_name = gc_strndup(gc, var_start, ptr - var_start);
-            char *value = get_env_value_echo(var_name, env);
-            expanded = gc_strjoin_free_a(gc, expanded, value);
+            else
+            {
+                char *start = ptr;
+                while (*ptr && (ft_isalnum(*ptr) || *ptr == '_'))
+                    ptr++;
+                char *key = gc_strndup(gc, start, ptr - start);
+                char *val = get_env_value_echo(key, env);
+                expanded = gc_strjoin_free_a(gc, expanded, val);
+            }
         }
         else
         {
-            char temp[2] = {*ptr, '\0'};
+            char temp[2] = {*ptr++, '\0'};
             expanded = gc_strjoin_free_a(gc, expanded, temp);
-            ptr++;
         }
     }
     return expanded;
 }
 
-int check_flag(char *input)
-{
-    int i = 1;
 
-    if (!input || input[0] != '-')
-        return 0;
-    while (input[i])
+static void print_expanded(t_gc *gc, char *input, t_env *env)
+{
+    char quote = 0;
+    char *result = gc_strdup(gc, "");
+    for (size_t i = 0; input[i]; )
     {
-        if (input[i] != 'n')
-            return 0;
-        i++;
+        if (!quote && (input[i] == '\'' || input[i] == '"'))
+        {
+            quote = input[i++];
+        }
+        else if (quote && input[i] == quote)
+        {
+            quote = 0;
+            i++;
+        }
+        else if (!quote && input[i] == '$')
+        {
+            i++;
+            if (input[i] == '?')
+            {
+                char *exit_str = ft_itoa_gc(gc, g_last_exit_status);
+                result = gc_strjoin_free_a(gc, result, exit_str);
+                i++;
+            }
+            else if (input[i] && (ft_isalpha(input[i]) || input[i] == '_'))
+            {
+                size_t start = i;
+                while (input[i] && (ft_isalnum(input[i]) || input[i] == '_'))
+                    i++;
+                char *key = gc_strndup(gc, &input[start], i - start);
+                char *val = get_env_value_echo(key, env);
+                result = gc_strjoin_free_a(gc, result, val);
+            }
+            else if (input[i] == '\0')
+            {
+                result = ft_strjoin_char_gc(gc, result, '$');
+            }
+            else
+            {
+                result = ft_strjoin_char_gc(gc, result, '$');
+                result = ft_strjoin_char_gc(gc, result, input[i++]);
+            }
+        }
+        else if (quote == '\'' && input[i]) // inside single quotes, no expand
+        {
+            result = ft_strjoin_char_gc(gc, result, input[i++]);
+        }
+        else // normal char or inside double quote
+        {
+            result = ft_strjoin_char_gc(gc, result, input[i++]);
+        }
     }
+    printf("%s", result);
+}
+static int check_flag(char *arg)
+{
+    if (!arg || arg[0] != '-')
+        return 0;
+    for (int i = 1; arg[i]; i++)
+        if (arg[i] != 'n')
+            return 0;
     return 1;
 }
 
@@ -77,77 +129,25 @@ void ft_echo(t_gc *gc, char **args, t_env *env)
     int i = 1;
     int newline = 1;
 
-    if (args[1] && check_flag(args[1]))
+    if (args[i] && check_flag(args[i]))
     {
         newline = 0;
         i++;
     }
 
+    char *joined = gc_strdup(gc, "");
     while (args[i])
     {
-        int j = 0;
-        char quote = 0;
-        char *arg = args[i];
-        char *result = gc_strdup(gc, "");
-
-        while (arg[j])
-        {
-            if (quote == 0 && (arg[j] == '\'' || arg[j] == '"'))
-            {
-                quote = arg[j];
-                j++;
-                continue;
-            }
-            if (quote && arg[j] == quote)
-            {
-                quote = 0;
-                j++;
-                continue;
-            }
-            if (quote == '\'')
-            {
-                result = ft_strjoin_char_gc(gc, result, arg[j]);
-                j++;
-            }
-            else
-            {
-                if (arg[j] == '$')
-                {
-                    j++;
-                    if (arg[j] == '?')
-                    {
-                        char *status_str = ft_itoa_gc(gc, g_last_exit_status);
-                        result = gc_strjoin_free_a(gc, result, status_str);
-                        j++;
-                    }
-                    else if (ft_isalpha(arg[j]) || arg[j] == '_')
-                    {
-                        size_t var_start = j;
-                        while (ft_isalnum(arg[j]) || arg[j] == '_')
-                            j++;
-                        char *var_name = gc_strndup(gc, &arg[var_start], j - var_start);
-                        char *val = get_env_value_echo(var_name, env);
-                        result = gc_strjoin_free_a(gc, result, val);
-                    }
-                    else
-                    {
-                        result = ft_strjoin_char_gc(gc, result, '$');
-                    }
-                }
-                else
-                {
-                    result = ft_strjoin_char_gc(gc, result, arg[j]);
-                    j++;
-                }
-            }
-        }
-        printf("%s", result);
+        joined = gc_strjoin_free_a(gc, joined, args[i]);
         if (args[i + 1])
-            printf(" ");
+            joined = ft_strjoin_char_gc(gc, joined, ' ');
         i++;
     }
+
+    print_expanded(gc, joined, env);
+
     if (newline)
         printf("\n");
+
     g_last_exit_status = 0;
 }
-
