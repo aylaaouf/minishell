@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 19:15:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/28 07:24:03 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/01 10:13:47 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void    ft_pwd(char **args, t_env *env)
     if (args[1])
     {
         g_last_exit_status = 1;
-        perror("pwd");
+        write(2, "minishell: pwd: too many arguments\n", 36);
     }
     while (env)
     {
