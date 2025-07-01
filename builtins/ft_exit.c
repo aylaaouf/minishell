@@ -6,37 +6,37 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 19:25:50 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/28 07:22:11 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/01 11:52:28 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	ft_atoi(const char *str)
+int ft_atoi(const char *str)
 {
-	int	i;
-	int	result;
-	int	sign;
+    int i;
+    int result;
+    int sign;
 
-	i = 0;
-	result = 0;
-	sign = 1;
-	while ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
-		i++;
-	if (str[i] == '+' || str[i] == '-')
-	{
-		if (str[i] == '-')
-		{
-			sign *= -1;
-		}
-		i++;
-	}
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		result = result * 10 + str[i] - '0';
-		i++;
-	}
-	return (result * sign);
+    i = 0;
+    result = 0;
+    sign = 1;
+    while ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
+        i++;
+    if (str[i] == '+' || str[i] == '-')
+    {
+        if (str[i] == '-')
+        {
+            sign *= -1;
+        }
+        i++;
+    }
+    while (str[i] >= '0' && str[i] <= '9')
+    {
+        result = result * 10 + str[i] - '0';
+        i++;
+    }
+    return (result * sign);
 }
 
 int is_number(char *str)
@@ -44,6 +44,8 @@ int is_number(char *str)
     int i;
 
     i = 0;
+    if (!str || str[0] == '\0')
+        return (0);
     if (str[i] == '+' || str[i] == '-')
         i++;
     if (str[i] == '\0')
@@ -52,10 +54,16 @@ int is_number(char *str)
     {
         if (str[i] >= '0' && str[i] <= '9')
             i++;
+        else if (str[i] == ' ' || str[i] == '\t')
+        {
+            while (str[i] == ' ' || str[i] == '\t')
+                i++;
+            break ;
+        }
         else
             return (0);
     }
-    return (1);
+    return (str[i] == '\0');
 }
 
 int ft_exit(char **args)
@@ -71,6 +79,7 @@ int ft_exit(char **args)
     if (args[1] && args[2] != NULL)
     {
         printf("minishell: exit: too many arguments\n");
+        g_last_exit_status = 1;
         return (1);
     }
     if (args[1])
