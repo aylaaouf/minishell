@@ -6,11 +6,27 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 21:23:27 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/28 07:23:07 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/01 10:02:45 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+int is_valid_identifier(char *key)
+{
+    int i;
+
+    if (!key || !key[0] || (!ft_isalpha(key[0]) && key[0] != '_'))
+        return (0);
+    i = 1;
+    while (key[i])
+    {
+        if (!ft_isalnum(key[i]) && key[i] != '_')
+            return (0);
+        i++;
+    }
+    return (1);
+}
 
 void    print_sorted_env(t_env *env)
 {
@@ -102,20 +118,30 @@ void    ft_export(t_gc *gc, char **args, t_env *env)
     char *key;
     char *value;
     char *expanded;
+    int error;
 
     if (!args[1])
     {
         print_sorted_env(env);
-        g_last_exit_status = 1;
+        g_last_exit_status = 0;
         return ;
     }
     i = 1;
+    error = 0;
     while (args[i])
     {
         args_kv = ft_split(args[i], '=');
         key = args_kv[0];
         if (args_kv[1])
             value = args_kv[1];
+        if (!is_valid_identifier(key))
+        {
+            write(2, "minishell: export: not a valid identifier\n", 43);
+            error = 1;
+            free_2d_array(args_kv);
+            i++;
+            continue;
+        }
         node = find_env_node(env, key);
         if (node)
         {
@@ -135,5 +161,8 @@ void    ft_export(t_gc *gc, char **args, t_env *env)
         free_2d_array(args_kv);
         i++;
     }
-    g_last_exit_status = 0;
+    if (error)
+        g_last_exit_status = 1;
+    else
+        g_last_exit_status = 0;
 }
