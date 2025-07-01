@@ -33,11 +33,11 @@ void    ft_unset(char **args, t_env *env)
                 if (deleted->value)
                     free(deleted->value);
                 free(deleted);
-                g_last_exit_status = 0;
                 break ;
             }
             curr = curr->next;
         }
         i++;
     }
+    g_last_exit_status = 0;
 }
