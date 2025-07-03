@@ -49,11 +49,8 @@ void add_argument(t_gc *gc, t_command *cmd, char *arg, t_token_type type)
 
     if (!cmd || !arg)
         return;
-
     while (cmd->args && cmd->args[count])
         count++;
-
-    // Don't strip single quotes
     if (type == TOKEN_SQUOTE)
         clean_arg = gc_strdup(gc, arg);
     else
@@ -97,20 +94,20 @@ t_command *parse_tokens(t_gc *gc, t_token *tokens)
 
     while (tokens)
     {
-        if (tokens->type == TOKEN_WORD || tokens->type == TOKEN_ENV ||
+        if (tokens->type == TOKEN_WORD ||
             tokens->type == TOKEN_SQUOTE || tokens->type == TOKEN_DQUOTE)
         {
             add_argument(gc, current, tokens->value, tokens->type);
         }
         else if (tokens->type == TOKEN_INPUT && tokens->next)
         {
-            tokens = tokens->next;
+			tokens = tokens->next;
             add_redirection(gc, current, "<", tokens->value);
         }
         else if (tokens->type == TOKEN_OUTPUT && tokens->next)
-        {
-            tokens = tokens->next;
-            add_redirection(gc, current, ">", tokens->value);
+		{
+			tokens = tokens->next;
+			add_redirection(gc, current, ">", tokens->value);
         }
         else if (tokens->type == TOKEN_APPEND && tokens->next)
         {
@@ -121,6 +118,7 @@ t_command *parse_tokens(t_gc *gc, t_token *tokens)
         {
             tokens = tokens->next;
             add_redirection(gc, current, "<<", tokens->value);
+			current->has_heredoc = 1;
         }
         else if (tokens->type == TOKEN_PIPE)
         {

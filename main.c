@@ -28,7 +28,7 @@ int is_builtin(char *cmd)
 void builtins(t_gc *gc, char **args, t_env *env)
 {
     if (!ft_strcmp(args[0], "echo"))
-        ft_echo(gc, args, env);
+        ft_echo(args);
     else if (!ft_strcmp(args[0], "cd"))
         ft_cd(gc, args, env);
     else if (!ft_strcmp(args[0], "env"))
@@ -41,6 +41,17 @@ void builtins(t_gc *gc, char **args, t_env *env)
         ft_export(gc, args, env);
     else if (!ft_strcmp(args[0], "exit"))
         ft_exit(args);
+}
+
+void print_tokens(t_token *tokens)
+{
+	int i = 0;
+	while (tokens)
+	{
+		printf("Token[%d]: type=%d, value=\"%s\"\n", i, tokens->type, tokens->value);
+		tokens = tokens->next;
+		i++;
+	}
 }
 
 int main(int ac, char *av[], char **env)
@@ -71,14 +82,15 @@ int main(int ac, char *av[], char **env)
             free(input);
             continue;
         }
+        expander(&gc, tokens, my_env);
         t_command *commands = parse_tokens(&gc, tokens);
+		/*print_tokens(tokens);*/
         if (process_heredocs(&gc, commands, my_env) == -1)
         {
             g_last_exit_status = 130;
             free(input);
             continue;
         }
-        expander(&gc, tokens, my_env);
         if (commands->next)
             execute_pipe(&gc, commands, my_env);
         else if (commands->args && is_builtin(commands->args[0]))

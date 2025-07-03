@@ -9,6 +9,7 @@
 /*   Updated: 2025/05/10 19:08:31 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "minishell.h"
 
 int	ft_isspace(char c)
@@ -48,17 +49,24 @@ static int	handle_quote(char *line, int i, t_token **tokens, t_gc *gc)
 {
 	char quote = line[i++];
 	int start = i;
+
 	while (line[i] && line[i] != quote)
 		i++;
+
 	if (line[i] == quote)
 	{
-		char *str = gc_strndup(gc, &line[start], i - start);
-		t_token_type type = (quote == '\'') ? TOKEN_SQUOTE : TOKEN_DQUOTE;
-		add_token(tokens, new_token(type, str, gc));
+		int len = i - start;
+		if (len > 0)
+		{
+			char *str = gc_strndup(gc, &line[start], len);
+			t_token_type type = (quote == '\'') ? TOKEN_SQUOTE : TOKEN_DQUOTE;
+			add_token(tokens, new_token(type, str, gc));
+		}
 		return i + 1;
 	}
 	return i;
 }
+
 
 static int	handle_operator(char *line, int i, t_token **tokens, t_gc *gc)
 {
@@ -89,16 +97,26 @@ static int	handle_operator(char *line, int i, t_token **tokens, t_gc *gc)
 
 static int	handle_dollar(char *line, int i, t_token **tokens, t_gc *gc)
 {
-	int start = ++i;
+	int start = i;
+	i++;
+	if (line[i] == '?')
+	{
+		add_token(tokens, new_token(TOKEN_WORD, gc_strndup(gc, &line[start], 2), gc));
+		return i + 1;
+	}
+	int var_start = i;
 	while (line[i] && (ft_isalnum(line[i]) || line[i] == '_'))
 		i++;
-	if (i > start)
+	if (i > var_start)
 	{
-		char *var = gc_strndup(gc, &line[start], i - start);
-		add_token(tokens, new_token(TOKEN_ENV, var, gc));
+		char *var_name = gc_strndup(gc, &line[var_start], i - var_start);
+		char *full_var = gc_strjoin_free_a(gc, gc_strdup(gc, "$"), var_name);
+		add_token(tokens, new_token(TOKEN_WORD, full_var, gc));
 	}
 	else
-		add_token(tokens, new_token(TOKEN_WORD, gc_strndup(gc, "$", 1), gc));
+	{
+		add_token(tokens, new_token(TOKEN_WORD, gc_strndup(gc, &line[start], 1), gc));
+	}
 	return i;
 }
 

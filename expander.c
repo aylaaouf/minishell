@@ -20,19 +20,19 @@ char *get_env_value(t_env *env, const char *key)
             return env->value;
         env = env->next;
     }
-    return NULL;
+    return "";
 }
 
 char *extract_var_name(t_gc *gc, char *str, size_t *i)
 {
     size_t start = *i;
-    while (str[*i] && (str[*i] == '_' ||
-                      (str[*i] >= 'A' && str[*i] <= 'Z') ||
-                      (str[*i] >= 'a' && str[*i] <= 'z') ||
-                      (str[*i] >= '0' && str[*i] <= '9')))
+    if (str[*i] == '?')
     {
         (*i)++;
+        return gc_strndup(gc, "?", 1);
     }
+    while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
+        (*i)++;
     return gc_strndup(gc, &str[start], *i - start);
 }
 
@@ -40,26 +40,47 @@ char *expand_token_value(t_gc *gc, char *str, t_env *env)
 {
     size_t i = 0;
     char *result = gc_strdup(gc, "");
+    char quote = 0;
 
     while (str[i])
     {
-        if (str[i] == '$')
+        if (!quote && (str[i] == '"' || str[i] == '\''))
+        {
+            quote = str[i++];
+            continue;
+        }
+        else if (quote && str[i] == quote)
+        {
+            quote = 0;
+            i++;
+            continue;
+        }
+        if (str[i] == '$' && quote != '\'')
         {
             i++;
-            if (str[i] == '?')
+            if (str[i] == '\0')
+            {
+                result = ft_strjoin_char_gc(gc, result, '$');
+                break;
+            }
+			if (str[i] != '?' && !ft_isalnum(str[i]) && str[i] != '_')
+            {
+                result = ft_strjoin_char_gc(gc, result, '$');
+                result = ft_strjoin_char_gc(gc, result, str[i]);
+                i++;
+                continue;
+            }
+            char *key = extract_var_name(gc, str, &i);
+            if (key[0] == '?')
             {
                 char *status_str = ft_itoa_gc(gc, g_last_exit_status);
                 result = gc_strjoin_free_a(gc, result, status_str);
-                i++;
-            }
-            else if (str[i] && (ft_isalpha(str[i]) || str[i] == '_'))
-            {
-                char *var_name = extract_var_name(gc, str, &i);
-                char *var_value = get_env_value(env, var_name);
-                result = gc_strjoin_free_a(gc, result, var_value ? var_value : "");
             }
             else
-                result = ft_strjoin_char_gc(gc, result, '$');
+            {
+                char *val = get_env_value(env, key);
+                result = gc_strjoin_free_a(gc, result, val);
+            }
         }
         else
         {
@@ -74,8 +95,7 @@ void expander(t_gc *gc, t_token *tokens, t_env *env)
 {
     while (tokens)
     {
-        if ((tokens->type == TOKEN_WORD || tokens->type == TOKEN_DQUOTE) &&
-            strchr(tokens->value, '$'))
+        if ((tokens->type == TOKEN_WORD || tokens->type == TOKEN_DQUOTE || tokens->type== TOKEN_ENV ) && strchr(tokens->value, '$'))
         {
             tokens->value = expand_token_value(gc, tokens->value, env);
         }

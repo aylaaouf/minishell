@@ -12,6 +12,51 @@
 
 #include "minishell.h"
 
+char *get_env_value_echo(char *key, t_env *env)
+{
+    while (env)
+    {
+        if (!ft_strcmp(env->key, key))
+            return env->value;
+        env = env->next;
+    }
+    return "";
+}
+
+char *expand_env(t_gc *gc, char *input, t_env *env)
+{
+    char *expanded = gc_strdup(gc, "");
+    char *ptr = input;
+
+    while (*ptr)
+    {
+        if (*ptr == '$' && *(ptr + 1))
+        {
+            ptr++;
+            if (*ptr == '?')
+            {
+                char *status_str = ft_itoa_gc(gc, g_last_exit_status);
+                expanded = gc_strjoin_free_a(gc, expanded, status_str);
+                ptr++;
+            }
+            else
+            {
+                char *start = ptr;
+                while (*ptr && (ft_isalnum(*ptr) || *ptr == '_'))
+                    ptr++;
+                char *key = gc_strndup(gc, start, ptr - start);
+                char *val = get_env_value_echo(key, env);
+                expanded = gc_strjoin_free_a(gc, expanded, val);
+            }
+        }
+        else
+        {
+            char temp[2] = {*ptr++, '\0'};
+            expanded = gc_strjoin_free_a(gc, expanded, temp);
+        }
+    }
+    return expanded;
+}
 int is_quoted(const char *s)
 {
     if (!s)

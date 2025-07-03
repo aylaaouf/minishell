@@ -98,7 +98,7 @@ int check_syntax(t_token *tokens);
 void sigint_handler(int sig);
 void handle_redirection(t_command *cmd, int prev_fd);
 //builtins
-void ft_echo(t_gc *gc, char **args, t_env *env);
+void ft_echo(char **args);
 void    ft_cd(t_gc *gc, char **input, t_env *env);
 void    ft_pwd(char **input, t_env *env);
 void    ft_export(t_gc *gc, char **input, t_env *env);
