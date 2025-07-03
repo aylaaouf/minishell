@@ -12,33 +12,25 @@
 
 #include "minishell.h"
 
-char *remove_outer_quotes(t_gc *gc, char *str, char quote)
+static char	*strip_quotes(t_gc *gc, const char *str)
 {
-    size_t len = strlen(str);
-    if (len >= 2 && str[0] == quote && str[len - 1] == quote)
-        return (gc_strndup(gc, str + 1, len - 2));
-    return (gc_strdup(gc, str));
+	size_t	len = ft_strlen(str);
+
+	if (len >= 2 && ((str[0] == '\'' && str[len - 1] == '\'') || (str[0] == '"' && str[len - 1] == '"')))
+		return gc_strndup(gc, str + 1, len - 2);
+	return gc_strdup(gc, str);
 }
 
-void quote_management(t_gc *gc, t_token *tokens)
+void	quote_management(t_gc *gc, t_token *tokens)
 {
-    char *cleaned;
+	t_token	*cur = tokens;
 
-    while (tokens)
-    {
-        if (tokens->type == TOKEN_SQUOTE)
-        {
-            cleaned = remove_outer_quotes(gc, tokens->value, '\'');
-            tokens->value = cleaned;
-            tokens->type = TOKEN_WORD;
-        }
-        else if (tokens->type == TOKEN_DQUOTE)
-        {
-            cleaned = remove_outer_quotes(gc, tokens->value, '"');
-            tokens->value = cleaned;
-            tokens->type = TOKEN_WORD;
-        }
-        tokens = tokens->next;
-    }
+	while (cur)
+	{
+		if (cur->type == TOKEN_SQUOTE || cur->type == TOKEN_DQUOTE)
+			cur->value = strip_quotes(gc, cur->value);
+		// type remains the same so expander knows how to handle it
+		cur = cur->next;
+	}
 }
 
