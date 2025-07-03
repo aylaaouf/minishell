@@ -11,18 +11,17 @@
 /* ************************************************************************** */
 #include "minishell.h"
 
-void skip_spaces(char *line, size_t *i)
+int	ft_isspace(char c)
 {
-    while (line[*i] && (line[*i] == ' ' || line[*i] == '\t'))
-        (*i)++;
+	return (c == ' ' || c == '\t' || c == '\n');
 }
 
-int is_operator_char(char c)
+static bool	is_special_char(char c)
 {
-    return (c == '|' || c == '<' || c == '>');
+	return (c == '|' || c == '<' || c == '>' || c == '\'' || c == '"' || c == '$');
 }
 
-t_token *new_token(t_gc *gc, char *value, t_token_type type)
+static t_token	*new_token(t_token_type type, char *value, t_gc *gc)
 {
     t_token *token = gc_malloc(gc, sizeof(t_token));
     if (!token)
@@ -33,99 +32,103 @@ t_token *new_token(t_gc *gc, char *value, t_token_type type)
     return token;
 }
 
-t_token *add_token(t_gc *gc, t_token **head, char *value, t_token_type type)
+static void	add_token(t_token **head, t_token *new)
 {
-    t_token *new = new_token(gc, value, type);
-    if (!new)
-        return NULL;
-
-    if (!*head)
-        *head = new;
-    else
-    {
-        t_token *tmp = *head;
-        while (tmp->next)
-            tmp = tmp->next;
-        tmp->next = new;
-    }
-    return new;
+	if (!*head)
+		*head = new;
+	else {
+		t_token *cur = *head;
+		while (cur->next)
+			cur = cur->next;
+		cur->next = new;
+	}
 }
 
-char *extract_argument(t_gc *gc, char *line, size_t *i)
+static int	handle_quote(char *line, int i, t_token **tokens, t_gc *gc)
 {
-    char *result = gc_strdup(gc, "");
-    char quote;
-
-    while (line[*i] && !is_operator_char(line[*i]) &&
-           line[*i] != ' ' && line[*i] != '\t')
-    {
-        size_t start = *i;
-        if (line[*i] == '\'' || line[*i] == '"')
-        {
-            quote = line[(*i)++];
-            while (line[*i] && line[*i] != quote)
-                (*i)++;
-            if (line[*i] == quote)
-                (*i)++;
-        }
-        else
-        {
-            while (line[*i] &&
-                line[*i] != '\'' &&
-                line[*i] != '"' &&
-                !is_operator_char(line[*i]) &&
-                line[*i] != ' ' && line[*i] != '\t')
-                (*i)++;
-        }
-        char *part = gc_strndup(gc, &line[start], *i - start);
-        char *tmp = result;
-        result = gc_strjoin_free_a(gc, tmp, part);
-    }
-    return result;
+	char quote = line[i++];
+	int start = i;
+	while (line[i] && line[i] != quote)
+		i++;
+	if (line[i] == quote)
+	{
+		char *str = gc_strndup(gc, &line[start], i - start);
+		t_token_type type = (quote == '\'') ? TOKEN_SQUOTE : TOKEN_DQUOTE;
+		add_token(tokens, new_token(type, str, gc));
+		return i + 1;
+	}
+	return i;
 }
 
-t_token *tokenize(char *line, t_gc *gc)
+static int	handle_operator(char *line, int i, t_token **tokens, t_gc *gc)
 {
-    size_t i = 0;
-    t_token *tokens = NULL;
+	if (line[i] == '|' )
+		add_token(tokens, new_token(TOKEN_PIPE, gc_strndup(gc, "|", 1), gc));
+	else if (line[i] == '<')
+	{
+		if (line[i + 1] == '<')
+		{
+			add_token(tokens, new_token(TOKEN_HEREDOC, gc_strndup(gc, "<<", 2), gc));
+			return i + 2;
+		}
+		else
+			add_token(tokens, new_token(TOKEN_INPUT, gc_strndup(gc, "<", 1), gc));
+	}
+	else if (line[i] == '>')
+	{
+		if (line[i + 1] == '>')
+		{
+			add_token(tokens, new_token(TOKEN_APPEND, gc_strndup(gc, ">>", 2), gc));
+			return i + 2;
+		}
+		else
+			add_token(tokens, new_token(TOKEN_OUTPUT, gc_strndup(gc, ">", 1), gc));
+	}
+	return i + 1;
+}
 
-    while (line[i])
-    {
-        skip_spaces(line, &i);
-        if (!line[i])
-            break;
+static int	handle_dollar(char *line, int i, t_token **tokens, t_gc *gc)
+{
+	int start = ++i;
+	while (line[i] && (ft_isalnum(line[i]) || line[i] == '_'))
+		i++;
+	if (i > start)
+	{
+		char *var = gc_strndup(gc, &line[start], i - start);
+		add_token(tokens, new_token(TOKEN_ENV, var, gc));
+	}
+	else
+		add_token(tokens, new_token(TOKEN_WORD, gc_strndup(gc, "$", 1), gc));
+	return i;
+}
 
-        if (line[i] == '|')
-        {
-            add_token(gc, &tokens, gc_strdup(gc, "|"), TOKEN_PIPE);
-            i++;
-        }
-        else if (line[i] == '>' && line[i + 1] == '>')
-        {
-            add_token(gc, &tokens, gc_strdup(gc, ">>"), TOKEN_APPEND);
-            i += 2;
-        }
-        else if (line[i] == '>')
-        {
-            add_token(gc, &tokens, gc_strdup(gc, ">"), TOKEN_OUTPUT);
-            i++;
-        }
-        else if (line[i] == '<' && line[i + 1] == '<')
-        {
-            add_token(gc, &tokens, gc_strdup(gc, "<<"), TOKEN_HEREDOC);
-            i += 2;
-        }
-        else if (line[i] == '<')
-        {
-            add_token(gc, &tokens, gc_strdup(gc, "<"), TOKEN_INPUT);
-            i++;
-        }
-        else
-        {
-            char *arg = extract_argument(gc, line, &i);
-            if (arg)
-                add_token(gc, &tokens, arg, TOKEN_WORD);
-        }
-    }
-    return tokens;
+static int	handle_word(char *line, int i, t_token **tokens, t_gc *gc)
+{
+	int start = i;
+	while (line[i] && !ft_isspace(line[i]) && !is_special_char(line[i]))
+		i++;
+	char *word = gc_strndup(gc, &line[start], i - start);
+	add_token(tokens, new_token(TOKEN_WORD, word, gc));
+	return i;
+}
+
+t_token	*tokenize(char *line, t_gc *gc)
+{
+	int i = 0;
+	t_token *tokens = NULL;
+
+	while (line[i])
+	{
+		if (ft_isspace(line[i]))
+			i++;
+		else if (line[i] == '\'' || line[i] == '"')
+			i = handle_quote(line, i, &tokens, gc);
+		else if (line[i] == '|' || line[i] == '<' || line[i] == '>')
+			i = handle_operator(line, i, &tokens, gc);
+		else if (line[i] == '$')
+			i = handle_dollar(line, i, &tokens, gc);
+		else
+			i = handle_word(line, i, &tokens, gc);
+	}
+	return tokens;
 }

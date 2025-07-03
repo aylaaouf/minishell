@@ -134,10 +134,6 @@ char *remove_outer_quotes(t_gc *gc, char *str, char quote);
 void quote_management(t_gc *gc, t_token *tokens);
 //tokenize.c
 
-void skip_spaces(char *line, size_t *i);
-int is_operator_char(char c);
-t_token *add_token(t_gc *gc, t_token **head, char *value, t_token_type type);
-char *extract_argument(t_gc *gc, char *line, size_t *i);
 t_token *tokenize(char *line, t_gc *gc);
 //envp.c
 
