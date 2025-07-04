@@ -43,17 +43,6 @@ void builtins(t_gc *gc, char **args, t_env *env)
         ft_exit(args);
 }
 
-void print_tokens(t_token *tokens)
-{
-	int i = 0;
-	while (tokens)
-	{
-		printf("Token[%d]: type=%d, value=\"%s\"\n", i, tokens->type, tokens->value);
-		tokens = tokens->next;
-		i++;
-	}
-}
-
 int main(int ac, char *av[], char **env)
 {
     t_gc gc = {0};
@@ -84,7 +73,6 @@ int main(int ac, char *av[], char **env)
         }
         expander(&gc, tokens, my_env);
         t_command *commands = parse_tokens(&gc, tokens);
-		/*print_tokens(tokens);*/
         if (process_heredocs(&gc, commands, my_env) == -1)
         {
             g_last_exit_status = 130;
