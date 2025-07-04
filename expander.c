@@ -95,7 +95,8 @@ void expander(t_gc *gc, t_token *tokens, t_env *env)
 {
     while (tokens)
     {
-        if ((tokens->type == TOKEN_WORD || tokens->type == TOKEN_DQUOTE || tokens->type== TOKEN_ENV ) && strchr(tokens->value, '$'))
+        if ((tokens->type == TOKEN_WORD || tokens->type == TOKEN_DQUOTE) 
+			&& strchr(tokens->value, '$'))
         {
             tokens->value = expand_token_value(gc, tokens->value, env);
         }
