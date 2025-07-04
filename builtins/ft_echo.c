@@ -36,8 +36,8 @@ void ft_echo(char **args)
     while (args[i])
     {
         printf("%s", args[i]);
-		/*if (args[i + 1])*/
-		/*	printf(" ");*/
+		if (args[i + 1])
+			printf(" ");
         i++;
     }
     if (newline)
