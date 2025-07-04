@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:42:28 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/01 10:16:06 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/04 11:39:11 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,12 @@ void    ft_cd(t_gc *gc, char **args, t_env *env)
     char    cwd[4096];
     char    *target;
 
+    if (args[1] && args[2])
+    {
+        write(2, "minishell: cd: too many arguments\n", 34);
+        g_last_exit_status = 1;
+        return ;
+    }
     getcwd(cwd, sizeof(cwd));
     if (!args[1] || ft_strcmp(args[1], "~") == 0)
         target = get_env_value_cd(env, "HOME");
@@ -51,9 +57,9 @@ void    ft_cd(t_gc *gc, char **args, t_env *env)
         target = get_env_value_cd(env, "OLDPWD");
     else
         target = args[1];
-    if (chdir(target) != 0)
+    if (!target || chdir(target) != 0)
     {
-        write(2, "minishell: cd: too many arguments\n", 36);
+        perror("minishell: cd");
         g_last_exit_status = 1;
         return ;
     }

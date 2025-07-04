@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:15:16 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/28 07:38:11 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/04 16:55:10 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,16 @@ int is_builtin(char *cmd)
         || !strncmp(cmd, "exit", 4));
 }
 
-void builtins(t_gc *gc, char **args, t_env *env)
+void builtins(t_gc *gc, char **args, t_env **env)
 {
     if (!ft_strcmp(args[0], "echo"))
         ft_echo(args);
     else if (!ft_strcmp(args[0], "cd"))
-        ft_cd(gc, args, env);
+        ft_cd(gc, args, *env);
     else if (!ft_strcmp(args[0], "env"))
-        print_env(env);
+        print_env(*env);
     else if (!ft_strcmp(args[0], "pwd"))
-        ft_pwd(args, env);
+        ft_pwd(args, *env);
     else if (!ft_strcmp(args[0], "unset"))
         ft_unset(args, env);
     else if (!ft_strcmp(args[0], "export"))
@@ -61,6 +61,7 @@ int main(int ac, char *av[], char **env)
         {
             printf("exit\n");
             g_last_exit_status = 0;
+            gc_clear(&gc);
             exit(0);
         }
         add_history(input);
@@ -84,7 +85,7 @@ int main(int ac, char *av[], char **env)
         else if (commands->args && is_builtin(commands->args[0]))
         {
             handle_redirection(commands, -1);
-            builtins(&gc, commands->args, my_env);
+            builtins(&gc, commands->args, &my_env);
             dup2(commands->saved_stdin, STDIN_FILENO);
             dup2(commands->saved_stdout, STDOUT_FILENO);
             close(commands->saved_stdin);

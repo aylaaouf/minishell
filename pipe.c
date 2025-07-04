@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 15:47:11 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/28 05:36:46 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/04 16:52:18 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@ int execute_pipe(t_gc *gc, t_command *cmnds, t_env *env)
     int prev_fd = -1;
     int fd[2];
     pid_t pid;
+    int status;
+    pid_t wpid;
+    pid_t last_pid = -1;
     t_command *cmd = cmnds;
     char **args_env = list_to_array(env);
 
@@ -47,6 +50,12 @@ int execute_pipe(t_gc *gc, t_command *cmnds, t_env *env)
                 close(fd[1]);
             }
             handle_redirection(cmd, prev_fd);
+            if (is_builtin(cmd->args[0]))
+            {
+                builtins(gc, cmd->args, &env);
+                gc_clear(gc);
+                exit(g_last_exit_status);
+            }
             char *path = find_cmnd_path(gc, cmd->args[0], env);
             if (!path)
             {
@@ -57,6 +66,7 @@ int execute_pipe(t_gc *gc, t_command *cmnds, t_env *env)
             perror("execve failed");
             exit(1);
         }
+        last_pid = pid;
         if (prev_fd != -1)
             close(prev_fd);
         if (cmd->next)
@@ -68,8 +78,16 @@ int execute_pipe(t_gc *gc, t_command *cmnds, t_env *env)
             close(cmd->heredoc_fd);
         cmd = cmd->next;
     }
-    while (wait(NULL) > 0)
-        ;
+    while ((wpid = wait(&status)) > 0)
+    {
+        if (wpid == last_pid)
+        {
+            if (WIFEXITED(status))
+                g_last_exit_status = WEXITSTATUS(status);
+            else if (WIFSIGNALED(status))
+                g_last_exit_status = 128 + WTERMSIG(status);
+        }
+    }
     free_2d_array(args_env);
-    return 0;
+    return g_last_exit_status;
 }

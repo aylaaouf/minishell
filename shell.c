@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 17:07:09 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/28 05:38:08 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/04 16:57:35 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,13 @@ char *find_cmnd_path(t_gc *gc, char *cmnd, t_env *env)
 
     if (cmnd[0] == '/' || cmnd[0] == '.')
     {
-        if (!access(cmnd, X_OK))
+        if (access(cmnd, F_OK) == -1)
+            return NULL;
+        if (access(cmnd, X_OK) == -1)
+        {
             return gc_strdup(gc, cmnd);
-        return NULL;
+        }
+        return gc_strdup(gc, cmnd);
     }
 
     path_env = get_env_value(env, "PATH");
@@ -85,6 +89,7 @@ int shell(t_gc *gc, t_command *cmnd, t_env *env)
     int status;
     char **args;
     char *path;
+    struct stat st;
 
     if (!cmnd || !cmnd->args || !cmnd->args[0])
         return 1;
@@ -96,7 +101,27 @@ int shell(t_gc *gc, t_command *cmnd, t_env *env)
         g_last_exit_status = 127;
         return 127;
     }
-
+    if (stat(path, &st) == 0)
+    {
+        if (S_ISDIR(st.st_mode))
+        {
+            printf("%s: Is a directory\n", cmnd->args[0]);
+            g_last_exit_status = 126;
+            return 126;
+        }
+        if (access(path, X_OK) == -1)
+        {
+            printf("%s: Permission denied\n", cmnd->args[0]);
+            g_last_exit_status = 126;
+            return 126;
+        }
+    }
+    else
+    {
+        printf("%s: command not found\n", cmnd->args[0]);
+        g_last_exit_status = 127;
+        return 127;
+    }
     args = list_to_array(env);
     child_pid = fork();
     if (child_pid == -1)

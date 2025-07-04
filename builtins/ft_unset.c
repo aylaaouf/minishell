@@ -12,17 +12,28 @@
 
 #include "../minishell.h"
 
-void    ft_unset(char **args, t_env *env)
+void ft_unset(char **args, t_env **env)
 {
     t_env *curr;
-    int     i;
     t_env *deleted;
+    int i;
 
     i = 1;
     g_last_exit_status = 1;
     while (args[i])
     {
-        curr = env;
+        // Check if head node matches and remove it
+        while (*env && (*env)->key && ft_strcmp(args[i], (*env)->key) == 0)
+        {
+            deleted = *env;
+            *env = (*env)->next;  // Update the actual environment pointer
+            free(deleted->key);
+            if (deleted->value)
+                free(deleted->value);
+            free(deleted);
+        }
+        
+        curr = *env;
         while (curr && curr->next)
         {
             if (ft_strcmp(args[i], curr->next->key) == 0)
@@ -33,7 +44,7 @@ void    ft_unset(char **args, t_env *env)
                 if (deleted->value)
                     free(deleted->value);
                 free(deleted);
-                break ;
+                break;
             }
             curr = curr->next;
         }

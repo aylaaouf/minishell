@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 21:23:27 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/01 10:02:45 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/04 15:05:13 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,9 @@ void    add_env_node(t_gc *gc, t_env **env, char *key, char *value)
 
 char *expand_value(t_gc *gc, char *value, t_env *env)
 {
-    if (!value || value[0] != '$')
+    if (!value)
+        return (NULL);
+    if (value[0] != '$')
         return (gc_strdup(gc, value));
     char *var;
     t_env *node;
@@ -110,7 +112,7 @@ char *expand_value(t_gc *gc, char *value, t_env *env)
     return (gc_strdup(gc, ""));
 }
 
-void    ft_export(t_gc *gc, char **args, t_env *env)
+void    ft_export(t_gc *gc, char **args, t_env **env)
 {
     char **args_kv;
     t_env *node;
@@ -122,7 +124,7 @@ void    ft_export(t_gc *gc, char **args, t_env *env)
 
     if (!args[1])
     {
-        print_sorted_env(env);
+        print_sorted_env(*env);
         g_last_exit_status = 0;
         return ;
     }
@@ -132,8 +134,12 @@ void    ft_export(t_gc *gc, char **args, t_env *env)
     {
         args_kv = ft_split(args[i], '=');
         key = args_kv[0];
+        value = NULL;
+        expanded = NULL;
         if (args_kv[1])
             value = args_kv[1];
+        else
+            value = NULL;
         if (!is_valid_identifier(key))
         {
             write(2, "minishell: export: not a valid identifier\n", 43);
@@ -142,21 +148,23 @@ void    ft_export(t_gc *gc, char **args, t_env *env)
             i++;
             continue;
         }
-        node = find_env_node(env, key);
+        node = find_env_node(*env, key);
         if (node)
         {
             if (value)
             {
                 free(node->value);
-                expanded = expand_value(gc, value, env);
+                expanded = expand_value(gc, value, *env);
                 node->value = expanded;
             }
         }
         else
         {
             if (value)
-                expanded = expand_value(gc, value, env);
-            add_env_node(gc, &env, key, expanded);
+                expanded = expand_value(gc, value, *env);
+            else
+                expanded = NULL;
+            add_env_node(gc, env, key, expanded);
         }
         free_2d_array(args_kv);
         i++;

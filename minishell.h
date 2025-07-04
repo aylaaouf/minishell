@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/28 07:25:11 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/04 16:54:49 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <fcntl.h>
+#include <sys/stat.h>
 
 typedef enum e_token_type
 {
@@ -100,9 +101,11 @@ void handle_redirection(t_command *cmd, int prev_fd);
 void ft_echo(char **args);
 void    ft_cd(t_gc *gc, char **input, t_env *env);
 void    ft_pwd(char **input, t_env *env);
-void    ft_export(t_gc *gc, char **input, t_env *env);
-void    ft_unset(char **input, t_env *env);
+void    ft_export(t_gc *gc, char **input, t_env **env);
+void    ft_unset(char **input, t_env **env);
 int     ft_exit(char **input);
+void builtins(t_gc *gc, char **args, t_env **env);
+int is_builtin(char *cmd);
 //ft_echo.c
 char *expand_env(t_gc *gc, char *input, t_env *env);
 //pipe

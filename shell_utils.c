@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aylaaouf <aylaaouf@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 18:48:40 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/05/29 10:27:39 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/04 15:09:09 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,19 @@ char    *ft_strjoin_env(char *s1, char *s2)
 {
     size_t i;
     size_t j;
+    size_t len1;
+    size_t len2;
     char *array;
 
+    if (!s1)
+        return (NULL);
+    if (!s2)
+        return (s1);
     i = 0;
     j = 0;
-    array = malloc(ft_strlen(s1) + ft_strlen(s2) + 2);
+    len1 = ft_strlen(s1);
+    len2 = ft_strlen(s2);
+    array = malloc(len1 + len2 + 2);
     if (!array)
         return (NULL);
     while (i < ft_strlen(s1))
