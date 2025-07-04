@@ -32,7 +32,6 @@ typedef enum e_token_type
 	TOKEN_OUTPUT,       // >
 	TOKEN_APPEND,       // >>
 	TOKEN_HEREDOC,      // <<
-	TOKEN_ENV,          // $VAR
 	TOKEN_SQUOTE,       // 'string'
 	TOKEN_DQUOTE,       // "string"
 }   t_token_type;
