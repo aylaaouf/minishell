@@ -22,17 +22,15 @@ void ft_unset(char **args, t_env **env)
     g_last_exit_status = 1;
     while (args[i])
     {
-        // Check if head node matches and remove it
-        while (*env && (*env)->key && ft_strcmp(args[i], (*env)->key) == 0)
+        if (*env && (*env)->key && ft_strcmp(args[i], (*env)->key) == 0)
         {
             deleted = *env;
-            *env = (*env)->next;  // Update the actual environment pointer
+            *env = (*env)->next;
             free(deleted->key);
             if (deleted->value)
                 free(deleted->value);
             free(deleted);
         }
-        
         curr = *env;
         while (curr && curr->next)
         {
