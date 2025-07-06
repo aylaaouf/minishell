@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 17:07:09 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/04 16:57:35 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/06 00:29:50 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,20 +52,15 @@ char *find_cmnd_path(t_gc *gc, char *cmnd, t_env *env)
         if (access(cmnd, F_OK) == -1)
             return NULL;
         if (access(cmnd, X_OK) == -1)
-        {
             return gc_strdup(gc, cmnd);
-        }
         return gc_strdup(gc, cmnd);
     }
-
     path_env = get_env_value(env, "PATH");
     if (!path_env || !cmnd)
         return NULL;
-
     path = ft_split(path_env, ':');
     if (!path)
         return NULL;
-
     while (path[i])
     {
         full_path = ft_strjoin(path[i], "/");
@@ -78,7 +73,6 @@ char *find_cmnd_path(t_gc *gc, char *cmnd, t_env *env)
         free(full_path);
         i++;
     }
-
     free_2d_array(path);
     return NULL;
 }
@@ -97,7 +91,10 @@ int shell(t_gc *gc, t_command *cmnd, t_env *env)
     path = find_cmnd_path(gc, cmnd->args[0], env);
     if (!path)
     {
-        printf("%s: command not found\n", cmnd->args[0]);
+        if (cmnd->args[0][0] == '/' || (cmnd->args[0][0] == '.' && cmnd->args[0][1] == '/'))
+            write(2, "No such file or directory\n", 27);
+        else
+            write(2, "command not found\n", 19);
         g_last_exit_status = 127;
         return 127;
     }
@@ -105,20 +102,23 @@ int shell(t_gc *gc, t_command *cmnd, t_env *env)
     {
         if (S_ISDIR(st.st_mode))
         {
-            printf("%s: Is a directory\n", cmnd->args[0]);
+            write(2, "Is a directory\n", 16);
             g_last_exit_status = 126;
-            return 126;
+            return (126);
         }
         if (access(path, X_OK) == -1)
         {
-            printf("%s: Permission denied\n", cmnd->args[0]);
+            write(2, "Permission denied\n", 19);
             g_last_exit_status = 126;
-            return 126;
+            return (126);
         }
     }
     else
     {
-        printf("%s: command not found\n", cmnd->args[0]);
+        if (cmnd->args[0][0] == '/' || (cmnd->args[0][0] == '.' && cmnd->args[0][1] == '/'))
+            write(2, "No such file or directory\n", 27);
+        else
+            write(2, "command not found\n", 19);
         g_last_exit_status = 127;
         return 127;
     }
@@ -150,12 +150,10 @@ int shell(t_gc *gc, t_command *cmnd, t_env *env)
         free_2d_array(args);
         if (cmnd->heredoc_fd != -1)
             close(cmnd->heredoc_fd);
-
         if (WIFEXITED(status))
             g_last_exit_status = WEXITSTATUS(status);
         else if (WIFSIGNALED(status))
             g_last_exit_status = 128 + WTERMSIG(status);
     }
-
-    return 0;
+    return (0);
 }

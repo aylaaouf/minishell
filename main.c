@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:15:16 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/04 16:55:10 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/06 01:02:11 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ int main(int ac, char *av[], char **env)
         {
             printf("exit\n");
             g_last_exit_status = 0;
-            gc_clear(&gc);
             exit(0);
         }
         add_history(input);
