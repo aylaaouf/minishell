@@ -32,7 +32,6 @@ void	quote_management(t_gc *gc, t_token *tokens)
 	{
 		if (cur->type == TOKEN_SQUOTE || cur->type == TOKEN_DQUOTE)
 			cur->value = strip_quotes(gc, cur->value);
-		// type remains the same so expander knows how to handle it
 		cur = cur->next;
 	}
 }
