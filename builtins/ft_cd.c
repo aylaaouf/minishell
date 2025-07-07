@@ -40,7 +40,7 @@ void	update_env_var(t_gc *gc, t_env *env, char *key, char *new_value)
 	}
 }
 
-int	helper(char **args)
+int	ft_helper(char **args)
 {
 	if (args[1] && args[2])
 	{
@@ -56,7 +56,7 @@ void	ft_cd(t_gc *gc, char **args, t_env *env)
 	char	cwd[4096];
 	char	*target;
 
-	if (helper(args))
+	if (ft_helper(args))
 		return ;
 	getcwd(cwd, sizeof(cwd));
 	if (!args[1] || ft_strcmp(args[1], "~") == 0)
