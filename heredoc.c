@@ -31,7 +31,8 @@ char	*expand_env(t_gc *gc, char *input, t_env *env)
 	char	*start;
 	char	*key;
 	char	*val;
-			char temp[2] = {*ptr++, '\0'};
+	ptr = NULL;
+	char temp[2] = {*ptr++, '\0'};
 
 	expanded = gc_strdup(gc, "");
 	ptr = input;

@@ -47,7 +47,7 @@ int	main(int ac, char *av[], char **env)
 	t_token		*tokens;
 	t_command	*commands;
 
-	gc = {0};
+	ft_memset(&gc, 0, sizeof(gc));
 	my_env = env_init(env, &gc);
 	(void)av;
 	(void)ac;

@@ -58,7 +58,6 @@ static int	handle_word_or_quotes(char *line, int i, t_token **tokens, t_gc *gc)
 	char			quote;
 	int				start;
 	char			*quoted;
-	int				start;
 	int				var_start;
 	char			*var;
 	char			*full;
