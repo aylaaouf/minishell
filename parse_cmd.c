@@ -89,44 +89,41 @@ void add_redirection(t_gc *gc, t_command *cmd, char *type, char *file)
 
 t_command *parse_tokens(t_gc *gc, t_token *tokens)
 {
-    t_command *head = new_command(gc);
-    t_command *current = head;
+	t_command *head = new_command(gc);
+	t_command *current = head;
 
-    while (tokens)
-    {
-        if (tokens->type == TOKEN_WORD ||
-            tokens->type == TOKEN_SQUOTE || tokens->type == TOKEN_DQUOTE)
-        {
-            add_argument(gc, current, tokens->value, tokens->type);
-        }
-        else if (tokens->type == TOKEN_INPUT && tokens->next)
-        {
-			tokens = tokens->next;
-            add_redirection(gc, current, "<", tokens->value);
-        }
-        else if (tokens->type == TOKEN_OUTPUT && tokens->next)
+	while (tokens)
+	{
+		if (tokens->type == TOKEN_WORD ||
+			tokens->type == TOKEN_SQUOTE || tokens->type == TOKEN_DQUOTE)
 		{
+			add_argument(gc, current, tokens->value, tokens->type);
+		}
+		else if ((tokens->type == TOKEN_INPUT ||
+				  tokens->type == TOKEN_OUTPUT ||
+				  tokens->type == TOKEN_APPEND ||
+				  tokens->type == TOKEN_HEREDOC)
+				 && tokens->next)
+		{
+			char *type;
+			if (tokens->type == TOKEN_INPUT) type = "<";
+			else if (tokens->type == TOKEN_OUTPUT) type = ">";
+			else if (tokens->type == TOKEN_APPEND) type = ">>";
+			else type = "<<";
+
 			tokens = tokens->next;
-			add_redirection(gc, current, ">", tokens->value);
-        }
-        else if (tokens->type == TOKEN_APPEND && tokens->next)
-        {
-            tokens = tokens->next;
-            add_redirection(gc, current, ">>", tokens->value);
-        }
-        else if (tokens->type == TOKEN_HEREDOC && tokens->next)
-        {
-            tokens = tokens->next;
-            add_redirection(gc, current, "<<", tokens->value);
-			current->has_heredoc = 1;
-        }
-        else if (tokens->type == TOKEN_PIPE)
-        {
-            current->next = new_command(gc);
-            current = current->next;
-        }
-        tokens = tokens->next;
-    }
-    return head;
+			add_redirection(gc, current, type, tokens->value);
+
+			if (tokens && tokens->type == TOKEN_HEREDOC)
+				current->has_heredoc = 1;
+		}
+		else if (tokens->type == TOKEN_PIPE)
+		{
+			current->next = new_command(gc);
+			current = current->next;
+		}
+		tokens = tokens->next;
+	}
+	return head;
 }
 
