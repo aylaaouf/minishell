@@ -12,20 +12,20 @@
 
 #include "../minishell.h"
 
-void    ft_pwd(char **args, t_env *env)
+void	ft_pwd(char **args, t_env *env)
 {
-    if (args[1])
-    {
-        g_last_exit_status = 1;
-        write(2, "minishell: pwd: too many arguments\n", 36);
-    }
-    while (env)
-    {
-        if (ft_strcmp(env->key, "PWD") == 0)
-        {
-            printf("%s\n", env->value);
-            g_last_exit_status = 0;
-        }
-        env = env->next;
-    }
+	if (args[1])
+	{
+		g_last_exit_status = 1;
+		write(2, "minishell: pwd: too many arguments\n", 36);
+	}
+	while (env)
+	{
+		if (ft_strcmp(env->key, "PWD") == 0)
+		{
+			printf("%s\n", env->value);
+			g_last_exit_status = 0;
+		}
+		env = env->next;
+	}
 }

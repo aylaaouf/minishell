@@ -38,7 +38,7 @@ char	*ft_strcpy(char *dst, const char *src)
 
 char	*ft_strchr(const char *s, int c)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	while (s[i] != '\0')
@@ -52,14 +52,16 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-char *gc_strndup(t_gc *gc, const char *s, size_t n)
+char	*gc_strndup(t_gc *gc, const char *s, size_t n)
 {
-    size_t len = strnlen(s, n);
-    char *dup = gc_malloc(gc, len + 1);
-    if (!dup)
-        return NULL;
+	size_t	len;
+	char	*dup;
 
-    strncpy(dup, s, len);
-    dup[len] = '\0';
-    return dup;
+	len = strnlen(s, n);
+	dup = gc_malloc(gc, len + 1);
+	if (!dup)
+		return (NULL);
+	strncpy(dup, s, len);
+	dup[len] = '\0';
+	return (dup);
 }

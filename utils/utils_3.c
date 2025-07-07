@@ -12,25 +12,27 @@
 
 #include "../minishell.h"
 
-int ft_strcmp(const char *s1, const char *s2)
+int	ft_strcmp(const char *s1, const char *s2)
 {
-    while (*s1 && (*s1 == *s2))
-    {
-        s1++;
-        s2++;
-    }
-    return (unsigned char)*s1 - (unsigned char)*s2;
+	while (*s1 && (*s1 == *s2))
+	{
+		s1++;
+		s2++;
+	}
+	return ((unsigned char)*s1 - (unsigned char)*s2);
 }
 
-char *ft_strcat(char *dest, const char *src)
+char	*ft_strcat(char *dest, const char *src)
 {
-    char *ptr = dest;
-    while (*ptr)
-        ptr++;
-    while (*src)
-        *ptr++ = *src++;
-    *ptr = '\0';
-    return (dest);
+	char	*ptr;
+
+	ptr = dest;
+	while (*ptr)
+		ptr++;
+	while (*src)
+		*ptr++ = *src++;
+	*ptr = '\0';
+	return (dest);
 }
 
 size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
@@ -136,16 +138,15 @@ char	**ft_split(char const *s, char c)
 	return (array);
 }
 
-char *ft_strncpy(char *dest, char *src, size_t n)
+char	*ft_strncpy(char *dest, char *src, size_t n)
 {
-    size_t i;
+	size_t	i;
 
-    for (i = 0; i < n && src[i] != '\0'; i++)
-        dest[i] = src[i];
-    for (; i < n; i++)
-        dest[i] = '\0';
-
-    return dest;
+	for (i = 0; i < n && src[i] != '\0'; i++)
+		dest[i] = src[i];
+	for (; i < n; i++)
+		dest[i] = '\0';
+	return (dest);
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)

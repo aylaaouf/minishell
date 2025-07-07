@@ -14,17 +14,20 @@
 
 static char	*strip_quotes(t_gc *gc, const char *str)
 {
-	size_t	len = ft_strlen(str);
+	size_t	len;
 
-	if (len >= 2 && ((str[0] == '\'' && str[len - 1] == '\'') || (str[0] == '"' && str[len - 1] == '"')))
-		return gc_strndup(gc, str + 1, len - 2);
-	return gc_strdup(gc, str);
+	len = ft_strlen(str);
+	if (len >= 2 && ((str[0] == '\'' && str[len - 1] == '\'') || (str[0] == '"'
+				&& str[len - 1] == '"')))
+		return (gc_strndup(gc, str + 1, len - 2));
+	return (gc_strdup(gc, str));
 }
 
 void	quote_management(t_gc *gc, t_token *tokens)
 {
-	t_token	*cur = tokens;
+	t_token	*cur;
 
+	cur = tokens;
 	while (cur)
 	{
 		if (cur->type == TOKEN_SQUOTE || cur->type == TOKEN_DQUOTE)
@@ -33,4 +36,3 @@ void	quote_management(t_gc *gc, t_token *tokens)
 		cur = cur->next;
 	}
 }
-
