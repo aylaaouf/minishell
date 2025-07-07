@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:42:28 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/04 11:39:11 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/07 18:51:51 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,17 +40,24 @@ void	update_env_var(t_gc *gc, t_env *env, char *key, char *new_value)
 	}
 }
 
+int	helper(char **args)
+{
+	if (args[1] && args[2])
+	{
+		write(2, "minishell: cd: too many arguments\n", 34);
+		g_last_exit_status = 1;
+		return (1);
+	}
+	return (0);
+}
+
 void	ft_cd(t_gc *gc, char **args, t_env *env)
 {
 	char	cwd[4096];
 	char	*target;
 
-	if (args[1] && args[2])
-	{
-		write(2, "minishell: cd: too many arguments\n", 34);
-		g_last_exit_status = 1;
+	if (helper(args))
 		return ;
-	}
 	getcwd(cwd, sizeof(cwd));
 	if (!args[1] || ft_strcmp(args[1], "~") == 0)
 		target = get_env_value_cd(env, "HOME");

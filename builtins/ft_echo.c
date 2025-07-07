@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 09:43:51 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/06/28 07:21:33 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/07 18:53:22 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,17 @@
 
 static int	check_flag(char *arg)
 {
+	int	i;
+
 	if (!arg || arg[0] != '-')
 		return (0);
-	for (int i = 1; arg[i]; i++)
+	i = 1;
+	while (arg[i])
+	{
 		if (arg[i] != 'n')
 			return (0);
+		i++;
+	}
 	return (1);
 }
 
