@@ -114,7 +114,15 @@ static int	do_heredoc(t_gc *gc, const char *raw_delim, t_env *env)
 		{
 			line = readline("> ");
 			if (!line)
+			{
+				char *msg1 = "minishell: warning: here-document delimited by end-of-file (wanted `";
+				char *msg2 = "`)\n";
+
+				write(2, msg1, ft_strlen(msg1));
+				write(2, delim, ft_strlen(delim));
+				write(2, msg2, ft_strlen(msg2));
 				break ;
+			}
 			if (ft_strcmp(line, delim) == 0)
 			{
 				free(line);
