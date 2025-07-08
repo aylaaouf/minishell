@@ -6,7 +6,7 @@
 /*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:02:40 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/07/08 16:02:26 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/07/08 16:49:33 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	process_quote_in_word(char *line, int i, t_parse_context *ctx)
 		return (handle_double_quote(line, i + 1, ctx->joined, ctx->gc));
 }
 
-int	process_character(char *line, int i, t_parse_context *ctx)
+int	process_character_tokenize(char *line, int i, t_parse_context *ctx)
 {
 	if (line[i] == '"' || line[i] == '\'')
 	{
@@ -78,7 +78,7 @@ int	handle_word_or_quotes(char *line, int i, t_tokenize_params *params)
 	ctx.gc = params->gc;
 	ctx.is_after_heredoc = params->is_after_heredoc;
 	while (line[i] && !ft_isspace(line[i]) && !is_operator_char(line[i]))
-		i = process_character(line, i, &ctx);
+		i = process_character_tokenize(line, i, &ctx);
 	if (ft_strlen(joined) > 0)
 		add_token(params->tokens, new_token(final_type, joined, params->gc));
 	return (i);
