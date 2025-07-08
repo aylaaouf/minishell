@@ -50,7 +50,7 @@ static void	add_token(t_token **head, t_token *new)
 	}
 }
 
-static int	handle_word_or_quotes(char *line, int i, t_token **tokens, t_gc *gc)
+static int	handle_word_or_quotes(char *line, int i, t_token **tokens, t_gc *gc, int is_after_heredoc)
 {
 	char			*joined;
 	int				start_i;
@@ -75,6 +75,13 @@ static int	handle_word_or_quotes(char *line, int i, t_token **tokens, t_gc *gc)
 				i++;
 			if (line[i] == quote)
 			{
+				if (is_after_heredoc)
+				{
+					char *full_with_quotes = gc_strndup(gc, &line[start - 1], i - start + 2);
+					t_token_type q_type = (quote == '\'') ? TOKEN_SQUOTE : TOKEN_DQUOTE;
+					add_token(tokens, new_token(q_type, full_with_quotes, gc));
+					return (i + 1);
+				}
 				quoted = gc_strndup(gc, &line[start], i - start);
 				if (quote == '\'')
 				{
@@ -99,8 +106,7 @@ static int	handle_word_or_quotes(char *line, int i, t_token **tokens, t_gc *gc)
 			start = i++;
 			if (line[i] == '?')
 			{
-				joined = gc_strjoin_free_a(gc, joined, gc_strndup(gc,
-							&line[start], 2));
+				joined = gc_strjoin_free_a(gc, joined, gc_strndup(gc, &line[start], 2));
 				i++;
 			}
 			else
@@ -165,17 +171,26 @@ t_token	*tokenize(char *line, t_gc *gc)
 {
 	int		i;
 	t_token	*tokens;
+	int		is_after_heredoc;
 
 	i = 0;
 	tokens = NULL;
+	is_after_heredoc = 0;
 	while (line[i])
 	{
 		if (ft_isspace(line[i]))
 			i++;
 		else if (is_operator_char(line[i]))
+		{
+			if (line[i] == '<' && line[i + 1] == '<')
+				is_after_heredoc = 1;
 			i = handle_operator(line, i, &tokens, gc);
+		}
 		else
-			i = handle_word_or_quotes(line, i, &tokens, gc);
+		{
+			i = handle_word_or_quotes(line, i, &tokens, gc, is_after_heredoc);
+			is_after_heredoc = 0;
+		}
 	}
 	return (tokens);
 }

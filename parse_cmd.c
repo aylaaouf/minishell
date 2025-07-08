@@ -69,7 +69,7 @@ void	add_redirection(t_gc *gc, t_command *cmd, char *type, char *file)
 	if (!redir)
 		return ;
 	redir->type = gc_strdup(gc, type);
-	if (strcmp(type, "<<") == 0)
+	if (ft_strcmp(type, "<<") == 0)
 		redir->file = gc_strdup(gc, file);
 	else
 		redir->file = strip_quotes_cmd(gc, file);
@@ -89,7 +89,7 @@ t_command	*parse_tokens(t_gc *gc, t_token *tokens)
 {
 	t_command	*head;
 	t_command	*current;
-			char *type;
+	char		*type;
 
 	head = new_command(gc);
 	current = head;
