@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/04 16:54:49 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/08 13:34:45 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,24 @@ typedef struct s_gc
 {
 	t_gc_node				*list;
 }							t_gc;
+
+typedef struct s_heredoc_data
+{
+	t_gc	*gc;
+	char	*delim;
+	int		expand;
+	t_env	*env;
+}	t_heredoc_data;
+
+
+typedef struct s_expand_data
+{
+	t_gc	*gc;
+	char	*result;
+	char	*line;
+	t_env	*env;
+}	t_expand_data;
+
 // gc.c
 void						*gc_malloc(t_gc *gc, size_t size);
 char						*gc_strdup(t_gc *gc, const char *s);
@@ -96,7 +114,6 @@ void						gc_add(t_gc *gc, void *ptr);
 void						gc_clear(t_gc *gc);
 // errors.c
 int							check_syntax(t_token *tokens);
-
 void						sigint_handler(int sig);
 void						handle_redirection(t_command *cmd, int prev_fd);
 // builtins
@@ -113,6 +130,18 @@ char						*expand_env(t_gc *gc, char *input, t_env *env);
 // pipe
 int							execute_pipe(t_gc *gc, t_command *cmnds,
 								t_env *env);
+//heredoc_utils_1.c
+void	heredoc_child_handler(int sig);
+int	is_quoted(const char *s);
+char	*strip_quotes(t_gc *gc, const char *s);
+char	*get_env_value_heredoc(char *key, t_env *env);
+char	*expand_status(t_gc *gc, char *result, size_t *i);
+//heredoc_utils_2.c
+void	heredoc_child_process(int pipefd, t_heredoc_data *data);
+char	*expand_variable(t_expand_data *data, size_t *i);
+char	*expand_line(t_gc *gc, char *line, t_env *env);
+char	*maybe_expand(t_gc *gc, char *line, int expand, t_env *env);
+void	write_eof_warning(char *delim);
 // heredoc.c
 int							process_heredocs(t_gc *gc, t_command *commands,
 								t_env *env);
@@ -130,8 +159,12 @@ char						*strip_quotes_cmd(t_gc *gc, char *s);
 t_command					*parse_tokens(t_gc *gc, t_token *tokens);
 void						add_redirection(t_gc *gc, t_command *cmd,
 								char *type, char *file);
+//expander_utils.c
+char	*extract_var_name(t_gc *gc, char *str, size_t *i);
+char	*get_env_value(t_env *env, const char *key);
 // expander.c
-void expander_on_commands(t_gc *gc, t_command *commands, t_env *env);
+void						expander_on_commands(t_gc *gc, t_command *commands,
+								t_env *env);
 char						*expand_token_value(t_gc *gc, char *str,
 								t_env *env);
 void						expander(t_gc *gc, t_token *tokens, t_env *env);
