@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/08 16:48:12 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/07/08 17:07:35 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,9 +179,22 @@ char						*strip_quotes_cmd(t_gc *gc, char *s);
 t_command					*parse_tokens(t_gc *gc, t_token *tokens);
 void						add_redirection(t_gc *gc, t_command *cmd,
 								char *type, char *file);
+//parse_cmd_utils_1.c
+t_command	*new_command(t_gc *gc);
+char	*strip_quotes_cmd(t_gc *gc, char *s);
+size_t	count_arguments(char **args);
+char	*get_clean_argument(t_gc *gc, char *arg, t_token_type type);
+void	add_argument(t_gc *gc, t_command *cmd, char *arg, t_token_type type);
+//parse_cmd_utils_2.c
+char	*get_redirection_type(t_token_type type);
+void	add_redirection(t_gc *gc, t_command *cmd, char *type, char *file);
+void	append_redirection(t_command *cmd, t_redirection *redir);
+char	*get_redirect_file(t_gc *gc, char *type, char *file);
 // expander_utils.c
-char	*process_character(t_gc *gc, char *result, char *str, size_t *i);
-char	*handle_dollar_expansion(t_gc *gc, char *str, size_t *i, t_env *env);
+char						*process_character(t_gc *gc, char *result,
+								char *str, size_t *i);
+char						*handle_dollar_expansion(t_gc *gc, char *str,
+								size_t *i, t_env *env);
 char						*extract_var_name(t_gc *gc, char *str, size_t *i);
 char						*get_env_value(t_env *env, const char *key);
 // expander.c

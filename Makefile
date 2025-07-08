@@ -12,7 +12,7 @@ SRC := main.c utils/utils_1.c utils/utils_2.c utils/utils_3.c builtins/ft_env.c 
 		utils/utils_5.c signals.c expander_utils.c \
 		heredoc_utils_1.c heredoc_utils_2.c \
 		tokenize_utils_1.c tokenize_utils_2.c tokenize_utils_3.c \
-		tokenize_utils_4.c
+		tokenize_utils_4.c parse_cmd_utils_1.c parse_cmd_utils_2.c
 OBJS := $(SRC:.c=.o)
 
 all : $(NAME)
