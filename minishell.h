@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/08 16:02:23 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/07/08 16:09:22 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,14 @@
 
 typedef enum e_token_type
 {
-	TOKEN_WORD,    // simple command/arg
-	TOKEN_PIPE,    // |
-	TOKEN_INPUT,   // <
-	TOKEN_OUTPUT,  // >
-	TOKEN_APPEND,  // >>
-	TOKEN_HEREDOC, // <<
-	TOKEN_SQUOTE,  // 'string'
-	TOKEN_DQUOTE,  // "string"
+	TOKEN_WORD,
+	TOKEN_PIPE,
+	TOKEN_INPUT,
+	TOKEN_OUTPUT,
+	TOKEN_APPEND,
+	TOKEN_HEREDOC,
+	TOKEN_SQUOTE,
+	TOKEN_DQUOTE,
 }							t_token_type;
 
 extern int					g_last_exit_status;
@@ -91,35 +91,34 @@ typedef struct s_gc
 
 typedef struct s_heredoc_data
 {
-	t_gc	*gc;
-	char	*delim;
-	int		expand;
-	t_env	*env;
-}	t_heredoc_data;
-
+	t_gc					*gc;
+	char					*delim;
+	int						expand;
+	t_env					*env;
+}							t_heredoc_data;
 
 typedef struct s_expand_data
 {
-	t_gc	*gc;
-	char	*result;
-	char	*line;
-	t_env	*env;
-}	t_expand_data;
+	t_gc					*gc;
+	char					*result;
+	char					*line;
+	t_env					*env;
+}							t_expand_data;
 
 typedef struct s_parse_context
 {
-	char			**joined;
-	t_token			**tokens;
-	t_gc			*gc;
-	int				is_after_heredoc;
-}	t_parse_context;
+	char					**joined;
+	t_token					**tokens;
+	t_gc					*gc;
+	int						is_after_heredoc;
+}							t_parse_context;
 
 typedef struct s_tokenize_params
 {
-	t_token	**tokens;
-	t_gc	*gc;
-	int		is_after_heredoc;
-}	t_tokenize_params;
+	t_token					**tokens;
+	t_gc					*gc;
+	int						is_after_heredoc;
+}							t_tokenize_params;
 
 // gc.c
 void						*gc_malloc(t_gc *gc, size_t size);
@@ -145,21 +144,24 @@ char						*expand_env(t_gc *gc, char *input, t_env *env);
 // pipe
 int							execute_pipe(t_gc *gc, t_command *cmnds,
 								t_env *env);
-//heredoc_utils_1.c
-void	heredoc_child_handler(int sig);
-int	is_quoted(const char *s);
-char	*strip_quotes(t_gc *gc, const char *s);
-char	*get_env_value_heredoc(char *key, t_env *env);
-char	*expand_status(t_gc *gc, char *result, size_t *i);
-//heredoc_utils_2.c
-void	heredoc_child_process(int pipefd, t_heredoc_data *data);
-char	*expand_variable(t_expand_data *data, size_t *i);
-char	*expand_line(t_gc *gc, char *line, t_env *env);
-char	*maybe_expand(t_gc *gc, char *line, int expand, t_env *env);
-void	write_eof_warning(char *delim);
-//heredoc_utils_3.c
+// heredoc_utils_1.c
+void						heredoc_child_handler(int sig);
+int							is_quoted(const char *s);
+char						*strip_quotes(t_gc *gc, const char *s);
+char						*get_env_value_heredoc(char *key, t_env *env);
+char						*expand_status(t_gc *gc, char *result, size_t *i);
+// heredoc_utils_2.c
+void						heredoc_child_process(int pipefd,
+								t_heredoc_data *data);
+char						*expand_variable(t_expand_data *data, size_t *i);
+char						*expand_line(t_gc *gc, char *line, t_env *env);
+char						*maybe_expand(t_gc *gc, char *line, int expand,
+								t_env *env);
+void						write_eof_warning(char *delim);
+// heredoc_utils_3.c
 
-int	handle_dollar_variable(char *line, int i, char **joined, t_gc *gc);
+int							handle_dollar_variable(char *line, int i,
+								char **joined, t_gc *gc);
 // heredoc.c
 int							process_heredocs(t_gc *gc, t_command *commands,
 								t_env *env);
@@ -177,9 +179,9 @@ char						*strip_quotes_cmd(t_gc *gc, char *s);
 t_command					*parse_tokens(t_gc *gc, t_token *tokens);
 void						add_redirection(t_gc *gc, t_command *cmd,
 								char *type, char *file);
-//expander_utils.c
-char	*extract_var_name(t_gc *gc, char *str, size_t *i);
-char	*get_env_value(t_env *env, const char *key);
+// expander_utils.c
+char						*extract_var_name(t_gc *gc, char *str, size_t *i);
+char						*get_env_value(t_env *env, const char *key);
 // expander.c
 void						expander_on_commands(t_gc *gc, t_command *commands,
 								t_env *env);
@@ -195,34 +197,44 @@ char						*remove_outer_quotes(t_gc *gc, char *str,
 void						quote_management(t_gc *gc, t_token *tokens);
 // tokenize.c
 
-int	handle_dollar_variable(char *line, int i, char **joined, t_gc *gc);
+int							handle_dollar_variable(char *line, int i,
+								char **joined, t_gc *gc);
 t_token						*tokenize(char *line, t_gc *gc);
-//tokenize_utils_1.c
-int	ft_isspace(char c);
-bool	is_operator_char(char c);
-t_token	*new_token(t_token_type type, char *value, t_gc *gc);
-void	add_token(t_token **head, t_token *new_);
-int	handle_heredoc_quotes(char *line, int i, t_token **tokens,
-		t_gc *gc);
+// tokenize_utils_1.c
+int							ft_isspace(char c);
+bool						is_operator_char(char c);
+t_token						*new_token(t_token_type type, char *value,
+								t_gc *gc);
+void						add_token(t_token **head, t_token *new_);
+int							handle_heredoc_quotes(char *line, int i,
+								t_token **tokens, t_gc *gc);
 
-//tokenize_utils_2.c
-int	handle_dollar_sign(char *line, int i, char **joined, t_gc *gc);
-int	handle_empty_single_quote(char *line, int i, t_token **tokens,
-							  t_gc *gc);
+// tokenize_utils_2.c
+int							handle_dollar_sign(char *line, int i, char **joined,
+								t_gc *gc);
+int							handle_empty_single_quote(char *line, int i,
+								t_token **tokens, t_gc *gc);
 
-int	process_quote_in_word(char *line, int i, t_parse_context *ctx);
-int	handle_word_or_quotes(char *line, int i, t_tokenize_params *params);
+int							process_quote_in_word(char *line, int i,
+								t_parse_context *ctx);
+int							handle_word_or_quotes(char *line, int i,
+								t_tokenize_params *params);
 
-//tokenize_utils_2.c
-int	handle_dollar_question(char *line, int i, char **joined, t_gc *gc);
-int	handle_double_quote(char *line, int i, char **joined, t_gc *gc);
-int	handle_single_quote(char *line, int i, char **joined, t_gc *gc);
-int	process_single_quote_content(char *line, int i, char **joined,
-		t_gc *gc);
-//tokenize_utils_4.c
+// tokenize_utils_2.c
+int							handle_dollar_question(char *line, int i,
+								char **joined, t_gc *gc);
+int							handle_double_quote(char *line, int i,
+								char **joined, t_gc *gc);
+int							handle_single_quote(char *line, int i,
+								char **joined, t_gc *gc);
+int							process_single_quote_content(char *line, int i,
+								char **joined, t_gc *gc);
+// tokenize_utils_4.c
 
-int	handle_standalone_quotes(char *line, int i, t_token **tokens, t_gc *gc);
-int	check_if_standalone_quote(char *line, int i, char **joined);
+int							handle_standalone_quotes(char *line, int i,
+								t_token **tokens, t_gc *gc);
+int							check_if_standalone_quote(char *line, int i,
+								char **joined);
 // envp.c
 
 void						print_env(t_env *env);
