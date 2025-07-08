@@ -12,30 +12,58 @@
 
 #include "minishell.h"
 
-char	*get_env_value(t_env *env, const char *key)
+static char	*handle_dollar_expansion(t_gc *gc, char *str, size_t *i, t_env *env)
 {
-	while (env)
+	char	*key;
+	char	*status_str;
+	char	*val;
+
+	(*i)++;
+	if (str[*i] == '\0')
+		return (gc_strdup(gc, "$"));
+	if (str[*i] != '?' && !ft_isalnum(str[*i]) && str[*i] != '_')
 	{
-		if (ft_strcmp(env->key, key) == 0)
-			return (env->value);
-		env = env->next;
+		key = gc_strndup(gc, &str[*i], 1);
+		(*i)++;
+		return (gc_strjoin_free_a(gc, gc_strdup(gc, "$"), key));
 	}
-	return ("");
+	key = extract_var_name(gc, str, i);
+	if (key[0] == '?')
+	{
+		status_str = ft_itoa_gc(gc, g_last_exit_status);
+		return (status_str);
+	}
+	else
+	{
+		val = get_env_value(env, key);
+		return (gc_strdup(gc, val));
+	}
 }
 
-char	*extract_var_name(t_gc *gc, char *str, size_t *i)
+static char	*process_character(t_gc *gc, char *result, char *str, size_t *i)
 {
-	size_t	start;
+	char	*char_str;
 
-	start = *i;
-	if (str[*i] == '?')
+	char_str = gc_strndup(gc, &str[*i], 1);
+	(*i)++;
+	return (gc_strjoin_free_a(gc, result, char_str));
+}
+
+static char	*handle_quotes(char *str, size_t *i, char *quote)
+{
+	if (!*quote && (str[*i] == '"' || str[*i] == '\''))
 	{
+		*quote = str[*i];
 		(*i)++;
-		return (gc_strndup(gc, "?", 1));
+		return ("continue");
 	}
-	while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
+	else if (*quote && str[*i] == *quote)
+	{
+		*quote = 0;
 		(*i)++;
-	return (gc_strndup(gc, &str[start], *i - start));
+		return ("continue");
+	}
+	return (NULL);
 }
 
 char	*expand_token_value(t_gc *gc, char *str, t_env *env)
@@ -43,58 +71,22 @@ char	*expand_token_value(t_gc *gc, char *str, t_env *env)
 	size_t	i;
 	char	*result;
 	char	quote;
-	char	*key;
-	char	*status_str;
-	char	*val;
+	char	*expansion;
 
 	i = 0;
 	result = gc_strdup(gc, "");
 	quote = 0;
 	while (str[i])
 	{
-		if (!quote && (str[i] == '"' || str[i] == '\''))
-		{
-			quote = str[i++];
+		if (handle_quotes(str, &i, &quote))
 			continue ;
-		}
-		else if (quote && str[i] == quote)
-		{
-			quote = 0;
-			i++;
-			continue ;
-		}
 		if (str[i] == '$' && quote != '\'')
 		{
-			i++;
-			if (str[i] == '\0')
-			{
-				result = ft_strjoin_char_gc(gc, result, '$');
-				break ;
-			}
-			if (str[i] != '?' && !ft_isalnum(str[i]) && str[i] != '_')
-			{
-				result = ft_strjoin_char_gc(gc, result, '$');
-				result = ft_strjoin_char_gc(gc, result, str[i]);
-				i++;
-				continue ;
-			}
-			key = extract_var_name(gc, str, &i);
-			if (key[0] == '?')
-			{
-				status_str = ft_itoa_gc(gc, g_last_exit_status);
-				result = gc_strjoin_free_a(gc, result, status_str);
-			}
-			else
-			{
-				val = get_env_value(env, key);
-				result = gc_strjoin_free_a(gc, result, val);
-			}
+			expansion = handle_dollar_expansion(gc, str, &i, env);
+			result = gc_strjoin_free_a(gc, result, expansion);
 		}
 		else
-		{
-			result = ft_strjoin_char_gc(gc, result, str[i]);
-			i++;
-		}
+			result = process_character(gc, result, str, &i);
 	}
 	return (result);
 }
@@ -106,7 +98,7 @@ void	expander(t_gc *gc, t_token *tokens, t_env *env)
 		if (tokens->type == TOKEN_HEREDOC)
 		{
 			tokens = tokens->next->next;
-			continue;
+			continue ;
 		}
 		if ((tokens->type == TOKEN_WORD || tokens->type == TOKEN_DQUOTE)
 			&& strchr(tokens->value, '$'))
