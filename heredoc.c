@@ -143,10 +143,12 @@ int	process_heredocs(t_gc *gc, t_command *cmds, t_env *env)
 	t_command		*cmd;
 	t_redirection	*redir;
 
-	for (cmd = cmds; cmd; cmd = cmd->next)
+	cmd = cmds;
+	while (cmd)
 	{
 		cmd->heredoc_fd = -1;
-		for (redir = cmd->redir; redir; redir = redir->next)
+		redir = cmd->redir;
+		while (redir)
 		{
 			if (ft_strcmp(redir->type, "<<") == 0)
 			{
@@ -158,8 +160,9 @@ int	process_heredocs(t_gc *gc, t_command *cmds, t_env *env)
 				cmd->heredoc_fd = fd;
 				cmd->has_heredoc = 1;
 			}
+			redir = redir->next;
 		}
+		cmd = cmd->next;
 	}
 	return (0);
 }
-
