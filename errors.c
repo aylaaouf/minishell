@@ -25,19 +25,17 @@ int	check_syntax(t_token *tokens)
 	{
 		if (current->type == TOKEN_PIPE && (!current->next
 				|| current->next->type == TOKEN_PIPE))
-			return (printf("bash: syntax error near unexpected token `|'\n"), 0);
+			return (printf("bash: syntax error near unexpected token `|'\n"),
+				0);
 		else if ((current->type == TOKEN_OUTPUT || current->type == TOKEN_APPEND
-				|| current->type == TOKEN_INPUT || current->type == TOKEN_HEREDOC)
-			&& (!current->next || (current->next->type != TOKEN_WORD
-				&& current->next->type != TOKEN_SQUOTE
-				&& current->next->type != TOKEN_DQUOTE)))
-		{
-			printf("bash: syntax error near unexpected token `%s'\n",
-				current->value);
-			return (0);
-		}
+				|| current->type == TOKEN_INPUT
+				|| current->type == TOKEN_HEREDOC) && (!current->next
+				|| (current->next->type != TOKEN_WORD
+					&& current->next->type != TOKEN_SQUOTE
+					&& current->next->type != TOKEN_DQUOTE)))
+			return (printf("bash: syntax error near unexpected token `%s'\n",
+					current->value), 0);
 		current = current->next;
 	}
 	return (1);
 }
-
