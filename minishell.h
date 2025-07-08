@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/08 16:09:22 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/07/08 16:45:34 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,6 +180,8 @@ t_command					*parse_tokens(t_gc *gc, t_token *tokens);
 void						add_redirection(t_gc *gc, t_command *cmd,
 								char *type, char *file);
 // expander_utils.c
+char	*process_character(t_gc *gc, char *result, char *str, size_t *i);
+char	*handle_dollar_expansion(t_gc *gc, char *str, size_t *i, t_env *env);
 char						*extract_var_name(t_gc *gc, char *str, size_t *i);
 char						*get_env_value(t_env *env, const char *key);
 // expander.c
