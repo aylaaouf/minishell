@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize_utils_2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
+/*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:02:40 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/07/08 16:49:33 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/07/09 22:53:17 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	handle_dollar_sign(char *line, int i, char **joined, t_gc *gc)
 {

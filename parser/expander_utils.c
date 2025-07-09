@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   expander_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
+/*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 12:05:21 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/07/08 16:44:59 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/07/09 22:52:51 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 char	*handle_dollar_expansion(t_gc *gc, char *str, size_t *i, t_env *env)
 {

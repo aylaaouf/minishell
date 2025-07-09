@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parse_cmd_utils_1.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
+/*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 17:03:41 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/07/08 17:06:40 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/07/09 22:53:01 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 t_command	*new_command(t_gc *gc)
 {

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   quote_management.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
+/*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 15:07:32 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/07/08 13:28:14 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/07/09 22:53:10 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 static char	*ft_strip_quotes(t_gc *gc, const char *str)
 {

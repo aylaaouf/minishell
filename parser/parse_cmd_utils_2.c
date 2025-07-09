@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parse_cmd_utils_2.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
+/*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 17:04:20 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/07/08 17:04:46 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/07/09 22:53:04 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 char	*get_redirect_file(t_gc *gc, char *type, char *file)
 {
