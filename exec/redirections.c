@@ -6,11 +6,11 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 05:29:03 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/04 16:50:13 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/09 22:48:20 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	handle_redirection(t_command *cmd, int prev_fd)
 {

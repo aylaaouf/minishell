@@ -6,11 +6,11 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 22:49:23 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/06/24 22:50:43 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/09 22:48:43 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	sigint_handler(int sig)
 {

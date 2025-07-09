@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/08 17:07:35 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/07/09 21:51:51 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,13 @@ void						ft_unset(char **input, t_env **env);
 int							ft_exit(char **input);
 void						builtins(t_gc *gc, char **args, t_env **env);
 int							is_builtin(char *cmd);
+int							is_valid_identifier(char *key);
+t_env						*find_env_node(t_env *env, char *key);
+char						*expand_value(t_gc *gc, char *value, t_env *env);
+void						add_env_node(t_gc *gc, t_env **env, char *key, char *value);
+void	sort_env_array(char **env_arr);
+void	update_or_add_env(t_gc *gc, t_env **env, char *key, char *value);
+int	handle_export_arg(t_gc *gc, t_env **env, char *arg);
 // ft_echo.c
 char						*expand_env(t_gc *gc, char *input, t_env *env);
 // pipe
