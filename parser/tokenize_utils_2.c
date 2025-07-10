@@ -68,11 +68,9 @@ int	handle_word_or_quotes(char *line, int i, t_tokenize_params *params)
 	char			*joined;
 	t_token_type	final_type;
 	t_parse_context	ctx;
-	int				start_i;
 
 	joined = gc_strdup(params->gc, "");
 	final_type = TOKEN_WORD;
-	start_i = i;
 	ctx.joined = &joined;
 	ctx.tokens = params->tokens;
 	ctx.gc = params->gc;
