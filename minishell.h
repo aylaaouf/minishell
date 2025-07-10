@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 11:45:36 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 13:05:24 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,10 @@ typedef struct s_parse_context
 	int						is_after_heredoc;
 }							t_parse_context;
 
+// builtins_check.c
+
+int							is_builtin(char *cmd);
+void						builtins(t_gc *gc, char **args, t_env **env);
 typedef struct s_tokenize_params
 {
 	t_token					**tokens;
