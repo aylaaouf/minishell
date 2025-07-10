@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 13:17:53 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/07/10 16:15:40 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ void						ft_cd(t_gc *gc, char **input, t_env *env);
 void						ft_pwd(char **input, t_env *env);
 void						ft_export(t_gc *gc, char **input, t_env **env);
 void						ft_unset(t_gc *gc, char **input, t_env **env);
-int							ft_exit(char **input);
+int							ft_exit(t_gc *gc, char **input);
 void						builtins(t_gc *gc, char **args, t_env **env);
 int							is_builtin(char *cmd);
 int							is_valid_identifier(char *key);

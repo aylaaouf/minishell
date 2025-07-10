@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_check.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
+/*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 13:04:26 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/07/10 13:04:39 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/07/10 16:15:24 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,5 +46,5 @@ void	builtins(t_gc *gc, char **args, t_env **env)
 	else if (!ft_strcmp(args[0], "export"))
 		ft_export(gc, args, env);
 	else if (!ft_strcmp(args[0], "exit"))
-		ft_exit(args);
+		ft_exit(gc, args);
 }

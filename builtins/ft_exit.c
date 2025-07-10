@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 19:25:50 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 11:26:41 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 16:15:56 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	is_number(char *str)
 	return (str[i] == '\0');
 }
 
-int	ft_exit(char **args)
+int	ft_exit(t_gc *gc, char **args)
 {
 	int	status;
 
@@ -75,6 +75,7 @@ int	ft_exit(char **args)
 	{
 		write(2, "minishell: numeric argument required\n", 38);
 		g_last_exit_status = 2;
+		gc_clear(gc);
 		exit(2);
 	}
 	if (args[1] && args[2] != NULL)
@@ -88,5 +89,6 @@ int	ft_exit(char **args)
 	else
 		status = 0;
 	g_last_exit_status = status;
+	gc_clear(gc);
 	exit(status);
 }
