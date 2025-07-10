@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 11:10:25 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:45:36 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,8 +155,7 @@ void						sort_env_array(char **env_arr);
 void						update_or_add_env(t_gc *gc, t_env **env, char *key,
 								char *value);
 int							handle_export_arg(t_gc *gc, t_env **env, char *arg);
-// ft_echo.c
-char						*expand_env(t_gc *gc, char *input, t_env *env);
+
 // pipe
 int							execute_pipe(t_gc *gc, t_command *cmnds,
 								t_env *env);
