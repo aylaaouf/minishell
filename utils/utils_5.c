@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 13:50:43 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/06/29 23:22:44 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 02:37:15 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,17 @@ char	*ft_strjoin_char_gc(t_gc *gc, char *s, char c)
 	size_t	len;
 	char	*new_str;
 
-	len = s ? ft_strlen(s) : 0;
+	if (s)
+		len = ft_strlen(s);
+	else
+		len = 0;
 	new_str = gc_malloc(gc, len + 2);
 	if (!new_str)
 		return (NULL);
 	if (s)
 		ft_strlcpy(new_str, s, len + 1);
+	else
+		new_str[0] = '\0';
 	new_str[len] = c;
 	new_str[len + 1] = '\0';
 	return (new_str);
@@ -53,7 +58,7 @@ static int	ft_count_digits(long n)
 		return (1);
 	if (n < 0)
 	{
-		count++; // for '-'
+		count++;
 		n = -n;
 	}
 	while (n)
