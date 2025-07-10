@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 21:50:08 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/09 21:50:37 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:28:54 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	update_or_add_env(t_gc *gc, t_env **env, char *key, char *value)
 	{
 		if (value)
 		{
-			free(node->value);
+			gc_free(gc, node->value);
 			expanded = expand_value(gc, value, *env);
 			node->value = expanded;
 		}
@@ -66,16 +66,14 @@ int	handle_export_arg(t_gc *gc, t_env **env, char *arg)
 	char	*key;
 	char	*value;
 
-	args_kv = ft_split(arg, '=');
+	args_kv = ft_split(gc, arg, '=');
 	key = args_kv[0];
 	value = args_kv[1];
 	if (!is_valid_identifier(key))
 	{
 		write(2, "minishell: export: not a valid identifier\n", 43);
-		free_2d_array(args_kv);
 		return (1);
 	}
 	update_or_add_env(gc, env, key, value);
-	free_2d_array(args_kv);
 	return (0);
 }

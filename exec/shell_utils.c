@@ -6,13 +6,13 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 18:48:40 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 02:43:20 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:24:15 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_strjoin_env(char *s1, char *s2)
+char	*ft_strjoin_env(char *s1, char *s2, t_gc *gc)
 {
 	size_t	i;
 	size_t	j;
@@ -28,7 +28,7 @@ char	*ft_strjoin_env(char *s1, char *s2)
 	j = 0;
 	len1 = ft_strlen(s1);
 	len2 = ft_strlen(s2);
-	array = malloc(len1 + len2 + 2);
+	array = gc_malloc(gc, len1 + len2 + 2);
 	if (!array)
 		return (NULL);
 	while (++i < len1)
@@ -40,26 +40,12 @@ char	*ft_strjoin_env(char *s1, char *s2)
 	return (array);
 }
 
-char	*ft_strjoin_free(char *s1, char *s2)
+char	*ft_strjoin_free(t_gc *gc, char *s1, char *s2)
 {
 	char	*arr;
 
-	arr = ft_strjoin(s1, s2);
-	free(s1);
+	arr = ft_strjoin(gc, s1, s2);
 	return (arr);
-}
-
-void	free_2d_array(char **args)
-{
-	int	i;
-
-	i = 0;
-	while (args[i])
-	{
-		free(args[i]);
-		i++;
-	}
-	free(args);
 }
 
 int	handle_stat_error(t_command *cmd)

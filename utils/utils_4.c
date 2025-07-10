@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 23:04:41 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/06/29 23:21:31 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 10:23:48 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,71 +45,71 @@ char	*gc_substr(t_gc *gc, const char *s, unsigned int start, size_t len)
 	return (str);
 }
 
-static int	ft_count_nb(long n)
-{
-	int	i;
+// static int	ft_count_nb(long n)
+// {
+// 	int	i;
 
-	i = 0;
-	if (n == 0)
-		i++;
-	else if (n < 0)
-	{
-		i++;
-		n *= -1;
-	}
-	while (n > 0)
-	{
-		i++;
-		n /= 10;
-	}
-	return (i);
-}
+// 	i = 0;
+// 	if (n == 0)
+// 		i++;
+// 	else if (n < 0)
+// 	{
+// 		i++;
+// 		n *= -1;
+// 	}
+// 	while (n > 0)
+// 	{
+// 		i++;
+// 		n /= 10;
+// 	}
+// 	return (i);
+// }
 
-static char	*ft_rev(char *str)
-{
-	int		i;
-	int		j;
-	char	tmp;
+// static char	*ft_rev(char *str)
+// {
+// 	int		i;
+// 	int		j;
+// 	char	tmp;
 
-	i = 0;
-	j = ft_strlen(str) - 1;
-	if (str[0] == '-')
-		i = 1;
-	while (i < j)
-	{
-		tmp = str[i];
-		str[i] = str[j];
-		str[j] = tmp;
-		i++;
-		j--;
-	}
-	return (str);
-}
+// 	i = 0;
+// 	j = ft_strlen(str) - 1;
+// 	if (str[0] == '-')
+// 		i = 1;
+// 	while (i < j)
+// 	{
+// 		tmp = str[i];
+// 		str[i] = str[j];
+// 		str[j] = tmp;
+// 		i++;
+// 		j--;
+// 	}
+// 	return (str);
+// }
 
-char	*ft_itoa(int n)
-{
-	char	*arr;
-	int		i;
-	long	nn;
+// char	*ft_itoa(t_gc *gc, int n)
+// {
+// 	char	*arr;
+// 	int		i;
+// 	long	nn;
 
-	nn = n;
-	i = 0;
-	arr = malloc(sizeof(char) * ft_count_nb(nn) + 1);
-	if (!arr)
-		return (NULL);
-	if (nn == 0)
-		arr[i++] = '0';
-	if (n < 0)
-	{
-		arr[i++] = '-';
-		nn *= -1;
-	}
-	while (nn > 0)
-	{
-		arr[i] = (nn % 10) + '0';
-		nn /= 10;
-		i++;
-	}
-	arr[i] = '\0';
-	return (ft_rev(arr));
-}
+// 	nn = n;
+// 	i = 0;
+// 	arr = gc_malloc(gc, sizeof(char) * ft_count_nb(nn) + 1);
+// 	if (!arr)
+// 		return (NULL);
+// 	if (nn == 0)
+// 		arr[i++] = '0';
+// 	if (n < 0)
+// 	{
+// 		arr[i++] = '-';
+// 		nn *= -1;
+// 	}
+// 	while (nn > 0)
+// 	{
+// 		arr[i] = (nn % 10) + '0';
+// 		nn /= 10;
+// 		i++;
+// 	}
+// 	arr[i] = '\0';
+// 	return (ft_rev(arr));
+// }

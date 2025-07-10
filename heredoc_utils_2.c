@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_utils_2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
+/*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 13:18:21 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/07/08 13:37:20 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:21:13 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,7 @@ void	heredoc_child_process(int pipefd, t_heredoc_data *data)
 			break ;
 		}
 		if (ft_strcmp(line, data->delim) == 0)
-		{
-			free(line);
 			break ;
-		}
 		processed = maybe_expand(data->gc, line, data->expand, data->env);
 		write(pipefd, processed, ft_strlen(processed));
 		write(pipefd, "\n", 1);

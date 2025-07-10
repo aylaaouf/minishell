@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 17:35:07 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/08 17:39:46 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 02:54:05 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	add_env_node(t_gc *gc, t_env **env, char *key, char *value)
 	t_env	*new_node;
 	t_env	*tmp;
 
-	new_node = malloc(sizeof(t_env));
+	new_node = gc_malloc(gc, sizeof(t_env));
 	if (!new_node)
 		return ;
 	new_node->key = gc_strdup(gc, key);

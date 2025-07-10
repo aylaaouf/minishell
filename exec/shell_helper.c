@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 22:50:41 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 02:44:27 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 10:41:05 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,9 @@ void	handle_child_process(t_command *cmnd, char *path, char **args)
 	exit(127);
 }
 
-void	handle_parent_process(int status, t_command *cmnd, char **args)
+void	handle_parent_process(int status, t_command *cmnd)
 {
 	wait(&status);
-	free_2d_array(args);
 	if (cmnd->heredoc_fd != -1)
 		close(cmnd->heredoc_fd);
 	if (WIFEXITED(status))
@@ -46,7 +45,7 @@ void	handle_parent_process(int status, t_command *cmnd, char **args)
 		g_last_exit_status = 128 + WTERMSIG(status);
 }
 
-char	**list_to_array(t_env *env)
+char	**list_to_array(t_gc *gc, t_env *env)
 {
 	int		i;
 	char	**args;
@@ -59,14 +58,14 @@ char	**list_to_array(t_env *env)
 		i++;
 		tmp = tmp->next;
 	}
-	args = malloc((i + 1) * sizeof(char *));
+	args = gc_malloc(gc, (i + 1) * sizeof(char *));
 	if (!args)
 		return (NULL);
 	tmp = env;
 	i = 0;
 	while (tmp)
 	{
-		args[i] = ft_strjoin_env(tmp->key, tmp->value);
+		args[i] = ft_strjoin_env(tmp->key, tmp->value, gc);
 		i++;
 		tmp = tmp->next;
 	}

@@ -6,24 +6,25 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 22:56:15 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/07 18:28:35 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:12:30 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	free_env_node(t_env *node)
+void	free_env_node(t_gc *gc, t_env *node)
 {
 	if (node)
 	{
-		free(node->key);
+		if (node->key)
+			gc_free(gc, node->key);
 		if (node->value)
-			free(node->value);
-		free(node);
+			gc_free(gc, node->value);
+		gc_free(gc, node);
 	}
 }
 
-void	helper(t_env **env, char **args, int *i)
+void	helper(t_gc *gc, t_env **env, char **args, int *i)
 {
 	t_env	*deleted;
 
@@ -31,11 +32,11 @@ void	helper(t_env **env, char **args, int *i)
 	{
 		deleted = *env;
 		*env = (*env)->next;
-		free_env_node(deleted);
+		free_env_node(gc, deleted);
 	}
 }
 
-void	ft_unset(char **args, t_env **env)
+void	ft_unset(t_gc *gc, char **args, t_env **env)
 {
 	t_env	*curr;
 	t_env	*deleted;
@@ -45,7 +46,7 @@ void	ft_unset(char **args, t_env **env)
 	g_last_exit_status = 1;
 	while (args[i])
 	{
-		helper(env, args, &i);
+		helper(gc, env, args, &i);
 		curr = *env;
 		while (curr && curr->next)
 		{
@@ -53,7 +54,7 @@ void	ft_unset(char **args, t_env **env)
 			{
 				deleted = curr->next;
 				curr->next = curr->next->next;
-				free_env_node(deleted);
+				free_env_node(gc, deleted);
 				break ;
 			}
 			curr = curr->next;

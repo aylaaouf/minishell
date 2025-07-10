@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 02:44:45 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:10:25 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ void						ft_echo(char **args);
 void						ft_cd(t_gc *gc, char **input, t_env *env);
 void						ft_pwd(char **input, t_env *env);
 void						ft_export(t_gc *gc, char **input, t_env **env);
-void						ft_unset(char **input, t_env **env);
+void						ft_unset(t_gc *gc, char **input, t_env **env);
 int							ft_exit(char **input);
 void						builtins(t_gc *gc, char **args, t_env **env);
 int							is_builtin(char *cmd);
@@ -188,15 +188,14 @@ int							process_heredocs(t_gc *gc, t_command *commands,
 								t_env *env);
 // shell
 int							shell(t_gc *gc, t_command *cmnd, t_env *env);
-char						*ft_strjoin_env(char *s1, char *s2);
-char						*ft_strjoin_free(char *s1, char *s2);
+char						*ft_strjoin_env(char *s1, char *s2, t_gc *gc);
+char						*ft_strjoin_free(t_gc *gc, char *s1, char *s2);
 void						free_2d_array(char **args);
-char						**list_to_array(t_env *env);
+char						**list_to_array(t_gc *gc, t_env *env);
 char						*find_cmnd_path(t_gc *gc, char *cmnd, t_env *env);
 void						handle_child_process(t_command *cmnd, char *path,
 								char **args);
-void						handle_parent_process(int status, t_command *cmnd,
-								char **args);
+void						handle_parent_process(int status, t_command *cmnd);
 int							handle_stat_error(t_command *cmd);
 int							handle_fork_error(void);
 
@@ -304,11 +303,12 @@ void						*ft_memset(void *b, int c, size_t len);
 // utils_3.c
 int							ft_strcmp(const char *s1, const char *s2);
 char						*ft_strcat(char *dest, const char *src);
-char						**ft_split(char const *s, char c);
+char						**ft_split(t_gc *gc, char const *s, char c);
 size_t						ft_strlcpy(char *dst, const char *src,
 								size_t dstsize);
 char						*ft_strncpy(char *dest, char *src, size_t n);
-char						*ft_strjoin(char const *s1, char const *s2);
+char						*ft_strjoin(t_gc *gc, char const *s1,
+								char const *s2);
 int							ft_isalnum(int c);
 
 // utils_4.c
@@ -316,9 +316,11 @@ int							ft_isalnum(int c);
 int							ft_isalpha(int c);
 char						*gc_substr(t_gc *gc, const char *s,
 								unsigned int start, size_t len);
-char						*ft_itoa(int n);
+// char						*ft_itoa(int n);
 // utils_5.c
 char						*gc_strjoin_free_a(t_gc *gc, char *s1, char *s2);
 char						*ft_strjoin_char_gc(t_gc *gc, char *s, char c);
 char						*ft_itoa_gc(t_gc *gc, int n);
+void						gc_free(t_gc *gc, void *ptr);
+
 #endif

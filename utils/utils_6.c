@@ -6,13 +6,13 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 00:25:01 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/07/10 02:37:38 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:25:00 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(t_gc *gc, char const *s1, char const *s2)
 {
 	char	*arr;
 	int		i;
@@ -20,7 +20,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 	if (!s1 || !s2)
 		return (NULL);
-	arr = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	arr = gc_malloc(gc, sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
 	if (!arr)
 		return (NULL);
 	i = 0;
@@ -34,19 +34,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		arr[i++] = s2[j++];
 	arr[i] = '\0';
 	return (arr);
-}
-
-static void	ft_free(char **arr, size_t len)
-{
-	size_t	i;
-
-	i = 0;
-	while (i < len)
-	{
-		free(arr[i]);
-		i++;
-	}
-	free(arr);
 }
 
 static int	ft_count_words(char const *s, char sep)
@@ -77,7 +64,7 @@ static int	ft_count_words(char const *s, char sep)
 	return (count);
 }
 
-static char	**array_with_words(char **array, char const *str, char c)
+static char	**array_with_words(t_gc *gc, char **array, char const *str, char c)
 {
 	size_t	index;
 	int		i;
@@ -94,19 +81,16 @@ static char	**array_with_words(char **array, char const *str, char c)
 		j = i;
 		while (str[i] != c && str[i])
 			i++;
-		array[index] = malloc(i - j + 1);
+		array[index] = gc_malloc(gc, i - j + 1);
 		if (!array[index])
-		{
-			ft_free(array, index);
 			return (NULL);
-		}
 		ft_strlcpy(array[index++], str + j, i - j + 1);
 	}
 	array[index] = NULL;
 	return (array);
 }
 
-char	**ft_split(char const *s, char c)
+char	**ft_split(t_gc *gc, char const *s, char c)
 {
 	char	**array;
 	int		count;
@@ -114,10 +98,10 @@ char	**ft_split(char const *s, char c)
 	if (!s)
 		return (NULL);
 	count = ft_count_words(s, c);
-	array = malloc(sizeof(char *) * (count + 1));
+	array = gc_malloc(gc, sizeof(char *) * (count + 1));
 	if (!array)
 		return (NULL);
-	if (!array_with_words(array, s, c))
+	if (!array_with_words(gc, array, s, c))
 		return (NULL);
 	return (array);
 }

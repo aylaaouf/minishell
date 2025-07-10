@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 15:47:11 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 02:40:25 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 10:22:04 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	child_prosses(t_gc *gc, t_command *cmd, t_env *env, t_pipe_data *p)
 		write(2, "minishell: command not found\n", 30);
 		exit(127);
 	}
-	execve(path, cmd->args, list_to_array(env));
+	execve(path, cmd->args, list_to_array(gc, env));
 	perror("execve failed");
 	exit(1);
 }

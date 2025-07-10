@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:15:16 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/08 15:58:45 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:16:01 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	builtins(t_gc *gc, char **args, t_env **env)
 	else if (!ft_strcmp(args[0], "pwd"))
 		ft_pwd(args, *env);
 	else if (!ft_strcmp(args[0], "unset"))
-		ft_unset(args, env);
+		ft_unset(gc, args, env);
 	else if (!ft_strcmp(args[0], "export"))
 		ft_export(gc, args, env);
 	else if (!ft_strcmp(args[0], "exit"))
@@ -59,6 +59,7 @@ int	main(int ac, char *av[], char **env)
 		if (!input)
 		{
 			printf("exit\n");
+			gc_clear(&gc);
 			g_last_exit_status = 0;
 			exit(0);
 		}

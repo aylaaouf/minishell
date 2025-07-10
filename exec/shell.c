@@ -6,13 +6,13 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 17:07:09 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 02:47:41 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:24:34 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*find_cmnd_path_helper(char **path, char *cmnd)
+char	*find_cmnd_path_helper(t_gc *gc, char **path, char *cmnd)
 {
 	char	*full_path;
 	int		i;
@@ -20,14 +20,10 @@ char	*find_cmnd_path_helper(char **path, char *cmnd)
 	i = 0;
 	while (path[i])
 	{
-		full_path = ft_strjoin(path[i], "/");
-		full_path = ft_strjoin_free(full_path, cmnd);
+		full_path = ft_strjoin(gc, path[i], "/");
+		full_path = ft_strjoin_free(gc, full_path, cmnd);
 		if (!access(full_path, X_OK))
-		{
-			free_2d_array(path);
 			return (full_path);
-		}
-		free(full_path);
 		i++;
 	}
 	return (NULL);
@@ -50,13 +46,12 @@ char	*find_cmnd_path(t_gc *gc, char *cmnd, t_env *env)
 	path_env = get_env_value(env, "PATH");
 	if (!path_env || !cmnd)
 		return (NULL);
-	path = ft_split(path_env, ':');
+	path = ft_split(gc, path_env, ':');
 	if (!path)
 		return (NULL);
-	result = find_cmnd_path_helper(path, cmnd);
+	result = find_cmnd_path_helper(gc, path, cmnd);
 	if (result)
 		return (result);
-	free_2d_array(path);
 	return (NULL);
 }
 
@@ -102,13 +97,13 @@ int	shell(t_gc *gc, t_command *cmnd, t_env *env)
 	}
 	if (check_cmd_path(cmnd, path) != 0)
 		return (g_last_exit_status);
-	args = list_to_array(env);
+	args = list_to_array(gc, env);
 	child_pid = fork();
 	if (child_pid == -1)
 		return (handle_fork_error());
 	else if (child_pid == 0)
 		handle_child_process(cmnd, path, args);
 	else
-		handle_parent_process(status, cmnd, args);
+		handle_parent_process(status, cmnd);
 	return (0);
 }

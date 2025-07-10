@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:42:28 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/07 18:51:51 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:14:29 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ void	update_env_var(t_gc *gc, t_env *env, char *key, char *new_value)
 	{
 		if (ft_strcmp(temp->key, key) == 0)
 		{
-			free(temp->value);
 			temp->value = gc_strdup(gc, new_value);
 			return ;
 		}

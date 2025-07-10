@@ -3,14 +3,40 @@
 /*                                                        :::      ::::::::   */
 /*   gc.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
+/*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 17:31:55 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/05/10 17:34:31 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/07/10 10:56:06 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	gc_free(t_gc *gc, void *ptr)
+{
+	t_gc_node	*curr;
+	t_gc_node	*prev;
+
+	if (!gc || !ptr)
+		return ;
+	curr = gc->list;
+	prev = NULL;
+	while (curr)
+	{
+		if (curr->ptr == ptr)
+		{
+			if (prev)
+				prev->next = curr->next;
+			else
+				gc->list = curr->next;
+			free(curr->ptr);
+			free(curr);
+			return ;
+		}
+		prev = curr;
+		curr = curr->next;
+	}
+}
 
 void	*gc_malloc(t_gc *gc, size_t size)
 {
