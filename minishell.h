@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 02:27:43 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 02:44:45 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
+# include <signal.h>
 # include <stdbool.h>
 # include <stddef.h>
 # include <stdio.h>
@@ -24,7 +25,6 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
-# include <signal.h>
 
 typedef enum e_token_type
 {
@@ -121,10 +121,11 @@ typedef struct s_tokenize_params
 	int						is_after_heredoc;
 }							t_tokenize_params;
 
-typedef struct s_pipe_data {
-	int	prev_fd;
-	int	fd[2];
-}	t_pipe_data;
+typedef struct s_pipe_data
+{
+	int						prev_fd;
+	int						fd[2];
+}							t_pipe_data;
 
 // gc.c
 void						*gc_malloc(t_gc *gc, size_t size);
@@ -148,10 +149,12 @@ int							is_builtin(char *cmd);
 int							is_valid_identifier(char *key);
 t_env						*find_env_node(t_env *env, char *key);
 char						*expand_value(t_gc *gc, char *value, t_env *env);
-void						add_env_node(t_gc *gc, t_env **env, char *key, char *value);
-void	sort_env_array(char **env_arr);
-void	update_or_add_env(t_gc *gc, t_env **env, char *key, char *value);
-int	handle_export_arg(t_gc *gc, t_env **env, char *arg);
+void						add_env_node(t_gc *gc, t_env **env, char *key,
+								char *value);
+void						sort_env_array(char **env_arr);
+void						update_or_add_env(t_gc *gc, t_env **env, char *key,
+								char *value);
+int							handle_export_arg(t_gc *gc, t_env **env, char *arg);
 // ft_echo.c
 char						*expand_env(t_gc *gc, char *input, t_env *env);
 // pipe
@@ -160,7 +163,7 @@ int							execute_pipe(t_gc *gc, t_command *cmnds,
 
 // signals
 void						sigint_handler(int sig);
-void	signals_pipe(pid_t wpid, pid_t last_pid);
+void						signals_pipe(pid_t wpid, pid_t last_pid);
 
 // heredoc_utils_1.c
 void						heredoc_child_handler(int sig);
@@ -190,8 +193,12 @@ char						*ft_strjoin_free(char *s1, char *s2);
 void						free_2d_array(char **args);
 char						**list_to_array(t_env *env);
 char						*find_cmnd_path(t_gc *gc, char *cmnd, t_env *env);
-void	handle_child_process(t_command *cmnd, char *path, char **args);
-void	handle_parent_process(int status, t_command *cmnd, char **args);
+void						handle_child_process(t_command *cmnd, char *path,
+								char **args);
+void						handle_parent_process(int status, t_command *cmnd,
+								char **args);
+int							handle_stat_error(t_command *cmd);
+int							handle_fork_error(void);
 
 // parse_cmd.c
 t_command					*new_command(t_gc *gc);

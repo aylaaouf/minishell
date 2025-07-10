@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 15:47:11 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 02:23:05 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 02:40:25 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,10 +83,7 @@ int	execute_pipe(t_gc *gc, t_command *cmnds, t_env *env)
 	while (cmd)
 	{
 		if (cmd->next && pipe(p.fd) == -1)
-		{
-			perror("pipe");
-			return (1);
-		}
+			return (perror("pipe"), 1);
 		pid = fork();
 		if (pid == 0)
 			child_prosses(gc, cmd, env, &p);

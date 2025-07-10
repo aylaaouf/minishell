@@ -6,11 +6,18 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 22:50:41 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 02:26:59 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 02:44:27 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+int	handle_fork_error(void)
+{
+	perror("fork");
+	g_last_exit_status = 1;
+	return (1);
+}
 
 void	handle_child_process(t_command *cmnd, char *path, char **args)
 {

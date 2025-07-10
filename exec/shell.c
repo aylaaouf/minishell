@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 17:07:09 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 02:29:07 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 02:47:41 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 char	*find_cmnd_path_helper(char **path, char *cmnd)
 {
-	char *full_path;
-	int	i;
+	char	*full_path;
+	int		i;
 
 	i = 0;
 	while (path[i])
@@ -80,23 +80,16 @@ int	check_cmd_path(t_command *cmd, char *path)
 		}
 	}
 	else
-	{
-		if (cmd->args[0][0] == '/' || (cmd->args[0][0] == '.' && cmd->args[0][1] == '/'))
-			write(2, "No such file or directory\n", 27);
-		else
-			write(2, "command not found\n", 19);
-		g_last_exit_status = 127;
-		return (127);
-	}
+		return (handle_stat_error(cmd));
 	return (0);
 }
 
 int	shell(t_gc *gc, t_command *cmnd, t_env *env)
 {
-	pid_t		child_pid;
-	int			status;
-	char		**args;
-	char		*path;
+	pid_t	child_pid;
+	int		status;
+	char	**args;
+	char	*path;
 
 	if (!cmnd || !cmnd->args || !cmnd->args[0])
 		return (1);
@@ -105,19 +98,14 @@ int	shell(t_gc *gc, t_command *cmnd, t_env *env)
 	if (!path)
 	{
 		write(2, "command not found\n", 19);
-		g_last_exit_status = 127;
-		return (127);
+		return ((g_last_exit_status = 127), 127);
 	}
 	if (check_cmd_path(cmnd, path) != 0)
 		return (g_last_exit_status);
 	args = list_to_array(env);
 	child_pid = fork();
 	if (child_pid == -1)
-	{
-		perror("fork");
-		g_last_exit_status = 1;
-		return (1);
-	}
+		return (handle_fork_error());
 	else if (child_pid == 0)
 		handle_child_process(cmnd, path, args);
 	else

@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 18:48:40 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 01:06:40 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 02:43:20 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,4 +60,15 @@ void	free_2d_array(char **args)
 		i++;
 	}
 	free(args);
+}
+
+int	handle_stat_error(t_command *cmd)
+{
+	if (cmd->args[0][0] == '/' || (cmd->args[0][0] == '.'
+			&& cmd->args[0][1] == '/'))
+		write(2, "No such file or directory\n", 27);
+	else
+		write(2, "command not found\n", 19);
+	g_last_exit_status = 127;
+	return (127);
 }
