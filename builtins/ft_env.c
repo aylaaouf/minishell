@@ -16,11 +16,22 @@ t_env	*new_env_node(t_gc *gc, char *key, char *value)
 {
 	t_env	*node;
 
+	if (!gc || !key)
+		return (NULL);
 	node = gc_malloc(gc, sizeof(t_env));
-	node->key = gc_malloc(gc, ft_strlen(key) + 1);
-	ft_strcpy(node->key, key);
-	node->value = gc_malloc(gc, ft_strlen(value) + 1);
-	ft_strcpy(node->value, value);
+	if (!node)
+		return (NULL);
+	node->key = gc_strdup(gc, key);
+	if (!node->key)
+		return (NULL);
+	if (value)
+	{
+		node->value = gc_strdup(gc, value);
+		if (!node->value)
+			return (NULL);
+	}
+	else
+		node->value = NULL;
 	node->next = NULL;
 	return (node);
 }
@@ -29,20 +40,24 @@ t_env	*create_env_node(char *env, t_gc *gc)
 {
 	t_env	*node;
 	char	*sep;
-	char	*key;
-	char	*value;
 	size_t	key_len;
 
+	if (!env || !gc)
+		return (NULL);
 	sep = ft_strchr(env, '=');
 	if (!sep)
 		return (NULL);
 	key_len = sep - env;
-	key = gc_malloc(gc, key_len + 1);
-	ft_strncpy(key, env, key_len);
-	key[key_len] = '\0';
-	value = gc_malloc(gc, ft_strlen(sep + 1) + 1);
-	ft_strcpy(value, sep + 1);
-	node = new_env_node(gc, key, value);
+	node = gc_malloc(gc, sizeof(t_env));
+	if (!node)
+		return (NULL);
+	node->key = gc_strndup(gc, env, key_len);
+	if (!node->key)
+		return (NULL);
+	node->value = gc_strdup(gc, sep + 1);
+	if (!node->value)
+		return (NULL);
+	node->next = NULL;
 	return (node);
 }
 
@@ -53,6 +68,8 @@ t_env	*env_init(char **envp, t_gc *gc)
 	t_env	*node;
 	int		i;
 
+	if (!envp || !gc)
+		return (NULL);
 	head = NULL;
 	tail = NULL;
 	i = 0;
