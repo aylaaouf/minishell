@@ -6,11 +6,38 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 22:50:41 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/09 22:51:04 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 02:26:59 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	handle_child_process(t_command *cmnd, char *path, char **args)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_IGN);
+	if (cmnd->heredoc_fd != -1)
+	{
+		dup2(cmnd->heredoc_fd, STDIN_FILENO);
+		close(cmnd->heredoc_fd);
+	}
+	handle_redirection(cmnd, -1);
+	execve(path, cmnd->args, args);
+	perror("Couldn't execute");
+	exit(127);
+}
+
+void	handle_parent_process(int status, t_command *cmnd, char **args)
+{
+	wait(&status);
+	free_2d_array(args);
+	if (cmnd->heredoc_fd != -1)
+		close(cmnd->heredoc_fd);
+	if (WIFEXITED(status))
+		g_last_exit_status = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		g_last_exit_status = 128 + WTERMSIG(status);
+}
 
 char	**list_to_array(t_env *env)
 {

@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/09 22:51:10 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 02:27:43 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# include <signal.h>
 
 typedef enum e_token_type
 {
@@ -120,6 +121,11 @@ typedef struct s_tokenize_params
 	int						is_after_heredoc;
 }							t_tokenize_params;
 
+typedef struct s_pipe_data {
+	int	prev_fd;
+	int	fd[2];
+}	t_pipe_data;
+
 // gc.c
 void						*gc_malloc(t_gc *gc, size_t size);
 char						*gc_strdup(t_gc *gc, const char *s);
@@ -151,6 +157,11 @@ char						*expand_env(t_gc *gc, char *input, t_env *env);
 // pipe
 int							execute_pipe(t_gc *gc, t_command *cmnds,
 								t_env *env);
+
+// signals
+void						sigint_handler(int sig);
+void	signals_pipe(pid_t wpid, pid_t last_pid);
+
 // heredoc_utils_1.c
 void						heredoc_child_handler(int sig);
 int							is_quoted(const char *s);
@@ -179,6 +190,8 @@ char						*ft_strjoin_free(char *s1, char *s2);
 void						free_2d_array(char **args);
 char						**list_to_array(t_env *env);
 char						*find_cmnd_path(t_gc *gc, char *cmnd, t_env *env);
+void	handle_child_process(t_command *cmnd, char *path, char **args);
+void	handle_parent_process(int status, t_command *cmnd, char **args);
 
 // parse_cmd.c
 t_command					*new_command(t_gc *gc);

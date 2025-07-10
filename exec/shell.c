@@ -6,20 +6,39 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 17:07:09 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/09 22:51:00 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 02:29:07 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+char	*find_cmnd_path_helper(char **path, char *cmnd)
+{
+	char *full_path;
+	int	i;
+
+	i = 0;
+	while (path[i])
+	{
+		full_path = ft_strjoin(path[i], "/");
+		full_path = ft_strjoin_free(full_path, cmnd);
+		if (!access(full_path, X_OK))
+		{
+			free_2d_array(path);
+			return (full_path);
+		}
+		free(full_path);
+		i++;
+	}
+	return (NULL);
+}
+
 char	*find_cmnd_path(t_gc *gc, char *cmnd, t_env *env)
 {
 	char	*path_env;
 	char	**path;
-	char	*full_path;
-	int		i;
+	char	*result;
 
-	i = 0;
 	if (cmnd[0] == '/' || cmnd[0] == '.')
 	{
 		if (access(cmnd, F_OK) == -1)
@@ -34,43 +53,17 @@ char	*find_cmnd_path(t_gc *gc, char *cmnd, t_env *env)
 	path = ft_split(path_env, ':');
 	if (!path)
 		return (NULL);
-	while (path[i])
-	{
-		full_path = ft_strjoin(path[i], "/");
-		full_path = ft_strjoin_free(full_path, cmnd);
-		if (!access(full_path, X_OK))
-		{
-			free_2d_array(path);
-			return (full_path);
-		}
-		free(full_path);
-		i++;
-	}
+	result = find_cmnd_path_helper(path, cmnd);
+	if (result)
+		return (result);
 	free_2d_array(path);
 	return (NULL);
 }
 
-int	shell(t_gc *gc, t_command *cmnd, t_env *env)
+int	check_cmd_path(t_command *cmd, char *path)
 {
-	pid_t		child_pid;
-	int			status;
-	char		**args;
-	char		*path;
 	struct stat	st;
 
-	if (!cmnd || !cmnd->args || !cmnd->args[0])
-		return (1);
-	path = find_cmnd_path(gc, cmnd->args[0], env);
-	if (!path)
-	{
-		if (cmnd->args[0][0] == '/' || (cmnd->args[0][0] == '.'
-				&& cmnd->args[0][1] == '/'))
-			write(2, "No such file or directory\n", 27);
-		else
-			write(2, "command not found\n", 19);
-		g_last_exit_status = 127;
-		return (127);
-	}
 	if (stat(path, &st) == 0)
 	{
 		if (S_ISDIR(st.st_mode))
@@ -88,14 +81,35 @@ int	shell(t_gc *gc, t_command *cmnd, t_env *env)
 	}
 	else
 	{
-		if (cmnd->args[0][0] == '/' || (cmnd->args[0][0] == '.'
-				&& cmnd->args[0][1] == '/'))
+		if (cmd->args[0][0] == '/' || (cmd->args[0][0] == '.' && cmd->args[0][1] == '/'))
 			write(2, "No such file or directory\n", 27);
 		else
 			write(2, "command not found\n", 19);
 		g_last_exit_status = 127;
 		return (127);
 	}
+	return (0);
+}
+
+int	shell(t_gc *gc, t_command *cmnd, t_env *env)
+{
+	pid_t		child_pid;
+	int			status;
+	char		**args;
+	char		*path;
+
+	if (!cmnd || !cmnd->args || !cmnd->args[0])
+		return (1);
+	path = find_cmnd_path(gc, cmnd->args[0], env);
+	status = 0;
+	if (!path)
+	{
+		write(2, "command not found\n", 19);
+		g_last_exit_status = 127;
+		return (127);
+	}
+	if (check_cmd_path(cmnd, path) != 0)
+		return (g_last_exit_status);
 	args = list_to_array(env);
 	child_pid = fork();
 	if (child_pid == -1)
@@ -105,29 +119,8 @@ int	shell(t_gc *gc, t_command *cmnd, t_env *env)
 		return (1);
 	}
 	else if (child_pid == 0)
-	{
-		signal(SIGINT, SIG_DFL);
-		signal(SIGQUIT, SIG_IGN);
-		if (cmnd->heredoc_fd != -1)
-		{
-			dup2(cmnd->heredoc_fd, STDIN_FILENO);
-			close(cmnd->heredoc_fd);
-		}
-		handle_redirection(cmnd, -1);
-		execve(path, cmnd->args, args);
-		perror("Couldn't execute");
-		exit(127);
-	}
+		handle_child_process(cmnd, path, args);
 	else
-	{
-		wait(&status);
-		free_2d_array(args);
-		if (cmnd->heredoc_fd != -1)
-			close(cmnd->heredoc_fd);
-		if (WIFEXITED(status))
-			g_last_exit_status = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-			g_last_exit_status = 128 + WTERMSIG(status);
-	}
+		handle_parent_process(status, cmnd, args);
 	return (0);
 }

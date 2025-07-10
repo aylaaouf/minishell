@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 18:48:40 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/09 22:54:15 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 01:06:40 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,25 +24,18 @@ char	*ft_strjoin_env(char *s1, char *s2)
 		return (NULL);
 	if (!s2)
 		return (s1);
-	i = 0;
+	i = -1;
 	j = 0;
 	len1 = ft_strlen(s1);
 	len2 = ft_strlen(s2);
 	array = malloc(len1 + len2 + 2);
 	if (!array)
 		return (NULL);
-	while (i < ft_strlen(s1))
-	{
+	while (++i < len1)
 		array[i] = s1[i];
-		i++;
-	}
 	array[i++] = '=';
-	while (j < ft_strlen(s2))
-	{
-		array[i] = s2[j];
-		i++;
-		j++;
-	}
+	while (j < len2)
+		array[i++] = s2[j++];
 	array[i] = '\0';
 	return (array);
 }
@@ -58,7 +51,9 @@ char	*ft_strjoin_free(char *s1, char *s2)
 
 void	free_2d_array(char **args)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	while (args[i])
 	{
 		free(args[i]);
