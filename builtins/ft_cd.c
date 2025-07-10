@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:42:28 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 11:14:29 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 13:23:27 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ void	ft_cd(t_gc *gc, char **args, t_env *env)
 {
 	char	cwd[4096];
 	char	*target;
+	char	*home;
 
 	if (ft_helper(args))
 		return ;
@@ -62,6 +63,14 @@ void	ft_cd(t_gc *gc, char **args, t_env *env)
 		target = get_env_value_cd(env, "HOME");
 	else if (ft_strcmp(args[1], "-") == 0)
 		target = get_env_value_cd(env, "OLDPWD");
+	else if (args[1][0] == '~')
+	{
+		home = get_env_value_cd(env, "HOME");
+		if (home)
+			target = ft_strjoin(gc, home, args[1] + 1);
+		else
+			target = args[1];
+	}
 	else
 		target = args[1];
 	if (!target || chdir(target) != 0)
@@ -75,3 +84,4 @@ void	ft_cd(t_gc *gc, char **args, t_env *env)
 	update_env_var(gc, env, "PWD", cwd);
 	g_last_exit_status = 0;
 }
+
