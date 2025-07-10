@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 13:05:24 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/07/10 13:17:53 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,8 @@ typedef struct s_pipe_data
 // gc.c
 void						*gc_malloc(t_gc *gc, size_t size);
 char						*gc_strdup(t_gc *gc, const char *s);
-void						*gc_realloc(t_gc *gc, void *ptr, size_t size);
+void						*gc_realloc(t_gc *gc, void *ptr, size_t old_size,
+								size_t new_size);
 void						gc_add(t_gc *gc, void *ptr);
 void						gc_clear(t_gc *gc);
 // errors.c

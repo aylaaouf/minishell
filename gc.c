@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 17:31:55 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/07/10 13:07:01 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/07/10 13:17:39 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,15 +38,28 @@ char	*gc_strdup(t_gc *gc, const char *s)
 	return (copy);
 }
 
-void	*gc_realloc(t_gc *gc, void *ptr, size_t size)
+void	*gc_realloc(t_gc *gc, void *ptr, size_t old_size, size_t new_size)
 {
 	void	*new_ptr;
+	size_t	copy_size;
 
-	new_ptr = gc_malloc(gc, size);
+	if (!ptr)
+		return (gc_malloc(gc, new_size));
+	if (new_size == 0)
+	{
+		gc_free(gc, ptr);
+		return (NULL);
+	}
+	new_ptr = gc_malloc(gc, new_size);
 	if (!new_ptr)
 		return (NULL);
-	if (ptr)
-		memcpy(new_ptr, ptr, size);
+	if (old_size < new_size)
+		copy_size = old_size;
+	else
+		copy_size = new_size;
+	if (copy_size > 0)
+		ft_memcpy(new_ptr, ptr, copy_size);
+	gc_free(gc, ptr);
 	return (new_ptr);
 }
 

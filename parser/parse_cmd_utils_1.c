@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 17:03:41 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/07/09 22:53:01 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/10 13:19:23 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,12 +65,18 @@ void	add_argument(t_gc *gc, t_command *cmd, char *arg, t_token_type type)
 {
 	size_t	count;
 	char	*clean_arg;
+	size_t	old_size;
+	size_t	new_size;
 
 	if (!cmd || !arg)
 		return ;
 	count = count_arguments(cmd->args);
 	clean_arg = get_clean_argument(gc, arg, type);
-	cmd->args = gc_realloc(gc, cmd->args, sizeof(char *) * (count + 2));
+	old_size = sizeof(char *) * (count + 1);
+	new_size = sizeof(char *) * (count + 2);
+	cmd->args = gc_realloc(gc, cmd->args, old_size, new_size);
+	if (!cmd->args)
+		return ;
 	cmd->args[count] = clean_arg;
 	cmd->args[count + 1] = NULL;
 }
