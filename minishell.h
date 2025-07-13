@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 16:15:40 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/13 01:12:37 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,7 +198,7 @@ void						free_2d_array(char **args);
 char						**list_to_array(t_gc *gc, t_env *env);
 char						*find_cmnd_path(t_gc *gc, char *cmnd, t_env *env);
 void						handle_child_process(t_command *cmnd, char *path,
-								char **args);
+								char **args_env, char **clean_args);
 void						handle_parent_process(int status, t_command *cmnd);
 int							handle_stat_error(t_command *cmd);
 int							handle_fork_error(void);
@@ -317,6 +317,7 @@ int							ft_isalnum(int c);
 
 // utils_4.c
 
+// char						*ft_strchr(const char *s, int c);
 int							ft_isalpha(int c);
 char						*gc_substr(t_gc *gc, const char *s,
 								unsigned int start, size_t len);
@@ -326,5 +327,7 @@ char						*gc_strjoin_free_a(t_gc *gc, char *s1, char *s2);
 char						*ft_strjoin_char_gc(t_gc *gc, char *s, char c);
 char						*ft_itoa_gc(t_gc *gc, int n);
 void						gc_free(t_gc *gc, void *ptr);
+
+void						is_not_found(char *cmnd);
 
 #endif

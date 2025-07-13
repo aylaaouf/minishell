@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 17:07:09 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 11:24:34 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/13 01:12:05 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,17 @@ int	check_cmd_path(t_command *cmd, char *path)
 	{
 		if (S_ISDIR(st.st_mode))
 		{
-			write(2, "Is a directory\n", 16);
+			write(2, "minishell: ", 11);
+			write(2, cmd->args[0], strlen(cmd->args[0]));
+			write(2, ": Is a directory\n", 17);
 			g_last_exit_status = 126;
 			return (126);
 		}
 		if (access(path, X_OK) == -1)
 		{
-			write(2, "Permission denied\n", 19);
+			write(2, "minishell: ", 11);
+			write(2, cmd->args[0], strlen(cmd->args[0]));
+			write(2, ": Permission denied\n", 20);
 			g_last_exit_status = 126;
 			return (126);
 		}
@@ -85,14 +89,22 @@ int	shell(t_gc *gc, t_command *cmnd, t_env *env)
 	int		status;
 	char	**args;
 	char	*path;
+	char	**clean_args;
+	int		i;
 
-	if (!cmnd || !cmnd->args || !cmnd->args[0])
-		return (1);
-	path = find_cmnd_path(gc, cmnd->args[0], env);
+	if (!cmnd || !cmnd->args)
+		return ((g_last_exit_status = 0), 0);
+	i = 0;
+	while (cmnd->args[i] && !cmnd->args[i][0])
+		i++;
+	if (!cmnd->args[i])
+		return ((g_last_exit_status = 0), 0);
+	path = find_cmnd_path(gc, cmnd->args[i], env);
 	status = 0;
+	clean_args = &cmnd->args[i];
 	if (!path)
 	{
-		write(2, "command not found\n", 19);
+		is_not_found(cmnd->args[i]);
 		return ((g_last_exit_status = 127), 127);
 	}
 	if (check_cmd_path(cmnd, path) != 0)
@@ -102,7 +114,7 @@ int	shell(t_gc *gc, t_command *cmnd, t_env *env)
 	if (child_pid == -1)
 		return (handle_fork_error());
 	else if (child_pid == 0)
-		handle_child_process(cmnd, path, args);
+		handle_child_process(cmnd, path, args, clean_args);
 	else
 		handle_parent_process(status, cmnd);
 	return (0);

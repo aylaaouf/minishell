@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 19:42:28 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 13:23:27 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/13 00:59:41 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,29 +50,34 @@ int	ft_helper(char **args)
 	return (0);
 }
 
-void	ft_cd(t_gc *gc, char **args, t_env *env)
+char	*get_target_path(t_gc *gc, char **args, t_env *env)
 {
-	char	cwd[4096];
-	char	*target;
 	char	*home;
 
-	if (ft_helper(args))
-		return ;
-	getcwd(cwd, sizeof(cwd));
 	if (!args[1] || ft_strcmp(args[1], "~") == 0)
-		target = get_env_value_cd(env, "HOME");
+		return (get_env_value_cd(env, "HOME"));
 	else if (ft_strcmp(args[1], "-") == 0)
-		target = get_env_value_cd(env, "OLDPWD");
+		return (get_env_value_cd(env, "OLDPWD"));
 	else if (args[1][0] == '~')
 	{
 		home = get_env_value_cd(env, "HOME");
 		if (home)
-			target = ft_strjoin(gc, home, args[1] + 1);
+			return (ft_strjoin(gc, home, args[1] + 1));
 		else
-			target = args[1];
+			return (args[1]);
 	}
-	else
-		target = args[1];
+	return (args[1]);
+}
+
+void	ft_cd(t_gc *gc, char **args, t_env *env)
+{
+	char	cwd[4096];
+	char	*target;
+
+	if (ft_helper(args))
+		return ;
+	getcwd(cwd, sizeof(cwd));
+	target = get_target_path(gc, args, env);
 	if (!target || chdir(target) != 0)
 	{
 		perror("minishell: cd");
@@ -84,4 +89,3 @@ void	ft_cd(t_gc *gc, char **args, t_env *env)
 	update_env_var(gc, env, "PWD", cwd);
 	g_last_exit_status = 0;
 }
-

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayelasef <ayelasef@1337.ma>                +#+  +:+       +#+        */
+/*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 10:40:46 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/05/11 11:02:14 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/07/13 00:34:22 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,20 @@ int	check_syntax(t_token *tokens)
 		current = current->next;
 	}
 	return (1);
+}
+
+void	is_not_found(char *cmnd)
+{
+	if (ft_strchr(cmnd, '/'))
+	{
+		write(2, "minishell: ", 11);
+		write(2, cmnd, ft_strlen(cmnd));
+		write(2, ": No such file or directory\n", 28);
+	}
+	else
+	{
+		write(2, "minishell: ", 11);
+		write(2, cmnd, ft_strlen(cmnd));
+		write(2, ": command not found\n", 20);
+	}
 }

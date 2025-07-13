@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 22:50:41 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 10:41:05 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/13 01:13:25 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ int	handle_fork_error(void)
 	return (1);
 }
 
-void	handle_child_process(t_command *cmnd, char *path, char **args)
+void	handle_child_process(t_command *cmnd, char *path, char **args_env,
+		char **clean_args)
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_IGN);
@@ -29,7 +30,7 @@ void	handle_child_process(t_command *cmnd, char *path, char **args)
 		close(cmnd->heredoc_fd);
 	}
 	handle_redirection(cmnd, -1);
-	execve(path, cmnd->args, args);
+	execve(path, clean_args, args_env);
 	perror("Couldn't execute");
 	exit(127);
 }
