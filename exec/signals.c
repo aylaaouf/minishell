@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 22:49:23 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 00:55:50 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/13 05:37:47 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	sigint_handler(int sig)
 {
 	(void)sig;
+	g_last_exit_status = 130;
 	rl_replace_line("", 0);
 	printf("\n");
 	rl_on_new_line();
