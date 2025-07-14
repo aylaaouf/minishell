@@ -34,12 +34,16 @@ static char	*expand_token_value_no_squote(t_gc *gc, char *str, t_env *env)
 	size_t	i;
 	char	*result;
 	char	*expansion;
+	char	quote;
 
 	i = 0;
 	result = gc_strdup(gc, "");
+	quote = 0;
 	while (str[i])
 	{
-		if (str[i] == '$')
+		if (handle_quotes(str, &i, &quote))
+			continue ;
+		if (str[i] == '$' && quote != '\'')
 		{
 			expansion = handle_dollar_expansion(gc, str, &i, env);
 			result = gc_strjoin_free_a(gc, result, expansion);
@@ -79,28 +83,24 @@ static int	should_expand_token(t_token *token)
 {
 	if (token->type == TOKEN_SQUOTE)
 		return (0);
-	if ((token->type == TOKEN_WORD || token->type == TOKEN_DQUOTE)
-		&& strchr(token->value, '$'))
-		return (1);
-	return (0);
+	return (token->type == TOKEN_WORD || token->type == TOKEN_DQUOTE);
 }
 
 void	expander(t_gc *gc, t_token *tokens, t_env *env)
 {
+
 	while (tokens)
 	{
 		if (tokens->type == TOKEN_HEREDOC)
 		{
-			tokens = tokens->next->next;
+			tokens = tokens->next;
+			if (tokens)
+				tokens = tokens->next;
 			continue ;
 		}
 		if (should_expand_token(tokens))
 		{
-			if (tokens->type == TOKEN_DQUOTE)
-				tokens->value = expand_token_value(gc, tokens->value, env);
-			else
-				tokens->value = expand_token_value_no_squote(gc,
-						tokens->value, env);
+			tokens->value = expand_token_value_no_squote(gc, tokens->value, env);
 		}
 		tokens = tokens->next;
 	}

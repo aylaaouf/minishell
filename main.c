@@ -25,6 +25,24 @@ static void	handle_builtin_execution(t_gc *gc, t_command *commands,
 	close(commands->saved_stdout);
 }
 
+void print_args(t_command *commands)
+{
+    t_command *current = commands;
+    
+    while (current != NULL)
+    {
+        if (current->args != NULL)
+        {
+            for (int i = 0; current->args[i] != NULL; i++)
+            {
+                printf("%s", current->args[i]);  // No spaces between args
+            }
+            printf("\n");
+        }
+        current = current->next;
+    }
+}
+
 static void	process_input(t_gc *gc, char *input, t_env *my_env)
 {
 	t_token		*tokens;
@@ -32,10 +50,10 @@ static void	process_input(t_gc *gc, char *input, t_env *my_env)
 
 	add_history(input);
 	tokens = tokenize(input, gc);
-	quote_management(gc, tokens);
 	if (!check_syntax(tokens))
 		return ;
 	expander(gc, tokens, my_env);
+	quote_management(gc, tokens);
 	commands = parse_tokens(gc, tokens);
 	if (process_heredocs(gc, commands, my_env) == -1)
 	{

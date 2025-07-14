@@ -63,23 +63,71 @@ int	process_character_tokenize(char *line, int i, t_parse_context *ctx)
 	}
 }
 
-int	handle_word_or_quotes(char *line, int i, t_tokenize_params *params)
+static int handle_quoted_string(char *line, int i, t_token **tokens, t_gc *gc, char quote_char)
 {
-	char			*joined;
-	t_token_type	final_type;
-	t_parse_context	ctx;
-	int				start_i;
+    int start = i;
+    int len = 0;
+    
+    // Include the opening quote
+    i++; // Skip opening quote
+    len++; // Count opening quote
+    
+    // Find the closing quote
+    while (line[i] && line[i] != quote_char)
+    {
+        i++;
+        len++;
+    }
+    
+    // Include the closing quote if found
+    if (line[i] == quote_char)
+    {
+        i++;
+        len++;
+    }
+    
+    // Create token with quotes preserved
+    char *value = gc_strndup(gc, &line[start], len);
+    
+    if (quote_char == '"')
+        add_token(tokens, new_token(TOKEN_DQUOTE, value, gc));
+    else
+        add_token(tokens, new_token(TOKEN_SQUOTE, value, gc));
+    
+    return i;
+}
 
-	joined = gc_strdup(params->gc, "");
-	final_type = TOKEN_WORD;
-	start_i = i;
-	ctx.joined = &joined;
-	ctx.tokens = params->tokens;
-	ctx.gc = params->gc;
-	ctx.is_after_heredoc = params->is_after_heredoc;
-	while (line[i] && !ft_isspace(line[i]) && !is_operator_char(line[i]))
-		i = process_character_tokenize(line, i, &ctx);
-	if (ft_strlen(joined) > 0)
-		add_token(params->tokens, new_token(final_type, joined, params->gc));
-	return (i);
+static int handle_word(char *line, int i, t_token **tokens, t_gc *gc)
+{
+    int start = i;
+    
+    // Collect word characters until space, operator, or quote
+    while (line[i] && !ft_isspace(line[i]) && !is_operator_char(line[i]) 
+           && line[i] != '"' && line[i] != '\'')
+    {
+        i++;
+    }
+    
+    if (i > start)
+    {
+        char *value = gc_strndup(gc, &line[start], i - start);
+        add_token(tokens, new_token(TOKEN_WORD, value, gc));
+    }
+    
+    return i;
+}
+int handle_word_or_quotes(char *line, int i, t_tokenize_params *params)
+{
+    if (line[i] == '"')
+    {
+        return handle_quoted_string(line, i, params->tokens, params->gc, '"');
+    }
+    else if (line[i] == '\'')
+    {
+        return handle_quoted_string(line, i, params->tokens, params->gc, '\'');
+    }
+    else
+    {
+        return handle_word(line, i, params->tokens, params->gc);
+    }
 }

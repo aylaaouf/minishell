@@ -51,6 +51,7 @@ typedef struct s_token
 {
 	t_token_type			type;
 	char					*value;
+	bool			has_space_before;
 	struct s_token			*next;
 }							t_token;
 
@@ -122,6 +123,7 @@ typedef struct s_tokenize_params
 {
 	t_token					**tokens;
 	t_gc					*gc;
+	bool					has_space_before;
 	int						is_after_heredoc;
 }							t_tokenize_params;
 
@@ -226,6 +228,9 @@ void						append_redirection(t_command *cmd,
 char						*get_redirect_file(t_gc *gc, char *type,
 								char *file);
 // expander_utils.c
+t_token	*create_split_tokens(t_gc *gc, char **split, t_token *next);
+int	needs_word_splitting(char *str);
+char	**split_words(t_gc *gc, char *str);
 char						*process_character(t_gc *gc, char *result,
 								char *str, size_t *i);
 char						*handle_dollar_expansion(t_gc *gc, char *str,
