@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 21:50:08 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/10 11:28:54 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/14 16:19:00 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ void	update_or_add_env(t_gc *gc, t_env **env, char *key, char *value)
 	{
 		if (value)
 			expanded = expand_value(gc, value, *env);
+		else
+			expanded = gc_strdup(gc, "");
 		add_env_node(gc, env, key, expanded);
 	}
 }
