@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/13 01:12:37 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/15 14:46:30 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,14 @@ typedef struct s_heredoc_data
 	int						expand;
 	t_env					*env;
 }							t_heredoc_data;
+
+typedef struct s_tokenize_context
+{
+	t_token					**tokens;
+	t_gc					*gc;
+	int						is_after_heredoc;
+	bool					has_space_before;
+}							t_tokenize_context;
 
 typedef struct s_expand_data
 {
@@ -258,6 +266,16 @@ void						quote_management(t_gc *gc, t_token *tokens);
 int							handle_dollar_variable(char *line, int i,
 								char **joined, t_gc *gc);
 t_token						*tokenize(char *line, t_gc *gc);
+
+// quote_management_utils.c
+
+int							get_token_content_length(t_token *token);
+int							calculate_total_length(t_token *current);
+void						remove_quotes_from_token(t_gc *gc, t_token *token);
+void						append_token_content(char *joined_value,
+								t_token *token);
+char						*create_joined_value(t_gc *gc, t_token *current,
+								int total_len);
 // tokenize_utils_1.c
 int							ft_isspace(char c);
 bool						is_operator_char(char c);
