@@ -6,11 +6,16 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 17:04:20 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/07/09 22:53:04 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/15 17:12:10 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+int	is_word_token(t_token_type type)
+{
+	return (type == TOKEN_WORD || type == TOKEN_SQUOTE || type == TOKEN_DQUOTE);
+}
 
 char	*get_redirect_file(t_gc *gc, char *type, char *file)
 {

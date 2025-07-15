@@ -6,15 +6,10 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 18:49:04 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/07/09 22:53:07 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/15 17:11:29 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../minishell.h"
-
-static int	is_word_token(t_token_type type)
-{
-	return (type == TOKEN_WORD || type == TOKEN_SQUOTE || type == TOKEN_DQUOTE);
-}
 
 static int	is_redirection_token(t_token_type type)
 {

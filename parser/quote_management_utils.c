@@ -53,8 +53,8 @@ void	remove_quotes_from_token(t_gc *gc, t_token *token)
 
 	old_value = token->value;
 	len = ft_strlen(old_value);
-	if (len >= 2 && old_value[0] == old_value[len - 1]
-		&& (old_value[0] == '"' || old_value[0] == '\''))
+	if (len >= 2 && old_value[0] == old_value[len - 1] && (old_value[0] == '"'
+			|| old_value[0] == '\''))
 	{
 		token->value = gc_strndup(gc, old_value + 1, len - 2);
 	}

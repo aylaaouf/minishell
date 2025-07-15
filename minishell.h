@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:06:52 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/15 14:46:30 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/07/15 17:19:48 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,7 @@ typedef struct s_tokenize_params
 {
 	t_token					**tokens;
 	t_gc					*gc;
+	int						i;
 	bool					has_space_before;
 	int						is_after_heredoc;
 }							t_tokenize_params;
@@ -143,6 +144,28 @@ typedef struct s_pipe_data
 	int						fd[2];
 }							t_pipe_data;
 
+typedef struct s_quote_params
+{
+	t_token					**tokens;
+	t_gc					*gc;
+	int						i;
+	bool					has_space_before;
+}							t_quote_params;
+
+typedef struct s_word_params
+{
+	t_token					**tokens;
+	t_gc					*gc;
+	int						i;
+	bool					has_space_before;
+}							t_word_params;
+typedef struct s_heredoc_params
+{
+	t_token					**tokens;
+	t_gc					*gc;
+	int						i;
+	bool					has_space_before;
+}							t_heredoc_params;
 // gc.c
 void						*gc_malloc(t_gc *gc, size_t size);
 char						*gc_strdup(t_gc *gc, const char *s);
@@ -237,6 +260,7 @@ void						append_redirection(t_command *cmd,
 								t_redirection *redir);
 char						*get_redirect_file(t_gc *gc, char *type,
 								char *file);
+int							is_word_token(t_token_type type);
 // expander_utils.c
 t_token						*create_split_tokens(t_gc *gc, char **split,
 								t_token *next, bool has_space_before);
@@ -282,14 +306,12 @@ bool						is_operator_char(char c);
 t_token						*new_token(t_token_type type, char *value, t_gc *gc,
 								bool has_space_before);
 void						add_token(t_token **head, t_token *new_);
-int							handle_heredoc_quotes(char *line, int i,
-								t_token **tokens, t_gc *gc,
-								bool has_space_before);
+int							handle_heredoc_quotes(char *line,
+								t_heredoc_params *params);
 
 // tokenize_utils_2.c
-int							handle_empty_single_quote(char *line, int i,
-								t_token **tokens, t_gc *gc,
-								bool has_space_before);
+int							handle_empty_single_quote(char *line,
+								t_quote_params *params);
 int							handle_dollar_sign(char *line, int i, char **joined,
 								t_gc *gc);
 
@@ -309,11 +331,31 @@ int							process_single_quote_content(char *line, int i,
 								char **joined, t_gc *gc);
 // tokenize_utils_4.c
 int							handle_standalone_quotes(char *line, int i,
-								t_token **tokens, t_gc *gc,
-								bool has_space_before);
-
+								t_quote_params *params);
 int							check_if_standalone_quote(char *line, int i,
 								char **joined);
+
+int							handle_input_redirect(char *line,
+								t_tokenize_params *params);
+int							handle_operator(char *line,
+								t_tokenize_params *params);
+void						init_tokenize_state(t_tokenize_params *params,
+								t_token **tokens, t_gc *gc);
+int							process_whitespace(char *line, int i,
+								bool *has_space_before);
+void						init_tokenize_data(t_tokenize_context *ctx,
+								t_token **tokens, t_gc *gc);
+int							process_whitespace_chars(char *line, int i);
+int							handle_operator_token(char *line, int i,
+								t_tokenize_params *params,
+								t_tokenize_context *ctx);
+int							handle_word_quote_token(char *line, int i,
+								t_tokenize_params *params,
+								t_tokenize_context *ctx);
+
+void						init_tokenize_params(t_tokenize_params *params,
+								int i, int is_after_heredoc,
+								bool has_space_before);
 // envp.c
 
 void						print_env(t_env *env);
