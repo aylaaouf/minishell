@@ -23,9 +23,8 @@ char	*handle_dollar_expansion(t_gc *gc, char *str, size_t *i, t_env *env)
 		return (gc_strdup(gc, "$"));
 	if (str[*i] != '?' && !ft_isalnum(str[*i]) && str[*i] != '_')
 	{
-		key = gc_strndup(gc, &str[*i], 1);
-		(*i)++;
-		return (gc_strjoin_free_a(gc, gc_strdup(gc, "$"), key));
+		// Don't consume the character after $, just return literal $
+		return (gc_strdup(gc, "$"));
 	}
 	key = extract_var_name(gc, str, i);
 	if (key[0] == '?')
