@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 13:50:43 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/07/10 10:22:58 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/15 03:05:00 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@ char	*gc_strjoin_free_a(t_gc *gc, char *s1, char *s2)
 	size_t	len2;
 	char	*joined;
 
+	if (!s1)
+		s1 = "";
+	if (!s2)
+		s2 = "";
 	len1 = strlen(s1);
 	len2 = strlen(s2);
 	joined = gc_malloc(gc, len1 + len2 + 1);

@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 12:12:08 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/07/09 21:36:07 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/15 02:59:30 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,13 @@ void	print_env(t_env *env)
 	g_last_exit_status = 1;
 	while (env)
 	{
-		if (env->value)
+		if (env->value && env->value[1])
 		{
 			printf("%s=%s\n", env->key, env->value);
 			g_last_exit_status = 0;
 		}
+		else
+			printf("%s\n", env->key);
 		env = env->next;
 	}
 }

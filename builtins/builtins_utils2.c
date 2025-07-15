@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 21:50:08 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/14 16:19:00 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/15 02:59:32 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,10 @@ int	handle_export_arg(t_gc *gc, t_env **env, char *arg)
 	char	**args_kv;
 	char	*key;
 	char	*value;
+	int		has_equals;
+	t_env	*node;
 
+	has_equals = (ft_strchr(arg, '=') != NULL);
 	args_kv = ft_split(gc, arg, '=');
 	key = args_kv[0];
 	value = args_kv[1];
@@ -76,6 +79,13 @@ int	handle_export_arg(t_gc *gc, t_env **env, char *arg)
 		write(2, "minishell: export: not a valid identifier\n", 43);
 		return (1);
 	}
-	update_or_add_env(gc, env, key, value);
+	if (!has_equals)
+	{
+		node = find_env_node(*env, key);
+		if (!node)
+			add_env_node(gc, env, key, NULL);
+	}
+	else
+		update_or_add_env(gc, env, key, value);
 	return (0);
 }
