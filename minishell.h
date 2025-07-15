@@ -36,6 +36,7 @@ typedef enum e_token_type
 	TOKEN_HEREDOC,
 	TOKEN_SQUOTE,
 	TOKEN_DQUOTE,
+	TOKEN_REMOVED,
 }							t_token_type;
 
 extern int					g_last_exit_status;
@@ -112,6 +113,7 @@ typedef struct s_parse_context
 	char					**joined;
 	t_token					**tokens;
 	t_gc					*gc;
+	bool has_space_before;
 	int						is_after_heredoc;
 }							t_parse_context;
 
@@ -228,7 +230,7 @@ void						append_redirection(t_command *cmd,
 char						*get_redirect_file(t_gc *gc, char *type,
 								char *file);
 // expander_utils.c
-t_token	*create_split_tokens(t_gc *gc, char **split, t_token *next);
+t_token	*create_split_tokens(t_gc *gc, char **split, t_token *next, bool has_space_before);
 int	needs_word_splitting(char *str);
 char	**split_words(t_gc *gc, char *str);
 char						*process_character(t_gc *gc, char *result,
@@ -258,17 +260,14 @@ t_token						*tokenize(char *line, t_gc *gc);
 // tokenize_utils_1.c
 int							ft_isspace(char c);
 bool						is_operator_char(char c);
-t_token						*new_token(t_token_type type, char *value,
-								t_gc *gc);
+t_token *new_token(t_token_type type, char *value, t_gc *gc, bool has_space_before);
 void						add_token(t_token **head, t_token *new_);
-int							handle_heredoc_quotes(char *line, int i,
-								t_token **tokens, t_gc *gc);
+int	handle_heredoc_quotes(char *line, int i, t_token **tokens, t_gc *gc, bool has_space_before);
 
 // tokenize_utils_2.c
+int	handle_empty_single_quote(char *line, int i, t_token **tokens, t_gc *gc, bool has_space_before);
 int							handle_dollar_sign(char *line, int i, char **joined,
 								t_gc *gc);
-int							handle_empty_single_quote(char *line, int i,
-								t_token **tokens, t_gc *gc);
 
 int							process_quote_in_word(char *line, int i,
 								t_parse_context *ctx);
@@ -285,9 +284,8 @@ int							handle_single_quote(char *line, int i,
 int							process_single_quote_content(char *line, int i,
 								char **joined, t_gc *gc);
 // tokenize_utils_4.c
+int	handle_standalone_quotes(char *line, int i, t_token **tokens, t_gc *gc, bool has_space_before);
 
-int							handle_standalone_quotes(char *line, int i,
-								t_token **tokens, t_gc *gc);
 int							check_if_standalone_quote(char *line, int i,
 								char **joined);
 // envp.c

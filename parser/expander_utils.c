@@ -106,7 +106,7 @@ int	needs_word_splitting(char *str)
 	return (str && (strchr(str, ' ') || strchr(str, '\t')));
 }
 
-t_token	*create_split_tokens(t_gc *gc, char **split, t_token *next)
+t_token	*create_split_tokens(t_gc *gc, char **split, t_token *next, bool has_space_before)
 {
 	t_token	*first;
 	t_token	*current;
@@ -114,12 +114,12 @@ t_token	*create_split_tokens(t_gc *gc, char **split, t_token *next)
 
 	if (!split || !split[0])
 		return (next);
-	first = new_token(TOKEN_WORD, split[0], gc);
+	first = new_token(TOKEN_WORD, split[0], gc, has_space_before);
 	current = first;
 	i = 1;
 	while (split[i])
 	{
-		current->next = new_token(TOKEN_WORD, split[i], gc);
+		current->next = new_token(TOKEN_WORD, split[i], gc, true); // Split tokens have space between them
 		current = current->next;
 		i++;
 	}

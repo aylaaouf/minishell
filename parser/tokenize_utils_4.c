@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-int	handle_standalone_quotes(char *line, int i, t_token **tokens, t_gc *gc)
+int	handle_standalone_quotes(char *line, int i, t_token **tokens, t_gc *gc, bool has_space_before)
 {
 	char			quote;
 	int				start;
@@ -30,7 +30,7 @@ int	handle_standalone_quotes(char *line, int i, t_token **tokens, t_gc *gc)
 			q_type = TOKEN_SQUOTE;
 		else
 			q_type = TOKEN_DQUOTE;
-		add_token(tokens, new_token(q_type, content, gc));
+		add_token(tokens, new_token(q_type, content, gc, has_space_before));
 		return (i + 1);
 	}
 	return (i);

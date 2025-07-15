@@ -21,7 +21,7 @@ int	handle_dollar_sign(char *line, int i, char **joined, t_gc *gc)
 		return (handle_dollar_variable(line, i, joined, gc));
 }
 
-int	handle_empty_single_quote(char *line, int i, t_token **tokens, t_gc *gc)
+int	handle_empty_single_quote(char *line, int i, t_token **tokens, t_gc *gc, bool has_space_before)
 {
 	char	*end_quote;
 	char	*content;
@@ -30,7 +30,7 @@ int	handle_empty_single_quote(char *line, int i, t_token **tokens, t_gc *gc)
 	if (end_quote)
 	{
 		content = gc_strndup(gc, &line[i + 1], end_quote - &line[i + 1]);
-		add_token(tokens, new_token(TOKEN_SQUOTE, content, gc));
+		add_token(tokens, new_token(TOKEN_SQUOTE, content, gc, has_space_before));
 		return (end_quote - line + 1);
 	}
 	return (i);
@@ -39,7 +39,7 @@ int	handle_empty_single_quote(char *line, int i, t_token **tokens, t_gc *gc)
 int	process_quote_in_word(char *line, int i, t_parse_context *ctx)
 {
 	if (check_if_standalone_quote(line, i, ctx->joined))
-		return (handle_standalone_quotes(line, i, ctx->tokens, ctx->gc));
+		return (handle_standalone_quotes(line, i, ctx->tokens, ctx->gc, ctx->has_space_before));
 	if (line[i] == '\'')
 		return (handle_single_quote(line, i + 1, ctx->joined, ctx->gc));
 	else
@@ -51,7 +51,7 @@ int	process_character_tokenize(char *line, int i, t_parse_context *ctx)
 	if (line[i] == '"' || line[i] == '\'')
 	{
 		if (ctx->is_after_heredoc)
-			return (handle_heredoc_quotes(line, i, ctx->tokens, ctx->gc));
+			return (handle_heredoc_quotes(line, i, ctx->tokens, ctx->gc, ctx->has_space_before));
 		return (process_quote_in_word(line, i, ctx));
 	}
 	else if (line[i] == '$')
@@ -63,7 +63,7 @@ int	process_character_tokenize(char *line, int i, t_parse_context *ctx)
 	}
 }
 
-static int handle_quoted_string(char *line, int i, t_token **tokens, t_gc *gc, char quote_char)
+static int handle_quoted_string(char *line, int i, t_token **tokens, t_gc *gc, char quote_char, bool has_space_before)
 {
     int start = i;
     int len = 0;
@@ -90,14 +90,14 @@ static int handle_quoted_string(char *line, int i, t_token **tokens, t_gc *gc, c
     char *value = gc_strndup(gc, &line[start], len);
     
     if (quote_char == '"')
-        add_token(tokens, new_token(TOKEN_DQUOTE, value, gc));
+        add_token(tokens, new_token(TOKEN_DQUOTE, value, gc, has_space_before));
     else
-        add_token(tokens, new_token(TOKEN_SQUOTE, value, gc));
+        add_token(tokens, new_token(TOKEN_SQUOTE, value, gc, has_space_before));
     
     return i;
 }
 
-static int handle_word(char *line, int i, t_token **tokens, t_gc *gc)
+static int handle_word(char *line, int i, t_token **tokens, t_gc *gc, bool has_space_before)
 {
     int start = i;
     
@@ -111,23 +111,24 @@ static int handle_word(char *line, int i, t_token **tokens, t_gc *gc)
     if (i > start)
     {
         char *value = gc_strndup(gc, &line[start], i - start);
-        add_token(tokens, new_token(TOKEN_WORD, value, gc));
+        add_token(tokens, new_token(TOKEN_WORD, value, gc, has_space_before));
     }
     
     return i;
 }
+
 int handle_word_or_quotes(char *line, int i, t_tokenize_params *params)
 {
     if (line[i] == '"')
     {
-        return handle_quoted_string(line, i, params->tokens, params->gc, '"');
+        return handle_quoted_string(line, i, params->tokens, params->gc, '"', params->has_space_before);
     }
     else if (line[i] == '\'')
     {
-        return handle_quoted_string(line, i, params->tokens, params->gc, '\'');
+        return handle_quoted_string(line, i, params->tokens, params->gc, '\'', params->has_space_before);
     }
     else
     {
-        return handle_word(line, i, params->tokens, params->gc);
+        return handle_word(line, i, params->tokens, params->gc, params->has_space_before);
     }
 }
