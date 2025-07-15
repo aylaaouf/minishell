@@ -22,10 +22,7 @@ char	*handle_dollar_expansion(t_gc *gc, char *str, size_t *i, t_env *env)
 	if (str[*i] == '\0')
 		return (gc_strdup(gc, "$"));
 	if (str[*i] != '?' && !ft_isalnum(str[*i]) && str[*i] != '_')
-	{
-		// Don't consume the character after $, just return literal $
 		return (gc_strdup(gc, "$"));
-	}
 	key = extract_var_name(gc, str, i);
 	if (key[0] == '?')
 	{
@@ -90,8 +87,8 @@ char	**split_words(t_gc *gc, char *str)
 	token = strtok_r(copy, " \t\n", &saveptr);
 	while (token)
 	{
-		result = gc_realloc(gc, result, sizeof(char *) * count,
-				sizeof(char *) * (count + 2));
+		result = gc_realloc(gc, result, sizeof(char *) * count, sizeof(char *)
+				* (count + 2));
 		result[count++] = gc_strdup(gc, token);
 		token = strtok_r(NULL, " \t\n", &saveptr);
 	}
@@ -105,7 +102,8 @@ int	needs_word_splitting(char *str)
 	return (str && (strchr(str, ' ') || strchr(str, '\t')));
 }
 
-t_token	*create_split_tokens(t_gc *gc, char **split, t_token *next, bool has_space_before)
+t_token	*create_split_tokens(t_gc *gc, char **split, t_token *next,
+		bool has_space_before)
 {
 	t_token	*first;
 	t_token	*current;
@@ -118,7 +116,7 @@ t_token	*create_split_tokens(t_gc *gc, char **split, t_token *next, bool has_spa
 	i = 1;
 	while (split[i])
 	{
-		current->next = new_token(TOKEN_WORD, split[i], gc, true); // Split tokens have space between them
+		current->next = new_token(TOKEN_WORD, split[i], gc, true);
 		current = current->next;
 		i++;
 	}

@@ -88,7 +88,6 @@ static int	should_expand_token(t_token *token)
 
 void	expander(t_gc *gc, t_token *tokens, t_env *env)
 {
-
 	while (tokens)
 	{
 		if (tokens->type == TOKEN_HEREDOC)
@@ -100,7 +99,8 @@ void	expander(t_gc *gc, t_token *tokens, t_env *env)
 		}
 		if (should_expand_token(tokens))
 		{
-			tokens->value = expand_token_value_no_squote(gc, tokens->value, env);
+			tokens->value = expand_token_value_no_squote(gc, tokens->value,
+					env);
 		}
 		tokens = tokens->next;
 	}

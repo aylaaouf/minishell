@@ -22,14 +22,17 @@ bool	is_operator_char(char c)
 	return (c == '|' || c == '<' || c == '>');
 }
 
-t_token *new_token(t_token_type type, char *value, t_gc *gc, bool has_space_before)
+t_token	*new_token(t_token_type type, char *value, t_gc *gc,
+		bool has_space_before)
 {
-    t_token *token = gc_malloc(gc, sizeof(t_token));
-    token->type = type;
-    token->value = value;
-    token->has_space_before = has_space_before;
-    token->next = NULL;
-    return token;
+	t_token	*token;
+
+	token = gc_malloc(gc, sizeof(t_token));
+	token->type = type;
+	token->value = value;
+	token->has_space_before = has_space_before;
+	token->next = NULL;
+	return (token);
 }
 void	add_token(t_token **head, t_token *new)
 {
@@ -46,7 +49,8 @@ void	add_token(t_token **head, t_token *new)
 	}
 }
 
-int	handle_heredoc_quotes(char *line, int i, t_token **tokens, t_gc *gc, bool has_space_before)
+int	handle_heredoc_quotes(char *line, int i, t_token **tokens, t_gc *gc,
+		bool has_space_before)
 {
 	char			quote;
 	int				start;
@@ -64,7 +68,8 @@ int	handle_heredoc_quotes(char *line, int i, t_token **tokens, t_gc *gc, bool ha
 			q_type = TOKEN_SQUOTE;
 		else
 			q_type = TOKEN_DQUOTE;
-		add_token(tokens, new_token(q_type, full_with_quotes, gc, has_space_before));
+		add_token(tokens, new_token(q_type, full_with_quotes, gc,
+				has_space_before));
 		return (i + 1);
 	}
 	return (i);

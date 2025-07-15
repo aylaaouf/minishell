@@ -52,7 +52,7 @@ typedef struct s_token
 {
 	t_token_type			type;
 	char					*value;
-	bool			has_space_before;
+	bool					has_space_before;
 	struct s_token			*next;
 }							t_token;
 
@@ -113,7 +113,7 @@ typedef struct s_parse_context
 	char					**joined;
 	t_token					**tokens;
 	t_gc					*gc;
-	bool has_space_before;
+	bool					has_space_before;
 	int						is_after_heredoc;
 }							t_parse_context;
 
@@ -230,9 +230,10 @@ void						append_redirection(t_command *cmd,
 char						*get_redirect_file(t_gc *gc, char *type,
 								char *file);
 // expander_utils.c
-t_token	*create_split_tokens(t_gc *gc, char **split, t_token *next, bool has_space_before);
-int	needs_word_splitting(char *str);
-char	**split_words(t_gc *gc, char *str);
+t_token						*create_split_tokens(t_gc *gc, char **split,
+								t_token *next, bool has_space_before);
+int							needs_word_splitting(char *str);
+char						**split_words(t_gc *gc, char *str);
 char						*process_character(t_gc *gc, char *result,
 								char *str, size_t *i);
 char						*handle_dollar_expansion(t_gc *gc, char *str,
@@ -260,12 +261,17 @@ t_token						*tokenize(char *line, t_gc *gc);
 // tokenize_utils_1.c
 int							ft_isspace(char c);
 bool						is_operator_char(char c);
-t_token *new_token(t_token_type type, char *value, t_gc *gc, bool has_space_before);
+t_token						*new_token(t_token_type type, char *value, t_gc *gc,
+								bool has_space_before);
 void						add_token(t_token **head, t_token *new_);
-int	handle_heredoc_quotes(char *line, int i, t_token **tokens, t_gc *gc, bool has_space_before);
+int							handle_heredoc_quotes(char *line, int i,
+								t_token **tokens, t_gc *gc,
+								bool has_space_before);
 
 // tokenize_utils_2.c
-int	handle_empty_single_quote(char *line, int i, t_token **tokens, t_gc *gc, bool has_space_before);
+int							handle_empty_single_quote(char *line, int i,
+								t_token **tokens, t_gc *gc,
+								bool has_space_before);
 int							handle_dollar_sign(char *line, int i, char **joined,
 								t_gc *gc);
 
@@ -284,7 +290,9 @@ int							handle_single_quote(char *line, int i,
 int							process_single_quote_content(char *line, int i,
 								char **joined, t_gc *gc);
 // tokenize_utils_4.c
-int	handle_standalone_quotes(char *line, int i, t_token **tokens, t_gc *gc, bool has_space_before);
+int							handle_standalone_quotes(char *line, int i,
+								t_token **tokens, t_gc *gc,
+								bool has_space_before);
 
 int							check_if_standalone_quote(char *line, int i,
 								char **joined);
@@ -331,6 +339,7 @@ char						*ft_strjoin_char_gc(t_gc *gc, char *s, char c);
 char						*ft_itoa_gc(t_gc *gc, int n);
 void						gc_free(t_gc *gc, void *ptr);
 
+char						*ft_strncat(char *dest, const char *src, size_t n);
 void						is_not_found(char *cmnd);
 
 #endif

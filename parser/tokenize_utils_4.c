@@ -12,7 +12,8 @@
 
 #include "../minishell.h"
 
-int	handle_standalone_quotes(char *line, int i, t_token **tokens, t_gc *gc, bool has_space_before)
+int	handle_standalone_quotes(char *line, int i, t_token **tokens, t_gc *gc,
+		bool has_space_before)
 {
 	char			quote;
 	int				start;
@@ -48,7 +49,7 @@ int	check_if_standalone_quote(char *line, int i, char **joined)
 		while (line[j] && line[j] != quote)
 			j++;
 		if (line[j] == quote && (j + 1 >= ft_strlen(line) || ft_isspace(line[j
-						+ 1]) || is_operator_char(line[j + 1])))
+					+ 1]) || is_operator_char(line[j + 1])))
 			return (1);
 	}
 	return (0);
