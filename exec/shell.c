@@ -6,7 +6,7 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 17:07:09 by aylaaouf          #+#    #+#             */
-/*   Updated: 2025/07/13 01:12:05 by aylaaouf         ###   ########.fr       */
+/*   Updated: 2025/07/16 08:25:36 by aylaaouf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,37 +85,30 @@ int	check_cmd_path(t_command *cmd, char *path)
 
 int	shell(t_gc *gc, t_command *cmnd, t_env *env)
 {
-	pid_t	child_pid;
-	int		status;
-	char	**args;
-	char	*path;
-	char	**clean_args;
-	int		i;
+    pid_t	child_pid;
+    char	**args;
+    char	*path;
 
-	if (!cmnd || !cmnd->args)
-		return ((g_last_exit_status = 0), 0);
-	i = 0;
-	while (cmnd->args[i] && !cmnd->args[i][0])
-		i++;
-	if (!cmnd->args[i])
-		return ((g_last_exit_status = 0), 0);
-	path = find_cmnd_path(gc, cmnd->args[i], env);
-	status = 0;
-	clean_args = &cmnd->args[i];
-	if (!path)
-	{
-		is_not_found(cmnd->args[i]);
-		return ((g_last_exit_status = 127), 127);
-	}
-	if (check_cmd_path(cmnd, path) != 0)
-		return (g_last_exit_status);
-	args = list_to_array(gc, env);
-	child_pid = fork();
-	if (child_pid == -1)
-		return (handle_fork_error());
-	else if (child_pid == 0)
-		handle_child_process(cmnd, path, args, clean_args);
-	else
-		handle_parent_process(status, cmnd);
-	return (0);
+    if (!cmnd || !cmnd->args)
+        return ((g_last_exit_status = 0), 0);
+    if (!cmnd->args[0])
+        return ((g_last_exit_status = 0), 0);
+    if (cmnd->args[0][0] == '\0')
+    	return ((g_last_exit_status = 0), 0);
+    path = find_cmnd_path(gc, cmnd->args[0], env);
+    if (!path)
+    {
+        is_not_found(cmnd->args[0]);
+        return ((g_last_exit_status = 127), 127);
+    }
+    if (check_cmd_path(cmnd, path) != 0)
+        return (g_last_exit_status);
+    args = list_to_array(gc, env);
+    child_pid = fork();
+    if (child_pid == -1)
+        return (handle_fork_error());
+    if (child_pid == 0)
+        handle_child_process(cmnd, path, args, cmnd->args);
+    handle_parent_process(0, cmnd);
+    return (0);
 }
