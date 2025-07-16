@@ -6,54 +6,11 @@
 /*   By: aylaaouf <aylaaouf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:02:40 by ayelasef          #+#    #+#             */
-/*   Updated: 2025/07/15 17:17:51 by ayelasef         ###   ########.fr       */
+/*   Updated: 2025/07/16 15:13:09 by ayelasef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-int	handle_dollar_sign(char *line, int i, char **joined, t_gc *gc)
-{
-	i++;
-	if (line[i] == '?')
-		return (handle_dollar_question(line, i - 1, joined, gc));
-	else
-		return (handle_dollar_variable(line, i, joined, gc));
-}
-
-int	handle_empty_single_quote(char *line, t_quote_params *params)
-{
-	char	*end_quote;
-	char	*content;
-
-	end_quote = ft_strchr(&line[params->i + 1], '\'');
-	if (end_quote)
-	{
-		content = gc_strndup(params->gc, &line[params->i + 1], end_quote
-				- &line[params->i + 1]);
-		add_token(params->tokens, new_token(TOKEN_SQUOTE, content, params->gc,
-				params->has_space_before));
-		return (end_quote - line + 1);
-	}
-	return (params->i);
-}
-
-int	process_quote_in_word(char *line, int i, t_parse_context *ctx)
-{
-	t_quote_params	quote_params;
-
-	if (check_if_standalone_quote(line, i, ctx->joined))
-	{
-		quote_params.tokens = ctx->tokens;
-		quote_params.gc = ctx->gc;
-		quote_params.has_space_before = ctx->has_space_before;
-		return (handle_standalone_quotes(line, i, &quote_params));
-	}
-	if (line[i] == '\'')
-		return (handle_single_quote(line, i + 1, ctx->joined, ctx->gc));
-	else
-		return (handle_double_quote(line, i + 1, ctx->joined, ctx->gc));
-}
 
 int	process_character_tokenize(char *line, int i, t_parse_context *ctx)
 {
@@ -80,13 +37,12 @@ int	process_character_tokenize(char *line, int i, t_parse_context *ctx)
 	}
 }
 
-static int	handle_quoted_string(char *line, t_quote_params *params,
+int	handle_quoted_string(char *line, t_quote_params *params,
 		char quote_char)
 {
-	int		start;
-	int		len;
 	char	*value;
 
+	int (start), len;
 	start = params->i;
 	len = 0;
 	params->i++;
@@ -111,7 +67,7 @@ static int	handle_quoted_string(char *line, t_quote_params *params,
 	return (params->i);
 }
 
-static int	handle_word(char *line, t_word_params *params)
+int	handle_word(char *line, t_word_params *params)
 {
 	int		start;
 	char	*value;
@@ -132,27 +88,26 @@ static int	handle_word(char *line, t_word_params *params)
 	return (params->i);
 }
 
-int	handle_word_or_quotes(char *line, int i, t_tokenize_params *params)
+static int	handle_quotes_v2(char *line, int i, t_tokenize_params *params)
 {
 	t_quote_params	quote_params;
+
+	quote_params.tokens = params->tokens;
+	quote_params.gc = params->gc;
+	quote_params.i = i;
+	quote_params.has_space_before = params->has_space_before;
+	if (line[i] == '"')
+		return (handle_quoted_string(line, &quote_params, '"'));
+	else
+		return (handle_quoted_string(line, &quote_params, '\''));
+}
+
+int	handle_word_or_quotes(char *line, int i, t_tokenize_params *params)
+{
 	t_word_params	word_params;
 
-	if (line[i] == '"')
-	{
-		quote_params.tokens = params->tokens;
-		quote_params.gc = params->gc;
-		quote_params.i = i;
-		quote_params.has_space_before = params->has_space_before;
-		return (handle_quoted_string(line, &quote_params, '"'));
-	}
-	else if (line[i] == '\'')
-	{
-		quote_params.tokens = params->tokens;
-		quote_params.gc = params->gc;
-		quote_params.i = i;
-		quote_params.has_space_before = params->has_space_before;
-		return (handle_quoted_string(line, &quote_params, '\''));
-	}
+	if (line[i] == '"' || line[i] == '\'')
+		return (handle_quotes_v2(line, i, params));
 	else
 	{
 		word_params.tokens = params->tokens;
